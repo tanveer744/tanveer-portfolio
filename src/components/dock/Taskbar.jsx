@@ -8,7 +8,6 @@ import {
   IoNotificationsOutline,
   IoBatteryFull,
   IoChevronUp,
-  IoLanguageSharp,
   IoPartlySunnyOutline
 } from 'react-icons/io5'
 
@@ -73,10 +72,8 @@ export default function Taskbar() {
       
       {/* Taskbar Content */}
       <div className="relative h-full flex items-center justify-between px-3">
-        
-        {/* Left Section - Weather, Start Button, and Search */}
-        <div className="flex items-center gap-0">
-          {/* Weather Widget */}
+        {/* Left Section - Only Weather Widget */}
+        <div className="flex items-center">
           <a 
             href="https://www.google.com/search?q=weather" 
             target="_blank" 
@@ -87,7 +84,10 @@ export default function Taskbar() {
             <IoPartlySunnyOutline className="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform" />
             <span className="text-white/90 font-medium font-['Segoe_UI'] text-sm">25°C</span>
           </a>
+        </div>
 
+        {/* Center Section - Start Button, Search, and App Icons */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
           {/* Start Button */}
           <button
             onClick={toggleStartMenu}
@@ -105,14 +105,13 @@ export default function Taskbar() {
           </button>
 
           {/* Search Box */}
-          <div className="h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 cursor-text ml-2 border border-white/5 hover:border-white/10">
+          <div className="h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 cursor-text border border-white/5 hover:border-white/10">
             <IoSearchOutline className="w-4 h-4 text-white/60" />
             <span className="text-sm font-normal text-white/70 font-['Segoe_UI'] select-none">Search</span>
           </div>
-        </div>
 
-        {/* Center Section - App Icons */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
+          {/* App Icons */}
+          <div className="flex items-center gap-1 ml-2">
 
           {/* App Icons */}
           {pinnedApps.map((app) => {
@@ -143,6 +142,7 @@ export default function Taskbar() {
               </div>
             )
           })}
+          </div>
         </div>
 
         {/* Right Section - System Tray */}
@@ -173,16 +173,7 @@ export default function Taskbar() {
             </button>
           </div>
 
-          {/* Language Indicator */}
-          <button
-            className="h-10 px-3 rounded-md hover:bg-white/10 transition-all flex items-center gap-2"
-            title="Language preferences"
-          >
-            <IoLanguageSharp className="w-4 h-4 text-white/80" />
-            <span className="text-xs text-white/80 font-medium">ENG</span>
-          </button>
-
-          {/* Date & Time */}
+{/* Date & Time */}
           <button
             className="h-11 px-3 rounded-md hover:bg-white/10 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[80px]"
             title="Date and Time"

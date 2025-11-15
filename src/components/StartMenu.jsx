@@ -43,7 +43,7 @@ export default function StartMenu() {
     : startMenuProjects
 
   return (
-    <div className="fixed bottom-14 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
+    <div className="fixed bottom-14 left-0 right-0 mx-auto w-[640px] z-50 animate-slide-up will-change-transform">
       {/* Start Menu Container */}
       <div className="w-[640px] rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
         
