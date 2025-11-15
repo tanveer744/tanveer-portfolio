@@ -6,27 +6,24 @@ export const wallpapers = {
 // Projects to show in Start Menu (like Launchpad in macOS)
 export const startMenuProjects = [
   {
-    id: 'project-1',
-    title: 'Project One',
-    img: '/img/icons/projects/project1.svg',
-    link: 'https://github.com/yourusername/project1',
+    id: 'linkedin-automator',
+    title: 'LinkedIn Automator',
+    img: '/img/icons/projects/linkedin-automator.svg',
+    link: 'https://github.com/tanveer744/linkedin-automator',
+    description: 'AI-powered LinkedIn automation assistant with Tkinter GUI'
   },
   {
-    id: 'project-2',
-    title: 'Project Two',
-    img: '/img/icons/projects/project2.svg',
-    link: 'https://github.com/yourusername/project2',
+    id: 'query-document',
+    title: 'HackRx Query System',
+    img: '/img/icons/projects/query-document.svg',
+    link: 'https://github.com/tanveer744',
+    description: 'Intelligent document processing & policy Q&A platform using FAISS and Gemini AI'
   },
   {
-    id: 'project-3',
-    title: 'Project Three',
-    img: '/img/icons/projects/project3.svg',
-    link: 'https://github.com/yourusername/project3',
-  },
-  {
-    id: 'portfolio',
-    title: 'My Portfolio',
-    img: '/img/icons/projects/portfolio.svg',
-    link: 'https://yourwebsite.com',
+    id: 'road-rage',
+    title: 'Road Rage Detection',
+    img: '/img/icons/projects/road-rage.svg',
+    link: 'https://github.com/tanveer744',
+    description: 'Real-time aggressive driving detection using 3D CNN and computer vision'
   },
 ]

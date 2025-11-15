@@ -36,28 +36,28 @@ export const notepadData = [
     icon: "📦",
     notes: [
       {
-        id: "project-1",
-        title: "Portfolio Windows",
-        file: "https://raw.githubusercontent.com/yourusername/portfolio-windows/main/README.md",
-        icon: "🪟",
-        excerpt: "My portfolio website simulating Windows 11's GUI...",
-        link: "https://github.com/yourusername/portfolio-windows"
+        id: "linkedin-automator",
+        title: "LinkedIn Automator",
+        file: "markdown/projects/linkedin-automator.md",
+        icon: "🤖",
+        excerpt: "AI-powered LinkedIn automation assistant with Tkinter GUI, Chrome sessions, and smart delays",
+        link: "https://github.com/tanveer744/linkedin-automator"
       },
       {
-        id: "project-2",
-        title: "Your Project",
-        file: "markdown/projects/project-2.md",
-        icon: "🚀",
-        excerpt: "A cool project that does amazing things...",
-        link: "https://github.com/yourusername/your-project"
+        id: "query-document",
+        title: "HackRx Query System",
+        file: "markdown/projects/query-document.md",
+        icon: "🧠",
+        excerpt: "Intelligent document processing platform using FAISS, Azure OCR, and Gemini AI for policy Q&A",
+        link: "https://github.com/tanveer744"
       },
       {
-        id: "project-3",
-        title: "Another Project",
-        file: "markdown/projects/project-3.md",
-        icon: "⚡",
-        excerpt: "Another awesome project...",
-        link: "https://github.com/yourusername/another-project"
+        id: "road-rage",
+        title: "Road Rage Detection",
+        file: "markdown/projects/road-rage.md",
+        icon: "🚗",
+        excerpt: "Real-time aggressive driving detection using 3D CNN, transfer learning, and computer vision",
+        link: "https://github.com/tanveer744"
       }
     ]
   }

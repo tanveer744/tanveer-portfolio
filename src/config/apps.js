@@ -7,7 +7,7 @@ export const apps = [
     desktop: true,
     width: 1100,
     height: 700,
-    show: true, // Show on startup like Bear in macOS
+    show: false, // Don't show on startup
   },
   {
     id: 'edge',
