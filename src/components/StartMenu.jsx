@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { FiSearch, FiPower, FiUser } from 'react-icons/fi'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import { startMenuProjects } from '@/config/wallpapers'
 
 export default function StartMenu() {
   const [searchQuery, setSearchQuery] = useState('')
-  const { addWindow, setShowStartMenu, user } = useStore()
+  const { addWindow, setShowStartMenu, user, powerOff } = useStore()
 
   const handleAppClick = (app) => {
     // If it's an external link (like GitHub), open it
@@ -58,9 +59,7 @@ export default function StartMenu() {
               className="w-full px-4 py-3 pl-10 rounded-win-sm bg-white/50 dark:bg-black/30 border border-gray-300/50 dark:border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-win-accent focus:border-transparent transition-all"
               autoFocus
             />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-              🔍
-            </span>
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
           </div>
         </div>
 
@@ -169,8 +168,8 @@ export default function StartMenu() {
         <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between bg-white/20 dark:bg-black/20">
           {/* User Profile */}
           <button className="flex items-center gap-3 px-3 py-2 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 transition-all">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-lg">
-              {user.avatar}
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+              <FiUser className="text-gray-700" size={18} />
             </div>
             <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
               {user.name}
@@ -179,10 +178,11 @@ export default function StartMenu() {
 
           {/* Power Button */}
           <button
+            onClick={powerOff}
             className="w-10 h-10 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/30 dark:active:bg-white/5 transition-all flex items-center justify-center text-gray-800 dark:text-gray-200"
             title="Power"
           >
-            ⏻
+            <FiPower size={20} />
           </button>
         </div>
       </div>

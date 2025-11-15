@@ -1,11 +1,11 @@
-import { useState } from 'react'
 import Boot from './pages/Boot'
 import Lock from './pages/Lock'
 import Login from './pages/Login'
 import Desktop from './pages/Desktop'
+import { useStore } from '@/stores'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('boot')
+  const { currentPage, setCurrentPage } = useStore()
 
   const handleBootComplete = () => {
     setCurrentPage('lock')

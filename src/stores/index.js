@@ -41,23 +41,10 @@ export const useStore = create((set) => ({
   // Start Menu
   showStartMenu: false,
   toggleStartMenu: () => set((state) => ({ 
-    showStartMenu: !state.showStartMenu,
-    showSearch: false // Close search when opening start menu
+    showStartMenu: !state.showStartMenu
   })),
   setShowStartMenu: (show) => set({ 
-    showStartMenu: show,
-    showSearch: !show && false // Close search when toggling start menu
-  }),
-  
-  // Search
-  showSearch: false,
-  toggleSearch: () => set((state) => ({ 
-    showSearch: !state.showSearch,
-    showStartMenu: false // Close start menu when opening search
-  })),
-  setShowSearch: (show) => set({ 
-    showSearch: show,
-    showStartMenu: show ? false : state.showStartMenu // Close start menu when opening search
+    showStartMenu: show
   }),
   
   // User info
@@ -66,4 +53,28 @@ export const useStore = create((set) => ({
     avatar: '👤',
   },
   setUser: (user) => set({ user }),
+  
+  // Desktop icon positions
+  iconPositions: {},
+  setIconPosition: (id, position) => set((state) => ({
+    iconPositions: {
+      ...state.iconPositions,
+      [id]: position
+    }
+  })),
+  resetIconPositions: () => set({ iconPositions: {} }),
+  
+  // Page navigation
+  currentPage: 'boot',
+  setCurrentPage: (page) => set({ currentPage: page }),
+  powerOff: () => {
+    // Close all windows and start menu when powering off
+    set({ 
+      windows: [],
+      activeWindow: null,
+      showStartMenu: false,
+      showSearch: false,
+      currentPage: 'boot'
+    })
+  },
 }))

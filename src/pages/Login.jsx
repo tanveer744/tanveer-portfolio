@@ -54,7 +54,7 @@ export default function Login({ onLogin }) {
             fontSize: '24px'
           }}
         >
-          USER
+          Shaik Tanveer
         </h2>
 
         {/* PIN Input container */}

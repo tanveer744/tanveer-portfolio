@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
-import WindowsSearch from '../WindowsSearch'
+import WindowsSearch, { searchableItems } from '../WindowsSearch'
 import { 
   IoSearchOutline,
   IoWifiSharp,
@@ -16,9 +16,6 @@ export default function Taskbar() {
   const { 
     showStartMenu, 
     toggleStartMenu, 
-    showSearch,
-    toggleSearch,
-    setShowSearch,
     windows, 
     addWindow, 
     setActiveWindow, 
@@ -27,6 +24,9 @@ export default function Taskbar() {
     activeWindow 
   } = useStore()
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const searchInputRef = useRef(null)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,6 +34,77 @@ export default function Taskbar() {
     }, 1000)
     return () => clearInterval(timer)
   }, [])
+
+  // Filter search items based on query
+  const filteredItems = searchQuery
+    ? searchableItems.filter(item => {
+        const query = searchQuery.toLowerCase()
+        return (
+          item.title.toLowerCase().includes(query) ||
+          (item.description && item.description.toLowerCase().includes(query)) ||
+          (item.category && item.category.toLowerCase().includes(query))
+        )
+      })
+    : []
+
+  // Handle item click from search results
+  const handleSearchItemClick = (item) => {
+    // Handle external URLs (social media, projects)
+    if (item.url) {
+      window.open(item.url, '_blank')
+      setSearchQuery('')
+      setShowSearchResults(false)
+      return
+    }
+
+    // Handle special actions (documents, settings)
+    if (item.action) {
+      if (item.action === 'about-me' || item.action === 'about-site') {
+        const newWindow = {
+          id: `notepad-${Date.now()}`,
+          appId: 'notepad',
+          title: 'Notepad',
+          icon: '/img/icons/notepad.png',
+          width: 1100,
+          height: 700,
+          x: 100,
+          y: 50,
+          minimized: false,
+          maximized: false,
+          data: { file: item.action }
+        }
+        addWindow(newWindow)
+      }
+      setSearchQuery('')
+      setShowSearchResults(false)
+      return
+    }
+
+    // Handle apps that open in external links
+    if (item.link) {
+      window.open(item.link, '_blank')
+      setSearchQuery('')
+      setShowSearchResults(false)
+      return
+    }
+
+    // Handle desktop apps
+    const newWindow = {
+      id: `${item.id}-${Date.now()}`,
+      appId: item.id,
+      title: item.title,
+      icon: item.icon,
+      width: item.width || 800,
+      height: item.height || 600,
+      x: 100,
+      y: 50,
+      minimized: false,
+      maximized: false,
+    }
+    addWindow(newWindow)
+    setSearchQuery('')
+    setShowSearchResults(false)
+  }
 
   const handleAppClick = (app) => {
     // If it's an external link, open it
@@ -117,38 +188,29 @@ export default function Taskbar() {
             </div>
           </button>
 
-          {/* Search Box */}
+          {/* Search Box with Input */}
           <div 
-            onClick={toggleSearch}
-            className={`h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 cursor-text border ${
-              showSearch ? 'border-white/20' : 'border-white/5 hover:border-white/10'
+            className={`h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 border ${
+              showSearchResults ? 'border-white/20 bg-white/15' : 'border-white/5 hover:border-white/10'
             }`}
           >
             <IoSearchOutline className="w-4 h-4 text-white/60" />
-            <span className="text-sm font-normal text-white/70 font-['Segoe_UI'] select-none">
-              Type here to search...
-            </span>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setShowSearchResults(true)
+              }}
+              onFocus={() => setShowSearchResults(true)}
+              placeholder="Type here to search..."
+              className="flex-1 bg-transparent text-sm text-white placeholder-white/70 font-['Segoe_UI'] focus:outline-none"
+            />
           </div>
-          
-          {/* Search Overlay */}
-          {showSearch && (
-            <div 
-              className="fixed inset-0 bg-black/50 z-40"
-              onClick={() => setShowSearch(false)}
-            >
-              <div 
-                className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[600px] max-w-[90vw] animate-slide-up"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <WindowsSearch />
-              </div>
-            </div>
-          )}
 
           {/* App Icons */}
           <div className="flex items-center gap-1 ml-2">
-
-          {/* App Icons */}
           {pinnedApps.map((app) => {
             const appWindows = windows.filter(w => w.appId === app.id)
             const isRunning = appWindows.length > 0
@@ -230,6 +292,23 @@ export default function Taskbar() {
           </button>
         </div>
       </div>
+      
+      {/* Search Results Overlay */}
+      {showSearchResults && searchQuery && (
+        <>
+          <div 
+            className="fixed inset-0 z-[60]"
+            onClick={() => {
+              setShowSearchResults(false)
+              setSearchQuery('')
+            }}
+          />
+          <WindowsSearch 
+            filteredItems={filteredItems}
+            onItemClick={handleSearchItemClick}
+          />
+        </>
+      )}
     </div>
   )
 }

@@ -55,7 +55,10 @@ export default function Desktop() {
         </div>
       </div>
 
-      {/* Start Menu Overlay */}
+      {/* Taskbar - includes Start Menu and Search overlays */}
+      <Taskbar />
+      
+      {/* Start Menu */}
       {showStartMenu && (
         <>
           <div 
@@ -65,9 +68,6 @@ export default function Desktop() {
           <StartMenu />
         </>
       )}
-
-      {/* Taskbar */}
-      <Taskbar />
     </div>
   )
 }

@@ -1,12 +1,33 @@
-import { useState, useEffect, useRef } from 'react'
-import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
+import { startMenuProjects } from '@/config/wallpapers'
+import { 
+  IoDocumentTextOutline, 
+  IoGlobeOutline,
+  IoCodeSlashOutline,
+  IoAppsOutline,
+  IoSettingsOutline,
+  IoPersonOutline,
+  IoArrowForwardOutline
+} from 'react-icons/io5'
 
-// Define searchable items including social media and projects
-const searchableItems = [
+// Define searchable items including apps, social media, and projects
+export const searchableItems = [
+  // Apps
   ...apps.map(app => ({
     type: 'app',
+    category: app.link ? 'Web' : 'Apps',
+    description: app.link ? 'Open external link' : 'Open application',
     ...app
+  })),
+  // Projects from config
+  ...startMenuProjects.map(project => ({
+    type: 'project',
+    category: 'Projects',
+    id: project.id,
+    title: project.title,
+    description: project.description,
+    icon: project.img,
+    url: project.link
   })),
   // Social Media
   {
@@ -36,164 +57,106 @@ const searchableItems = [
     url: 'https://www.instagram.com/shaiktanveer_74?igsh=NzZ4NWl1NHI4NXZ2',
     category: 'Social Media'
   },
-  // Add more projects here
+  // Additional quick access items
   {
-    id: 'portfolio-project',
-    type: 'project',
-    title: 'Portfolio Website',
-    description: 'My personal portfolio website',
-    icon: '/img/icons/vscode.png', // You can add a portfolio icon
-    url: 'https://yourportfolio.com', // Update with your portfolio URL
-    category: 'Projects'
+    id: 'settings',
+    type: 'system',
+    title: 'Settings',
+    description: 'Adjust your system settings',
+    icon: <IoSettingsOutline className="w-6 h-6" />,
+    category: 'System',
+    action: 'settings'
+  },
+  {
+    id: 'about',
+    type: 'document',
+    title: 'About Me',
+    description: 'Learn more about my background and experience',
+    icon: <IoPersonOutline className="w-6 h-6" />,
+    category: 'Documents',
+    action: 'about-me'
+  },
+  {
+    id: 'about-site',
+    type: 'document',
+    title: 'About This Site',
+    description: 'Information about this portfolio website',
+    icon: <IoCodeSlashOutline className="w-6 h-6" />,
+    category: 'Documents',
+    action: 'about-site'
   }
 ]
 
-export default function WindowsSearch() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const { addWindow, setShowSearch } = useStore()
-  const inputRef = useRef(null)
-
-  // Auto-focus the input when the component mounts
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus()
+// Component to display search results dropdown
+export default function WindowsSearch({ filteredItems, onItemClick }) {
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case 'Apps': return <IoAppsOutline className="w-4 h-4" />
+      case 'Projects': return <IoCodeSlashOutline className="w-4 h-4" />
+      case 'Social Media': return <IoGlobeOutline className="w-4 h-4" />
+      case 'Documents': return <IoDocumentTextOutline className="w-4 h-4" />
+      case 'System': return <IoSettingsOutline className="w-4 h-4" />
+      case 'Web': return <IoGlobeOutline className="w-4 h-4" />
+      default: return <IoPersonOutline className="w-4 h-4" />
     }
-  }, [])
-
-  const handleAppClick = (app) => {
-    if (app.url) {
-      window.open(app.url, '_blank')
-    } else {
-      const newWindow = {
-        id: `${app.id}-${Date.now()}`,
-        appId: app.id,
-        title: app.title,
-        icon: app.icon,
-        width: app.width || 800,
-        height: app.height || 600,
-        x: 100,
-        y: 50,
-        minimized: false,
-        maximized: false,
-      }
-      addWindow(newWindow)
-    }
-    setShowSearch(false)
   }
 
-  const filteredItems = searchQuery
-    ? searchableItems.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : []
+  if (filteredItems.length === 0) {
+    return null
+  }
 
   return (
     <div 
-      className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[600px] animate-slide-up"
+      className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] w-[600px] max-w-[90vw] animate-slide-up"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Search Container */}
-      <div className="rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
-        {/* Search Input */}
+      <div className="rounded-win acrylic border border-white/20 shadow-win overflow-hidden max-h-[500px] overflow-y-auto">
         <div className="p-4">
-          <div className="relative">
-            <input
-              ref={inputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Type here to search"
-              className="w-full px-4 py-4 pl-12 text-lg rounded-win-sm bg-white/80 dark:bg-gray-800/80 border border-gray-300/50 dark:border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-win-accent focus:border-transparent transition-all"
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') {
-                  setShowSearch(false)
-                }
-              }}
-            />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">
-              🔍
-            </span>
-          </div>
+          {['Apps', 'Projects', 'Social Media', 'Documents', 'System', 'Web'].map(category => {
+            const categoryItems = filteredItems.filter(item => item.category === category)
+            
+            if (categoryItems.length === 0) return null
+            
+            return (
+              <div key={category} className="mb-4 last:mb-0">
+                <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 px-2">
+                  {getCategoryIcon(category)}
+                  <span>{category.toUpperCase()}</span>
+                </div>
+                <div className="space-y-1">
+                  {categoryItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => onItemClick(item)}
+                      className="w-full flex items-center gap-4 p-3 rounded-win-sm hover:bg-white/70 dark:hover:bg-white/10 active:bg-white/50 dark:active:bg-white/5 transition-all group"
+                    >
+                      <div className="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        {item.icon?.startsWith?.('/') ? (
+                          <img src={item.icon} alt={item.title} className="w-8 h-8 object-contain" />
+                        ) : typeof item.icon === 'string' ? (
+                          <div className="text-2xl">{item.icon}</div>
+                        ) : (
+                          <div className="text-gray-600 dark:text-gray-300">{item.icon}</div>
+                        )}
+                      </div>
+                      <div className="flex-1 text-left">
+                        <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          {item.title}
+                        </div>
+                        {item.description && (
+                          <div className="text-xs text-gray-500 line-clamp-1">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                      <IoArrowForwardOutline className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
         </div>
-
-        {/* Search Results */}
-        {searchQuery && (
-          <div className="px-4 pb-4">
-            {filteredItems.length > 0 ? (
-              <div className="space-y-4">
-                {['Social Media', 'Projects', 'Apps'].map(category => {
-                  const categoryItems = filteredItems.filter(item => 
-                    item.category === category || 
-                    (category === 'Apps' && !item.category)
-                  )
-                  
-                  if (categoryItems.length === 0) return null
-                  
-                  return (
-                    <div key={category}>
-                      <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 px-2">
-                        {category.toUpperCase()}
-                      </div>
-                      <div className="space-y-1">
-                        {categoryItems.map((item) => (
-                          <button
-                            key={item.id}
-                            onClick={() => item.url ? window.open(item.url, '_blank') : handleAppClick(item)}
-                            className="w-full flex items-center gap-4 p-3 rounded-win-sm hover:bg-white/70 dark:hover:bg-white/10 active:bg-white/50 dark:active:bg-white/5 transition-all group"
-                          >
-                            <div className="w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform">
-                              {item.icon?.startsWith('/') ? (
-                                <img src={item.icon} alt={item.title} className="w-6 h-6" />
-                              ) : (
-                                <div className="text-2xl">{item.icon}</div>
-                              )}
-                            </div>
-                            <div className="flex-1 text-left">
-                              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                                {item.title}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {item.description || item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <div className="text-4xl mb-2">🔍</div>
-                <div className="text-sm">No results found</div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Quick Actions when no search query */}
-        {!searchQuery && (
-          <div className="px-4 pb-4">
-            <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 px-2">
-              QUICK SEARCHES
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {['Documents', 'Photos', 'Settings', 'Downloads'].map((item) => (
-                <button
-                  key={item}
-                  className="flex items-center gap-3 p-3 rounded-win-sm hover:bg-white/70 dark:hover:bg-white/10 transition-all"
-                >
-                  <span className="text-2xl">📁</span>
-                  <span className="text-sm text-gray-800 dark:text-gray-200">
-                    {item}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
