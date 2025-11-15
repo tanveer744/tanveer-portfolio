@@ -8,7 +8,8 @@ import {
   IoNotificationsOutline,
   IoBatteryFull,
   IoChevronUp,
-  IoLanguageSharp
+  IoLanguageSharp,
+  IoPartlySunnyOutline
 } from 'react-icons/io5'
 
 export default function Taskbar() {
@@ -66,39 +67,52 @@ export default function Taskbar() {
   const pinnedApps = apps.filter(app => app.desktop || app.link) // Show desktop apps and links
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-12 z-50">
+    <div className="fixed bottom-0 left-0 right-0 h-16 z-50">
       {/* Taskbar Background with Windows 11 Acrylic Effect */}
       <div className="absolute inset-0 bg-gray-900/70 backdrop-blur-2xl border-t border-white/10" />
       
       {/* Taskbar Content */}
       <div className="relative h-full flex items-center justify-between px-3">
         
-        {/* Left Section - Search Bar */}
-        <div className="flex items-center gap-2">
-          {/* Search Box */}
-          <div className="h-8 w-64 bg-white/10 hover:bg-white/15 transition-all rounded-md flex items-center px-3 gap-2 cursor-text">
-            <IoSearchOutline className="w-4 h-4 text-white/70" />
-            <span className="text-sm text-white/70 select-none">Search</span>
-          </div>
-        </div>
+        {/* Left Section - Weather, Start Button, and Search */}
+        <div className="flex items-center gap-0">
+          {/* Weather Widget */}
+          <a 
+            href="https://www.google.com/search?q=weather" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="h-10 px-3 rounded-md bg-white/5 hover:bg-white/10 transition-all duration-200 flex items-center gap-2 cursor-pointer group shadow-sm hover:shadow-md hover:shadow-black/10"
+            title="Check weather"
+          >
+            <IoPartlySunnyOutline className="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform" />
+            <span className="text-white/90 font-medium font-['Segoe_UI'] text-sm">25°C</span>
+          </a>
 
-        {/* Center Section - Start Button + App Icons */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
           {/* Start Button */}
           <button
             onClick={toggleStartMenu}
-            className={`h-10 w-10 rounded-md hover:bg-white/10 active:bg-white/5 transition-all flex items-center justify-center ${
-              showStartMenu ? 'bg-white/15' : ''
+            className={`h-12 w-12 flex items-center justify-center transition-all duration-200 hover:bg-white/10 hover:scale-[1.03] ${
+              showStartMenu ? 'bg-white/10' : ''
             }`}
             title="Start"
           >
             <div className="grid grid-cols-2 gap-[2px] w-5 h-5">
               <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-[1px]" />
-              <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-[1px]" />
-              <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-[1px]" />
-              <div className="bg-gradient-to-br from-red-400 to-red-500 rounded-[1px]" />
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-[1px]" />
+              <div className="bg-gradient-to-br from-blue-300 to-blue-400 rounded-[1px]" />
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-[1px]" />
             </div>
           </button>
+
+          {/* Search Box */}
+          <div className="h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 cursor-text ml-2 border border-white/5 hover:border-white/10">
+            <IoSearchOutline className="w-4 h-4 text-white/60" />
+            <span className="text-sm font-normal text-white/70 font-['Segoe_UI'] select-none">Search</span>
+          </div>
+        </div>
+
+        {/* Center Section - App Icons */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
 
           {/* App Icons */}
           {pinnedApps.map((app) => {
@@ -111,12 +125,12 @@ export default function Taskbar() {
               <div key={app.id} className="relative flex flex-col items-center">
                 <button
                   onClick={() => handleAppClick(app)}
-                  className={`h-10 w-10 rounded-md hover:bg-white/10 active:bg-white/5 transition-all flex items-center justify-center ${
+                  className={`h-12 w-12 rounded-md hover:bg-white/10 active:bg-white/5 transition-all flex items-center justify-center ${
                     isActive ? 'bg-white/15' : ''
                   }`}
                   title={app.title}
                 >
-                  <img src={app.icon} alt={app.title} className="w-5 h-5" />
+                  <img src={app.icon} alt={app.title} className="w-6 h-6" />
                 </button>
                 {/* Running Indicator Dot */}
                 {isRunning && (
@@ -134,43 +148,43 @@ export default function Taskbar() {
         {/* Right Section - System Tray */}
         <div className="flex items-center gap-1">
           {/* System Tray Icons Group */}
-          <div className="flex items-center h-8 px-2 rounded-md hover:bg-white/10 transition-all gap-3">
+          <div className="flex items-center h-10 px-3 rounded-md hover:bg-white/10 transition-all gap-3">
             {/* Caret Up */}
             <button className="text-white/80 hover:text-white transition-colors" title="Show hidden icons">
-              <IoChevronUp className="w-3.5 h-3.5" />
+              <IoChevronUp className="w-4 h-4" />
             </button>
             
             {/* Divider */}
-            <div className="w-px h-4 bg-white/10" />
+            <div className="w-px h-5 bg-white/10" />
             
             {/* WiFi */}
             <button className="text-white/80 hover:text-white transition-colors" title="Network">
-              <IoWifiSharp className="w-4 h-4" />
+              <IoWifiSharp className="w-5 h-5" />
             </button>
             
             {/* Volume */}
             <button className="text-white/80 hover:text-white transition-colors" title="Volume">
-              <IoVolumeHigh className="w-4 h-4" />
+              <IoVolumeHigh className="w-5 h-5" />
             </button>
             
             {/* Battery */}
             <button className="text-white/80 hover:text-white transition-colors" title="Battery">
-              <IoBatteryFull className="w-5 h-5" />
+              <IoBatteryFull className="w-6 h-6" />
             </button>
           </div>
 
           {/* Language Indicator */}
           <button
-            className="h-8 px-2 rounded-md hover:bg-white/10 transition-all flex items-center gap-1"
+            className="h-10 px-3 rounded-md hover:bg-white/10 transition-all flex items-center gap-2"
             title="Language preferences"
           >
-            <IoLanguageSharp className="w-3.5 h-3.5 text-white/80" />
+            <IoLanguageSharp className="w-4 h-4 text-white/80" />
             <span className="text-xs text-white/80 font-medium">ENG</span>
           </button>
 
           {/* Date & Time */}
           <button
-            className="h-9 px-2.5 rounded-md hover:bg-white/10 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[70px]"
+            className="h-11 px-3 rounded-md hover:bg-white/10 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[80px]"
             title="Date and Time"
           >
             <div className="text-[11px] font-medium">
@@ -183,10 +197,10 @@ export default function Taskbar() {
 
           {/* Notification Center */}
           <button
-            className="h-8 w-8 rounded-md hover:bg-white/10 transition-all flex items-center justify-center"
+            className="h-10 w-10 rounded-md hover:bg-white/10 transition-all flex items-center justify-center"
             title="Notification Center"
           >
-            <IoNotificationsOutline className="w-4 h-4 text-white/80" />
+            <IoNotificationsOutline className="w-5 h-5 text-white/80" />
           </button>
         </div>
       </div>

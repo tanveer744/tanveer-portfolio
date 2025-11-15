@@ -16,7 +16,7 @@ export default function Lock({ onClick }) {
       className="w-full h-full relative cursor-pointer"
       onClick={onClick}
       style={{
-        backgroundImage: 'url(/img/wallpapers/windows11-light.svg)',
+        backgroundImage: 'url(/img/wallpapers/windows-wallpaper2.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}

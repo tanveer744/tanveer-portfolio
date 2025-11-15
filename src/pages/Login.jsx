@@ -26,7 +26,7 @@ export default function Login({ onLogin }) {
     <div 
       className="w-full h-full relative"
       style={{
-        backgroundImage: 'url(/img/wallpapers/windows11-light.svg)',
+        backgroundImage: 'url(/img/wallpapers/windows-wallpaper2.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backdropFilter: 'blur(40px)',
