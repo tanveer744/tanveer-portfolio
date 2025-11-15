@@ -1,6 +1,6 @@
 export const wallpapers = {
-  light: '/img/wallpapers/windows-wallpaper1.png',
-  dark: '/img/wallpapers/windows-wallpaper1.png', // Using same for now
+  light: '/img/wallpapers/windows-wallpaper2.png',
+  dark: '/img/wallpapers/windows-wallpaper2.png', // Using same for now
 }
 
 // Projects to show in Start Menu (like Launchpad in macOS)

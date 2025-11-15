@@ -114,11 +114,11 @@ function DraggableIcon({ item, position, onPositionChange, onClick }) {
     <div
       ref={iconRef}
       onMouseDown={handleMouseDown}
-      className="absolute flex flex-col items-center w-20 p-2 rounded hover:bg-white/10 transition-colors duration-200 pointer-events-auto cursor-pointer select-none"
+      className="absolute flex flex-col items-center w-20 p-2 rounded hover:bg-white/10 transition-colors duration-200 pointer-events-auto select-none"
       style={{
         left: `${currentPos.x}px`,
         top: `${currentPos.y}px`,
-        cursor: isDragging ? 'grabbing' : 'grab'
+        cursor: isDragging ? 'grabbing' : 'pointer'
       }}
       title={item.title}
     >
