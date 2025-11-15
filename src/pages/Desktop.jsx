@@ -3,6 +3,7 @@ import { useStore } from '@/stores'
 import Taskbar from '@/components/dock/Taskbar'
 import StartMenu from '@/components/StartMenu'
 import AppWindow from '@/components/AppWindow'
+import DesktopIcons from '@/components/desktop/DesktopIcons'
 import { wallpapers } from '@/config/wallpapers'
 import { apps } from '@/config/apps'
 
@@ -44,8 +45,9 @@ export default function Desktop() {
 
       {/* Desktop Content Area */}
       <div className="relative w-full h-full pb-12">
-        {/* Desktop Icons Area (Future: can add desktop shortcuts here) */}
+        {/* Desktop Icons and Windows Area */}
         <div className="w-full h-full p-4">
+          <DesktopIcons />
           {/* Render all open windows */}
           {windows.map((window) => (
             <AppWindow key={window.id} window={window} />

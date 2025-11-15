@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
+import WindowsSearch from '../WindowsSearch'
 import { 
   IoSearchOutline,
   IoWifiSharp,
@@ -12,7 +13,19 @@ import {
 } from 'react-icons/io5'
 
 export default function Taskbar() {
-  const { showStartMenu, toggleStartMenu, windows, addWindow, setActiveWindow, restoreWindow, minimizeWindow, activeWindow } = useStore()
+  const { 
+    showStartMenu, 
+    toggleStartMenu, 
+    showSearch,
+    toggleSearch,
+    setShowSearch,
+    windows, 
+    addWindow, 
+    setActiveWindow, 
+    restoreWindow, 
+    minimizeWindow, 
+    activeWindow 
+  } = useStore()
   const [currentTime, setCurrentTime] = useState(new Date())
 
   useEffect(() => {
@@ -105,10 +118,32 @@ export default function Taskbar() {
           </button>
 
           {/* Search Box */}
-          <div className="h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 cursor-text border border-white/5 hover:border-white/10">
+          <div 
+            onClick={toggleSearch}
+            className={`h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 cursor-text border ${
+              showSearch ? 'border-white/20' : 'border-white/5 hover:border-white/10'
+            }`}
+          >
             <IoSearchOutline className="w-4 h-4 text-white/60" />
-            <span className="text-sm font-normal text-white/70 font-['Segoe_UI'] select-none">Search</span>
+            <span className="text-sm font-normal text-white/70 font-['Segoe_UI'] select-none">
+              Type here to search...
+            </span>
           </div>
+          
+          {/* Search Overlay */}
+          {showSearch && (
+            <div 
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setShowSearch(false)}
+            >
+              <div 
+                className="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[600px] max-w-[90vw] animate-slide-up"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <WindowsSearch />
+              </div>
+            </div>
+          )}
 
           {/* App Icons */}
           <div className="flex items-center gap-1 ml-2">

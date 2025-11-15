@@ -40,8 +40,25 @@ export const useStore = create((set) => ({
   
   // Start Menu
   showStartMenu: false,
-  toggleStartMenu: () => set((state) => ({ showStartMenu: !state.showStartMenu })),
-  setShowStartMenu: (show) => set({ showStartMenu: show }),
+  toggleStartMenu: () => set((state) => ({ 
+    showStartMenu: !state.showStartMenu,
+    showSearch: false // Close search when opening start menu
+  })),
+  setShowStartMenu: (show) => set({ 
+    showStartMenu: show,
+    showSearch: !show && false // Close search when toggling start menu
+  }),
+  
+  // Search
+  showSearch: false,
+  toggleSearch: () => set((state) => ({ 
+    showSearch: !state.showSearch,
+    showStartMenu: false // Close start menu when opening search
+  })),
+  setShowSearch: (show) => set({ 
+    showSearch: show,
+    showStartMenu: show ? false : state.showStartMenu // Close start menu when opening search
+  }),
   
   // User info
   user: {
