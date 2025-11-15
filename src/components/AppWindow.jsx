@@ -117,6 +117,7 @@ export default function AppWindow({ window }) {
 
 import Notepad from './apps/Notepad'
 import Terminal from './apps/Terminal'
+import Camera from './apps/Camera'
 
 // Placeholder content for different apps
 function AppContent({ appId }) {
@@ -125,6 +126,7 @@ function AppContent({ appId }) {
     edge: <BrowserContent />,
     vscode: <VSCodeContent />,
     terminal: <Terminal />,
+    camera: <Camera />,
     explorer: <ExplorerContent />,
     settings: <SettingsContent />,
   }

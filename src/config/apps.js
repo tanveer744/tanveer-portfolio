@@ -37,6 +37,15 @@ export const apps = [
     show: false,
   },
   {
+    id: 'camera',
+    title: 'Camera',
+    icon: '/img/icons/camera.png',
+    desktop: true,
+    width: 1200,
+    height: 800,
+    show: false,
+  },
+  {
     id: 'github',
     title: 'GitHub',
     icon: '/img/icons/github.png',
