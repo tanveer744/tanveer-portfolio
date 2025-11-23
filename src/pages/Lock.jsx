@@ -56,6 +56,18 @@ export default function Lock({ onClick }) {
         >
           {formatDate(currentTime)}
         </div>
+        <div 
+          className="text-white/80 font-light mt-2"
+          style={{
+            fontFamily: 'Segoe UI, sans-serif',
+            fontSize: '14px',
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+            animation: 'fadeIn 0.5s ease-out 0.7s both',
+            opacity: 0
+          }}
+        >
+          Press F11 for fullscreen experience
+        </div>
       </div>
 
       {/* Bottom right: System icons */}

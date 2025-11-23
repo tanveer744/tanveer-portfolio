@@ -1,17 +1,73 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+const TypingEffect = ({ text, speed = 50, delay = 100 }) => {
+  const [displayText, setDisplayText] = useState('')
+  
+  useEffect(() => {
+    let currentIndex = 0
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (currentIndex <= text.length) {
+          setDisplayText(text.substring(0, currentIndex))
+          currentIndex++
+        } else {
+          clearInterval(interval)
+        }
+      }, speed)
+      
+      return () => clearInterval(interval)
+    }, delay)
+    
+    return () => clearTimeout(timeout)
+  }, [text, speed, delay])
+  
+  return <span className='inline-block'>{displayText}</span>
+}
 
 export default function Login({ onLogin }) {
   const [pin, setPin] = useState('')
   const [shake, setShake] = useState(false)
+  const [attempts, setAttempts] = useState(0)
+  const [hintMessage, setHintMessage] = useState('')
+  const [showHint, setShowHint] = useState(false)
+
+  const hints = [
+    "Hint: Try clicking the ➤ button",
+    "Maybe you don't need a PIN 😉",
+    "Still trying? Just click the arrow! →"
+  ]
 
   const handleSubmit = (e) => {
     e?.preventDefault()
+    
+    // Allow entry with empty PIN or correct PIN
     if (pin.length === 0 || pin === '1234') {
       onLogin()
     } else {
-      // Shake animation for wrong PIN
+      // Wrong PIN entered - trigger easter egg
+      const newAttempts = attempts + 1
+      setAttempts(newAttempts)
+      
+      // Shake animation
       setShake(true)
       setTimeout(() => setShake(false), 500)
+      
+      // Show hint message based on attempt number
+      if (newAttempts <= hints.length) {
+        setHintMessage(hints[newAttempts - 1])
+        setShowHint(true)
+        
+        // Hide hint after 3 seconds
+        setTimeout(() => setShowHint(false), 3000)
+      }
+      
+      // Auto-continue after 3 attempts
+      if (newAttempts >= 3) {
+        setTimeout(() => {
+          onLogin()
+        }, 2000)
+      }
+      
       setPin('')
     }
   }
@@ -34,6 +90,19 @@ export default function Login({ onLogin }) {
     >
       {/* Blur overlay */}
       <div className="absolute inset-0 backdrop-blur-3xl bg-black/20" />
+      
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 0.9;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
       {/* Login Box - Center */}
       <div className="relative z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-5">
@@ -56,6 +125,31 @@ export default function Login({ onLogin }) {
         >
           Shaik Tanveer
         </h2>
+        
+        {/* Welcome Message with typing effect */}
+        <div 
+          className="text-white/90 text-center mt-1 mb-2 min-h-[48px]"
+          style={{
+            fontFamily: 'Segoe UI, sans-serif',
+            fontSize: '16px',
+            lineHeight: '1.5',
+            maxWidth: '300px',
+            opacity: 0,
+            animation: 'fadeInUp 0.5s ease-out 0.2s forwards'
+          }}
+        >
+          <TypingEffect 
+            text="Welcome to Shaik Tanveer Portfolio" 
+            speed={30} 
+            delay={100}
+          />
+          <br />
+          <TypingEffect 
+            text="Explore my journey as a developer 🚀" 
+            speed={30} 
+            delay={1000}
+          />
+        </div>
 
         {/* PIN Input container */}
         <div className="flex flex-col items-center gap-3 mt-2">
@@ -106,6 +200,36 @@ export default function Login({ onLogin }) {
               </svg>
             </button>
           </div>
+
+          {/* Hint Message */}
+          {showHint && (
+            <div 
+              className="text-yellow-300 text-center mt-2 animate-fade-in px-4 py-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20"
+              style={{ 
+                fontFamily: 'Segoe UI, sans-serif',
+                fontSize: '14px',
+                minHeight: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {hintMessage}
+            </div>
+          )}
+
+          {/* Auto-continue message after 3 attempts */}
+          {attempts >= 3 && (
+            <div 
+              className="text-green-300 text-center mt-2 animate-fade-in px-4 py-2 bg-green-500/10 rounded-lg border border-green-500/20"
+              style={{ 
+                fontFamily: 'Segoe UI, sans-serif',
+                fontSize: '14px'
+              }}
+            >
+              ✨ Fine, I&apos;ll let you in anyway... Welcome! 🎉
+            </div>
+          )}
 
           {/* Sign-in options */}
           <button 
@@ -163,6 +287,19 @@ export default function Login({ onLogin }) {
         }
         .animate-shake {
           animation: shake 0.3s ease-in-out;
+        }
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.4s ease-out;
         }
       `}</style>
     </div>
