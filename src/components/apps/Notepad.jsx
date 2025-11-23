@@ -2,7 +2,49 @@ import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
+import { FaUser, FaFolder, FaGithub, FaGlobe, FaRobot, FaBrain, FaCarCrash } from 'react-icons/fa'
 import notepadData from '@/config/notepad'
+
+// Add keyframes and tooltip styles
+const style = document.createElement('style')
+style.textContent = `
+  @keyframes dropdownFadeIn {
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+    }
+  }
+  
+  [data-tooltip] {
+    position: relative;
+  }
+  
+  [data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px;
+    padding: 4px 8px;
+    background: #1f2937;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, margin-left 0.2s;
+  }
+  
+  [data-tooltip]:hover::after {
+    opacity: 1;
+    margin-left: 12px;
+  }
+`
+document.head.appendChild(style)
 
 export default function Notepad() {
   const [currentFile, setCurrentFile] = useState('about-me')
@@ -11,12 +53,27 @@ export default function Notepad() {
   const [showFileMenu, setShowFileMenu] = useState(false)
   const [fontSize, setFontSize] = useState(14)
   const [wordWrap, setWordWrap] = useState(true)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
-  // Flatten all notes from all sections
+  // Function to get appropriate icon based on note ID
+  const getNoteIcon = (noteId) => {
+    const iconMap = {
+      'about-me': <FaUser className="text-blue-500" />,
+      'github-stats': <FaGithub className="text-gray-700" />,
+      'about-site': <FaGlobe className="text-green-500" />,
+      'linkedin-automator': <FaRobot className="text-purple-500" />,
+      'query-document': <FaBrain className="text-yellow-500" />,
+      'road-rage': <FaCarCrash className="text-red-500" />
+    }
+    return iconMap[noteId] || <FaFolder className="text-gray-400" />
+  }
+
+  // Keep track of all notes for other functionality
   const allNotes = notepadData.flatMap(section => 
     section.notes.map(note => ({
       ...note,
-      section: section.title
+      section: section.title,
+      icon: getNoteIcon(note.id)
     }))
   )
 
@@ -27,6 +84,45 @@ export default function Notepad() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFile])
+
+  // Keyboard shortcuts handler
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Alt + F to toggle File menu
+      if (e.altKey && e.key.toLowerCase() === 'f') {
+        e.preventDefault()
+        setShowFileMenu(prev => !prev)
+        setSelectedIndex(0)
+      }
+      
+      // Esc to close menu
+      if (e.key === 'Escape' && showFileMenu) {
+        e.preventDefault()
+        setShowFileMenu(false)
+      }
+      
+      // Arrow navigation and Enter when menu is open
+      if (showFileMenu) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault()
+          setSelectedIndex(prev => Math.min(prev + 1, allNotes.length - 1))
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault()
+          setSelectedIndex(prev => Math.max(prev - 1, 0))
+        } else if (e.key === 'Enter') {
+          e.preventDefault()
+          const selectedNote = allNotes[selectedIndex]
+          if (selectedNote) {
+            setCurrentFile(selectedNote.id)
+            setShowFileMenu(false)
+          }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showFileMenu, selectedIndex, allNotes])
 
   const loadNote = async (file) => {
     setLoading(true)
@@ -50,33 +146,89 @@ export default function Notepad() {
         {/* File Menu */}
         <div className="relative">
           <button
-            onClick={() => setShowFileMenu(!showFileMenu)}
+            onClick={() => {
+              setShowFileMenu(!showFileMenu)
+              setSelectedIndex(0)
+            }}
             onBlur={() => setTimeout(() => setShowFileMenu(false), 200)}
-            className="px-3 py-1.5 hover:bg-gray-100 rounded transition-colors text-gray-700"
+            className="px-3 py-1.5 hover:bg-gray-100 rounded transition-colors text-gray-700 relative group"
+            title="Alt + F"
           >
-            File
+            <span className="underline decoration-dotted decoration-gray-400">F</span>ile
+            {/* Animated underline on hover */}
+            <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-blue-500 transition-all duration-300 ease-out group-hover:w-3/4 group-hover:left-[12.5%]"></span>
           </button>
           {showFileMenu && (
-            <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
+            <div 
+              className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50 transition-all duration-200 ease-out"
+              style={{
+                opacity: 0,
+                transform: 'scale(0.97) translateY(-5px)',
+                filter: 'blur(3px)',
+                animation: 'dropdownFadeIn 200ms ease-out forwards'
+              }}
+            >
               <div className="py-1">
                 <div className="px-3 py-1.5 text-xs text-gray-500 font-semibold">Open Document</div>
-                {allNotes.map((note) => (
-                  <button
-                    key={note.id}
-                    onClick={() => {
-                      setCurrentFile(note.id)
-                      setShowFileMenu(false)
-                    }}
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors flex items-center gap-2 ${
-                      currentFile === note.id ? 'bg-gray-50' : ''
-                    }`}
-                  >
-                    <span className="text-base">{note.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium text-gray-900">{note.title}</div>
-                      <div className="text-xs text-gray-500">{note.section}</div>
+                {notepadData.map((section) => (
+                  <div key={section.id}>
+                    <div className="px-3 py-1.5 mt-2 text-xs font-medium text-gray-500 flex items-center gap-2 border-b border-gray-100">
+                      {section.id === 'profile' ? (
+                        <FaUser className="text-blue-500" />
+                      ) : (
+                        <FaFolder className="text-yellow-500" />
+                      )}
+                      <span>{section.title}</span>
                     </div>
-                  </button>
+                    {section.notes.map((note) => {
+                      const noteIndex = allNotes.findIndex(n => n.id === note.id)
+                      const isSelected = noteIndex === selectedIndex
+                      return (
+                      <button
+                        key={note.id}
+                        onClick={() => {
+                          setCurrentFile(note.id);
+                          setShowFileMenu(false);
+                        }}
+                        onMouseEnter={() => setSelectedIndex(noteIndex)}
+                        className={`w-full text-left px-4 py-2 transition-all duration-200 flex items-center gap-2 relative overflow-hidden cursor-pointer
+                          ${
+                            currentFile === note.id
+                              ? 'bg-blue-50/50'
+                              : isSelected
+                              ? 'bg-blue-50/70'
+                              : 'hover:bg-gray-50'
+                          }`}
+                        title={note.excerpt || `Open ${note.title}`}
+                        data-tooltip={note.excerpt || `Open ${note.title}`}
+                      >
+                        {/* Blue indicator */}
+                        {currentFile === note.id && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-r-full"></div>
+                        )}
+                        <span
+                          className={`text-base transition-all duration-200 ${
+                            currentFile === note.id 
+                              ? 'scale-110' 
+                              : isSelected || 'group-hover:translate-x-0.5'
+                          }`}
+                        >
+                          {getNoteIcon(note.id)}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div
+                            className={`text-xs ${
+                              currentFile === note.id
+                                ? 'font-bold text-gray-900'
+                                : 'font-medium text-gray-900'
+                            }`}
+                          >
+                            {note.title}
+                          </div>
+                        </div>
+                      </button>
+                    )})}
+                  </div>
                 ))}
               </div>
             </div>
@@ -260,16 +412,20 @@ export default function Notepad() {
       </div>
 
       {/* Status Bar */}
-      <div className="h-7 bg-gray-50 border-t border-gray-200 flex items-center justify-between px-4 text-xs text-gray-600">
-        <div className="flex items-center gap-4">
-          <span>Document: {currentNote?.title || 'Untitled'}</span>
-          <span>|</span>
-          <span>Section: {currentNote?.section || 'General'}</span>
+      <div className="h-7 bg-gray-50 border-t border-gray-200 flex items-center justify-between px-4 select-none" style={{ fontSize: '12px', color: '#6b7280' }}>
+        <div className="flex items-center gap-3">
+          <span className="opacity-70">Press <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Alt + F</kbd> to open File menu</span>
+          <span className="opacity-50">•</span>
+          <span className="opacity-70"><kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Esc</kbd> to close</span>
+          <span className="opacity-50">•</span>
+          <span className="opacity-70"><kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">↑</kbd>/<kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">↓</kbd> to navigate</span>
+          <span className="opacity-50">•</span>
+          <span className="opacity-70"><kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Enter</kbd> to open</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 opacity-70">
           <span>Zoom: {Math.round((fontSize / 14) * 100)}%</span>
-          <span>|</span>
-          <span>Word Wrap: {wordWrap ? 'On' : 'Off'}</span>
+          <span className="opacity-50">|</span>
+          <span>{currentNote?.title || 'Untitled'}</span>
         </div>
       </div>
     </div>
