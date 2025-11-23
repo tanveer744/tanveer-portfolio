@@ -42,15 +42,33 @@ export const useStore = create((set) => ({
   
   addWindow: (window) => set((state) => {
     const newZIndex = state.nextZIndex
+    const workspaceHeight = globalThis.innerHeight - TASKBAR_HEIGHT
+    const workspaceWidth = globalThis.innerWidth
     
     // Get initial dimensions
-    const width = window.width ?? 800
-    const height = window.height ?? 600
+    const requestedWidth = window.width ?? 800
+    const requestedHeight = window.height ?? 600
     const initialX = window.x ?? 100
     const initialY = window.y ?? 100
     
+    // CRITICAL: Clamp height to fit within workspace
+    // If window is taller than workspace, limit it to workspace height minus some padding
+    const maxHeight = Math.max(300, workspaceHeight - 100) // Leave 100px padding for positioning
+    const clampedHeight = Math.min(requestedHeight, maxHeight)
+    const clampedWidth = Math.min(requestedWidth, workspaceWidth - 100)
+    
     // Clamp position to workspace (respecting taskbar)
-    const { x: clampedX, y: clampedY } = clampToWorkspace(initialX, initialY, width, height)
+    const { x: clampedX, y: clampedY } = clampToWorkspace(initialX, initialY, clampedWidth, clampedHeight)
+    
+    // Debug log for initial window creation
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[addWindow]', {
+        requested: { width: requestedWidth, height: requestedHeight },
+        clamped: { width: clampedWidth, height: clampedHeight },
+        position: { x: clampedX, y: clampedY },
+        workspace: { workspaceWidth, workspaceHeight, taskbarHeight: TASKBAR_HEIGHT }
+      })
+    }
     
     const defaultWindow = {
       id: window.id || `window-${Date.now()}`,
@@ -59,8 +77,8 @@ export const useStore = create((set) => ({
       icon: window.icon || '📱',
       x: clampedX,
       y: clampedY,
-      width: width,
-      height: height,
+      width: clampedWidth,
+      height: clampedHeight,
       minWidth: window.minWidth ?? 400,
       minHeight: window.minHeight ?? 300,
       isMinimized: false,
@@ -70,8 +88,8 @@ export const useStore = create((set) => ({
       // Store original position for restore
       restoreX: clampedX,
       restoreY: clampedY,
-      restoreWidth: width,
-      restoreHeight: height,
+      restoreWidth: clampedWidth,
+      restoreHeight: clampedHeight,
       // Pass through any additional data
       ...(window.data && { data: window.data })
     }
