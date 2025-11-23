@@ -1,12 +1,30 @@
+import { useEffect } from 'react'
 import { useStore } from '@/stores'
 import Taskbar from '@/components/dock/Taskbar'
 import StartMenu from '@/components/StartMenu'
 import AppWindow from '@/components/AppWindow'
 import DesktopIcons from '@/components/desktop/DesktopIcons'
 import { wallpapers } from '@/config/wallpapers'
+import { getCenteredPosition } from '@/constants/layout'
 
 export default function Desktop() {
-  const { windows, showStartMenu } = useStore()
+  const { windows, showStartMenu, addWindow } = useStore()
+
+  // Open Notepad whenever user enters desktop
+  useEffect(() => {
+    const { x, y } = getCenteredPosition(1100, 700)
+    addWindow({
+      appId: 'notepad',
+      title: 'Notepad',
+      icon: '/img/icons/notepad.png',
+      width: 1100,
+      height: 700,
+      x: x,
+      y: y,
+      minWidth: 400,
+      minHeight: 300,
+    })
+  }, [addWindow])
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 relative overflow-hidden">
