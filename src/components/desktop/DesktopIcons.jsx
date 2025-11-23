@@ -1,6 +1,36 @@
 import { useStore } from '@/stores'
 import { useState, useRef, useEffect } from 'react'
+import { getCenteredPosition } from '@/utils'
 
+// Desktop apps
+const desktopApps = [
+  {
+    id: 'notepad',
+    title: 'Notepad',
+    icon: '/img/icons/notepad.png',
+    appId: 'notepad',
+    width: 1100,
+    height: 700,
+  },
+  {
+    id: 'terminal',
+    title: 'Terminal',
+    icon: '/img/icons/terminal.png',
+    appId: 'terminal',
+    width: 800,
+    height: 600,
+  },
+  {
+    id: 'camera',
+    title: 'Camera',
+    icon: '/img/icons/camera.png',
+    appId: 'camera',
+    width: 1200,
+    height: 800,
+  },
+]
+
+// Social media links
 const socialMedia = [
   {
     id: 'github',
@@ -22,6 +52,8 @@ const socialMedia = [
   }
 ]
 
+const allIcons = [...desktopApps, ...socialMedia]
+
 // Default positions for icons
 const getDefaultPosition = (index) => ({
   x: 16,
@@ -29,17 +61,44 @@ const getDefaultPosition = (index) => ({
 })
 
 export default function DesktopIcons() {
-  const { iconPositions, setIconPosition } = useStore()
+  const { iconPositions, setIconPosition, addWindow, windows } = useStore()
 
   const handleClick = (item) => {
+    // Handle external links
     if (item.url) {
       window.open(item.url, '_blank', 'noopener,noreferrer')
+      return
+    }
+
+    // Handle app launch
+    if (item.appId) {
+      // Check if app is already open
+      const existingWindow = windows.find(w => w.appId === item.appId && !w.isMinimized)
+      
+      if (existingWindow) {
+        // Focus existing window
+        useStore.getState().setActiveWindow(existingWindow.id)
+      } else {
+        // Open new window with centered position
+        const { x, y } = getCenteredPosition(item.width || 800, item.height || 600)
+        addWindow({
+          appId: item.appId,
+          title: item.title,
+          icon: item.icon,
+          x: x + windows.length * 30, // Cascade windows
+          y: y + windows.length * 30,
+          width: item.width || 800,
+          height: item.height || 600,
+          minWidth: 400,
+          minHeight: 300,
+        })
+      }
     }
   }
 
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {socialMedia.map((item, index) => (
+      {allIcons.map((item, index) => (
         <DraggableIcon
           key={item.id}
           item={item}

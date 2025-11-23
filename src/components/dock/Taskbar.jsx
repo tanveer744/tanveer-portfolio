@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import WindowsSearch, { searchableItems } from '../WindowsSearch'
+import { getCenteredPosition } from '@/constants/layout'
 import { 
   IoSearchOutline,
   IoWifiSharp,
@@ -60,20 +61,22 @@ export default function Taskbar() {
     // Handle special actions (documents, settings)
     if (item.action) {
       if (item.action === 'about-me' || item.action === 'about-site') {
-        const newWindow = {
-          id: `notepad-${Date.now()}`,
+        const width = 1100
+        const height = 700
+        const { x, y } = getCenteredPosition(width, height)
+        
+        addWindow({
           appId: 'notepad',
           title: 'Notepad',
           icon: '/img/icons/notepad.png',
-          width: 1100,
-          height: 700,
-          x: 100,
-          y: 50,
-          minimized: false,
-          maximized: false,
+          width: width,
+          height: height,
+          x: x,
+          y: y,
+          minWidth: 400,
+          minHeight: 300,
           data: { file: item.action }
-        }
-        addWindow(newWindow)
+        })
       }
       setSearchQuery('')
       setShowSearchResults(false)
@@ -89,19 +92,21 @@ export default function Taskbar() {
     }
 
     // Handle desktop apps
-    const newWindow = {
-      id: `${item.id}-${Date.now()}`,
+    const width = item.width || 800
+    const height = item.height || 600
+    const { x, y } = getCenteredPosition(width, height)
+    
+    addWindow({
       appId: item.id,
       title: item.title,
       icon: item.icon,
-      width: item.width || 800,
-      height: item.height || 600,
-      x: 100,
-      y: 50,
-      minimized: false,
-      maximized: false,
-    }
-    addWindow(newWindow)
+      width: width,
+      height: height,
+      x: x,
+      y: y,
+      minWidth: 400,
+      minHeight: 300,
+    })
     setSearchQuery('')
     setShowSearchResults(false)
   }
@@ -130,20 +135,23 @@ export default function Taskbar() {
         setActiveWindow(existingWindow.id)
       }
     } else {
-      // Open new window
-      const newWindow = {
-        id: `${app.id}-${Date.now()}`,
+      // Open new window with cascade offset
+      const width = app.width || 800
+      const height = app.height || 600
+      const cascade = windows.length * 30
+      const { x: baseX, y: baseY } = getCenteredPosition(width, height)
+      
+      addWindow({
         appId: app.id,
         title: app.title,
         icon: app.icon,
-        width: app.width,
-        height: app.height,
-        x: 100 + windows.length * 30,
-        y: 50 + windows.length * 30,
-        minimized: false,
-        maximized: false,
-      }
-      addWindow(newWindow)
+        width: width,
+        height: height,
+        x: baseX + cascade,
+        y: baseY + cascade,
+        minWidth: 400,
+        minHeight: 300,
+      })
     }
   }
 

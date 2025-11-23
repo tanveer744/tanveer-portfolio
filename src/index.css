@@ -98,6 +98,46 @@ body {
   }
 }
 
+/* Window Styles */
+.window-container {
+  will-change: transform, width, height;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.resize-handle {
+  z-index: 10;
+  touch-action: none;
+  user-select: none;
+}
+
+.resize-handle:hover {
+  background-color: rgba(0, 120, 212, 0.1);
+}
+
+/* Prevent text selection while dragging/resizing */
+.window-container.dragging,
+.window-container.resizing {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Smooth window transitions */
+.window-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Window shadow levels based on active state */
+.window-container.active {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.14));
+}
+
+.window-container:not(.active) {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

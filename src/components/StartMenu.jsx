@@ -3,6 +3,7 @@ import { FiSearch, FiPower, FiUser } from 'react-icons/fi'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import { startMenuProjects } from '@/config/wallpapers'
+import { getCenteredPosition } from '@/constants/layout'
 
 export default function StartMenu() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -17,15 +18,19 @@ export default function StartMenu() {
     }
 
     // Otherwise open as a window
+    const width = app.width || 800
+    const height = app.height || 600
+    const { x, y } = getCenteredPosition(width, height)
+    
     const newWindow = {
       id: `${app.id}-${Date.now()}`,
       appId: app.id,
       title: app.title,
       icon: app.icon,
-      width: app.width,
-      height: app.height,
-      x: 100,
-      y: 50,
+      width: width,
+      height: height,
+      x: x,
+      y: y,
       minimized: false,
       maximized: false,
     }
