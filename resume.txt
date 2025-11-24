@@ -1,0 +1,49 @@
+SHAIK TANVEER LOHARE
+ 7411628475 | 
+shaiktanveer07404@gmail.com | 
+shaik-tanveer-lohare | 
+tanveer744
+ Career Objective
+ Analytically-driven and results-oriented final-year Computer Science (AI & ML) graduate with strong expertise in
+ data structures, algorithms, and full-stack development. Seeking the Graduate Engineer Trainee role at HCL Tech
+ to leverage technical problem-solving skills, secure communication abilities, and passion for enterprise software
+ solutions. Committed to delivering scalable, maintainable code in Agile environments while contributing
+ meaningfully to digital transformation initiatives across diverse business domains.
+ Skills
+ Technical Skills– Programming Languages: Python– Web Development: HTML, CSS, JavaScript, React– AI/ML Technologies: TensorFlow, Keras, OpenCV, LLM Prompt Engineering, Gemini API, Azure Document
+ Intelligence– Databases: MySQL, MongoDB– Tools & Platforms: Git, GitHub, REST APIs, Jupyter Notebook, Visual Studio Code
+ Soft Skills– Critical Thinking, Problem Solving, Agile Collaboration, Rapid Prototyping, Adaptive Learner
+ Experience
+ Dev Creations and Solutions
+ Software Developer Intern
+ Apr 2025– Present– Completed 9+ projects, including web applications, company websites, and a desktop application,
+ contributing to diverse client requirements and real-world deployment experience– Designed and developed responsive cross-platform interfaces, ensuring consistent and user-friendly experiences
+ across web and desktop platforms.– Followed modern development workflows including Git/GitHub version control, clean code practices, and
+ modular architecture to maintain scalable, high-quality codebases.– Optimized application performance for real-world environments, reducing load times and improving user
+ experience– Tech Stack: React, JavaScript, Flutter, Node.js, REST APIs, Git, Github
+ Projects
+ Intelligent Policy Document Query System (HackRx 2025)– GitHub
+ Aug 2025– Developed an AI-driven document query system to analyze and extract insights from complex enterprise
+ policy documents (40+ pages).– Implemented a hybrid extraction pipeline (PyPDF2 + Azure Document Intelligence) achieving 100%
+ document coverage and superior OCR quality across multi-page PDFs.– Built a two-stage retrieval pipeline using FAISS vector search and Cross-Encoder reranking, improving
+ contextual answer relevance by 60% and reducing latency by 50%– Integrated Google Gemini API for structured answer generation and domain-specific prompt engineering,
+ ensuring policy-specific, explainable responses.– Tech Stack: Python, FastAPI, FAISS, Azure Document Intelligence, PyPDF2, Gemini API
+ Road Rage Detection Using Deep Learning and Computer Vision– GitHub– Developed a 3D CNN-based deep learning system capable of detecting aggressive driving and road-rage
+ behavior from video sequences with 94% accuracy.
+ 2024– Applied transfer learning and data augmentation on a dataset of 2200+ videos to improve generalization– Conducted data preprocessing and augmentation (frame extraction, normalization, balancing) to enhance
+ model generalization and reduce overfitting.
+ 1/2
+2025– Tech Stack: Python, TensorFlow, Keras, OpenCV– Publication: Published in IEEE Xplore (ICICACS 2025 Conference)
+ AI-Powered LinkedIn Automation Tool– GitHub– Built a Tkinter-based desktop automation tool to simplify LinkedIn job search and networking– Implemented features like auto-connect, messaging, commenting, liking, and post creation– Integrated Gemini API for generating context-aware messages; used Selenium with session-based
+ authentication– Tech Stack: Python, Tkinter, Selenium, Gemini API, Chrome DevTools
+ Publication & Achievements– “Road Rage Detection System using Deep Learning and Computer Vision”
+ Published in IEEE Xplore (ICICACS 2025).– Developed a healthcare AI auditor in 6 hours to compare user SOPs with government guidelines, winning 1st
+ prize in the AI-RENA competition for rapid AI solution development.
+ Education
+ Reva University, Bangalore
+ B.Tech– Computer Science (AI & ML)
+ Current CGPA: 8.23 / 10
+ Certifications
+ 2022– 2026– ML For Beginners– Sololearn– Data Science Methodology– IBM Cognitive Class– AI Python for Beginners: Basics of AI Python Coding– DeepLearning.AI– Prompt Engineering for Vision Models– DeepLearning.AI– SQL for Beginners: Scaler
+ Interests– Building DIY projects and prototyping innovative solutions– Reading and writing Urdu poetry for creative expression and cultural connection– Playing chess to enhance strategic thinking
+ 2/2

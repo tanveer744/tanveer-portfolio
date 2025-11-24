@@ -1,0 +1,187 @@
+================================================================================
+REVA UNIVERSITY - EDUCATION DETAILS
+================================================================================
+
+INSTITUTION:
+------------
+Reva University, Bangalore
+(Formerly known as Rukmini Educational Charitable Trust)
+
+DEGREE:
+-------
+Bachelor of Technology (B.Tech)
+
+SPECIALIZATION:
+---------------
+Computer Science and Engineering - Artificial Intelligence & Machine Learning
+(CSE - AI & ML)
+
+TIMELINE:
+---------
+2022 - 2026 (Expected)
+Currently in Final Year
+
+ACADEMIC PERFORMANCE:
+---------------------
+Current CGPA: 8.23 / 10.00
+
+LOCATION:
+---------
+Bangalore, Karnataka, India
+
+================================================================================
+PROGRAM OVERVIEW
+================================================================================
+
+The B.Tech in Computer Science (AI & ML) program at Reva University provides a 
+comprehensive curriculum that combines traditional computer science fundamentals 
+with specialized courses in Artificial Intelligence and Machine Learning.
+
+CORE AREAS OF STUDY:
+--------------------
+
+COMPUTER SCIENCE FUNDAMENTALS:
+• Data Structures and Algorithms
+• Object-Oriented Programming
+• Database Management Systems
+• Operating Systems
+• Computer Networks
+• Software Engineering
+• Web Technologies
+
+ARTIFICIAL INTELLIGENCE & MACHINE LEARNING:
+• Machine Learning Fundamentals
+• Deep Learning and Neural Networks
+• Natural Language Processing
+• Computer Vision
+• Pattern Recognition
+• AI Ethics and Responsible AI
+
+MATHEMATICS & STATISTICS:
+• Linear Algebra
+• Probability and Statistics
+• Calculus
+• Discrete Mathematics
+• Optimization Techniques
+
+PRACTICAL SKILLS:
+• Programming in Python, Java, C++
+• Full-stack Web Development
+• Cloud Computing
+• Data Analytics and Visualization
+• Project Management
+
+================================================================================
+ACADEMIC ACHIEVEMENTS
+================================================================================
+
+CGPA: 8.23/10.00
+• Consistent academic performance throughout the program
+• Strong foundation in both theoretical concepts and practical implementation
+• Balanced focus on computer science fundamentals and AI/ML specialization
+
+PROJECT WORK:
+• Completed multiple semester projects and assignments
+• Participated in lab sessions and practical workshops
+• Developed industry-relevant projects and applications
+• Applied learned concepts to solve real-world problems
+
+RESEARCH & PUBLICATIONS:
+• Published research paper in IEEE Xplore (ICICACS 2025)
+• "Road Rage Detection System using Deep Learning and Computer Vision"
+• Demonstrates academic research capabilities and contribution to field
+
+================================================================================
+EXTRACURRICULAR ACTIVITIES
+================================================================================
+
+TECHNICAL ACTIVITIES:
+• Participated in hackathons and coding competitions
+• Won 1st prize in AI-RENA competition (6-hour rapid development challenge)
+• Participated in HackRx 2025 national-level hackathon
+• Member of technical clubs and student organizations
+
+SKILL DEVELOPMENT:
+• Completed multiple online certifications alongside degree
+• Self-learning of emerging technologies and frameworks
+• Personal projects to supplement academic curriculum
+• Contribution to open-source and collaborative projects
+
+================================================================================
+INTERNSHIP & INDUSTRY EXPOSURE
+================================================================================
+
+PROFESSIONAL EXPERIENCE:
+• Software Developer Intern at Dev Creations and Solutions (April 2025 - Present)
+• Gained practical experience in software development
+• Applied academic knowledge to real-world client projects
+• Learned industry best practices and professional workflows
+
+================================================================================
+SKILLS ACQUIRED DURING EDUCATION
+================================================================================
+
+PROGRAMMING LANGUAGES:
+• Python - Primary language for AI/ML and scripting
+• Java - Object-oriented programming and enterprise applications
+• JavaScript - Web development and frontend frameworks
+• C/C++ - System programming and algorithms
+
+FRAMEWORKS & LIBRARIES:
+• TensorFlow, Keras - Deep learning frameworks
+• React - Frontend web development
+• FastAPI, Flask - Backend API development
+• OpenCV - Computer vision applications
+• Pandas, NumPy - Data manipulation and analysis
+
+TOOLS & TECHNOLOGIES:
+• Git & GitHub - Version control and collaboration
+• Jupyter Notebook - Data science and experimentation
+• VS Code - Primary IDE
+• Docker - Containerization
+• Cloud platforms - AWS, Azure basics
+
+================================================================================
+CAREER PREPARATION
+================================================================================
+
+PLACEMENT READINESS:
+• Strong foundation in data structures and algorithms
+• Problem-solving skills honed through competitive programming
+• Interview preparation through coding platforms
+• Resume building and professional networking
+• Soft skills development through presentations and group projects
+
+INDUSTRY-RELEVANT SKILLS:
+• Full-stack development capabilities
+• AI/ML model development and deployment
+• Database design and management
+• RESTful API development
+• Agile development methodologies
+
+================================================================================
+RELEVANCE TO CAREER GOALS
+================================================================================
+
+The AI & ML specialization has prepared me for:
+
+• Software Development Roles - Strong programming and system design skills
+• AI/ML Engineering - Practical experience with ML frameworks and deployment
+• Full-Stack Development - Comprehensive web development knowledge
+• Research & Development - Academic research experience and publication
+• Problem Solving - Analytical thinking and algorithmic expertise
+
+The combination of theoretical knowledge and practical implementation through 
+projects, internships, and certifications has created a strong foundation for 
+a successful career in technology and software development.
+
+================================================================================
+CONTACT INFORMATION
+================================================================================
+
+For academic verification or further information:
+• Email: shaiktanveer07404@gmail.com
+• LinkedIn: shaik-tanveer-lohare
+• GitHub: tanveer744
+
+================================================================================

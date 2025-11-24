@@ -1,0 +1,82 @@
+================================================================================
+INTELLIGENT POLICY DOCUMENT QUERY SYSTEM
+================================================================================
+
+PROJECT TITLE:
+--------------
+Intelligent Policy Document Query System (HackRx 2025)
+
+TIMELINE:
+---------
+August 2025
+
+DESCRIPTION:
+------------
+Developed an advanced AI-driven document query system designed to analyze and extract 
+actionable insights from complex enterprise policy documents spanning over 40 pages. 
+The system enables users to ask natural language questions and receive accurate, 
+context-aware answers extracted from large PDF documents.
+
+This project addresses the challenge of efficiently navigating and understanding lengthy 
+policy documents in enterprise environments, where employees need quick access to specific 
+information without manually searching through hundreds of pages.
+
+TECH STACK:
+-----------
+• Python - Core programming language
+• FastAPI - Backend framework for RESTful API development
+• FAISS - Vector search and similarity matching
+• Azure Document Intelligence - Advanced OCR and document parsing
+• PyPDF2 - PDF text extraction
+• Google Gemini API - Large Language Model for answer generation
+• Vector Embeddings - For semantic search capabilities
+• Cross-Encoder - For reranking and improving answer relevance
+
+KEY FEATURES & IMPLEMENTATION:
+------------------------------
+
+1. HYBRID EXTRACTION PIPELINE:
+   • Implemented dual-extraction approach using PyPDF2 and Azure Document Intelligence
+   • Achieved 100% document coverage across multi-page PDF files
+   • Superior OCR quality for handling scanned documents and complex layouts
+   • Robust handling of tables, images, and formatted text
+
+2. TWO-STAGE RETRIEVAL PIPELINE:
+   • Stage 1: FAISS vector search for fast semantic similarity matching
+   • Stage 2: Cross-Encoder reranking for improved contextual relevance
+   • Improved answer relevance by 60% compared to single-stage retrieval
+   • Reduced query latency by 50% through optimized search algorithms
+
+3. INTELLIGENT ANSWER GENERATION:
+   • Integration with Google Gemini API for structured response generation
+   • Domain-specific prompt engineering for policy-related queries
+   • Explainable responses with source references and confidence scores
+   • Context-aware answers that understand policy-specific terminology
+
+ACHIEVEMENTS & RESULTS:
+-----------------------
+• Successfully processed and indexed 40+ page enterprise policy documents
+• Achieved 100% document coverage with hybrid extraction pipeline
+• Improved contextual answer relevance by 60% through two-stage retrieval
+• Reduced query response latency by 50% compared to baseline implementations
+• Created a scalable solution capable of handling multiple document types
+• Developed for HackRx 2025 hackathon competition
+
+TECHNICAL CHALLENGES SOLVED:
+-----------------------------
+• Handling large PDF documents with diverse formatting and layouts
+• Balancing search speed with answer accuracy
+• Implementing efficient vector storage and retrieval mechanisms
+• Designing prompt templates for policy-specific query understanding
+• Managing API rate limits and optimizing costs for LLM calls
+
+GITHUB REPOSITORY:
+------------------
+https://github.com/tanveer744 (Check repository for project code)
+
+PROJECT IMPACT:
+---------------
+This system significantly reduces the time required for employees to find information 
+in policy documents, from hours of manual searching to seconds of automated retrieval. 
+It demonstrates the practical application of AI/ML technologies in solving real-world 
+enterprise challenges.

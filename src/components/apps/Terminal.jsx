@@ -17,6 +17,7 @@ class Terminal extends Component {
       cd: this.cd,
       ls: this.ls,
       cat: this.cat,
+      open: this.cat, // Alias for cat
       clear: this.clear,
       help: this.help
     }
@@ -122,7 +123,7 @@ class Terminal extends Component {
   }
 
   // Display file content
-  cat = (args) => {
+  cat = async (args) => {
     const file = this.state.curChildren.find((item) => {
       return item.title === args && item.type === 'file'
     })
@@ -133,10 +134,44 @@ class Terminal extends Component {
         <span className="text-red-400">{`cat: ${args}: No such file or directory`}</span>
       )
     } else {
+      // Show loading message
       this.generateResultRow(
-        this.state.curInputTimes, 
-        <div className="whitespace-pre-wrap text-gray-100">{file.content}</div>
+        this.state.curInputTimes,
+        <span className="text-yellow-400">Loading...</span>
       )
+
+      try {
+        // Fetch file content from path if available, otherwise use inline content
+        let content = file.content
+        if (file.path) {
+          const response = await fetch(file.path)
+          if (response.ok) {
+            content = await response.text()
+          } else {
+            content = 'Error: Unable to load file content'
+          }
+        }
+
+        // Remove the loading message and show actual content
+        this.setState(prevState => ({
+          content: prevState.content.slice(0, -1)
+        }), () => {
+          this.generateResultRow(
+            this.state.curInputTimes,
+            <div className="whitespace-pre-wrap text-gray-100">{content}</div>
+          )
+        })
+      } catch (error) {
+        // Remove loading message and show error
+        this.setState(prevState => ({
+          content: prevState.content.slice(0, -1)
+        }), () => {
+          this.generateResultRow(
+            this.state.curInputTimes,
+            <span className="text-red-400">Error loading file: {error.message}</span>
+          )
+        })
+      }
     }
   }
 
@@ -157,6 +192,7 @@ class Terminal extends Component {
         <div className="text-green-400 font-bold mb-2">Available Commands:</div>
         <div className="ml-4 space-y-1">
           <div><span className="text-cyan-400">cat &lt;file&gt;</span> - Display the content of a file</div>
+          <div><span className="text-cyan-400">open &lt;file&gt;</span> - Display the content of a file (alias for cat)</div>
           <div><span className="text-cyan-400">cd &lt;dir&gt;</span> - Change directory (cd .. for parent, cd ~ for root)</div>
           <div><span className="text-cyan-400">ls</span> - List files and folders in current directory</div>
           <div><span className="text-cyan-400">clear</span> - Clear the terminal screen</div>
@@ -164,6 +200,9 @@ class Terminal extends Component {
         </div>
         <div className="text-yellow-300 mt-3">
           💡 Tips: Use ↑/↓ arrow keys for command history, Tab for auto-complete
+        </div>
+        <div className="text-cyan-400 mt-3">
+          📁 Available folders: about, projects, experience, education, skills, certifications, achievements, interests
         </div>
       </div>
     )
@@ -186,11 +225,11 @@ class Terminal extends Component {
         return item.substring(0, cmd.length) === cmd
       })
       if (guess !== undefined) result = guess
-    } else if (cmd === 'cd' || cmd === 'cat') {
+    } else if (cmd === 'cd' || cmd === 'cat' || cmd === 'open') {
       // Auto-complete path
       const type = cmd === 'cd' ? 'folder' : 'file'
       const guess = this.state.curChildren.find((item) => {
-        return item.type === type && item.title.substring(0, args.length) === args
+        return item.type === type && item.title.toLowerCase().startsWith(args.toLowerCase())
       })
       if (guess !== undefined) result = cmd + ' ' + guess.title
     }
@@ -198,7 +237,7 @@ class Terminal extends Component {
   }
 
   // Handle keyboard input
-  keyPress = (e) => {
+  keyPress = async (e) => {
     const keyCode = e.key
     const inputElement = document.querySelector(
       `#terminal-input-${this.state.curInputTimes}`
@@ -222,7 +261,7 @@ class Terminal extends Component {
       inputElement.setAttribute('readonly', 'true')
 
       if (cmd && Object.keys(this.commands).includes(cmd)) {
-        this.commands[cmd](args)
+        await this.commands[cmd](args)
       } else if (cmd !== '') {
         this.generateResultRow(
           this.state.curInputTimes,
@@ -310,12 +349,12 @@ class Terminal extends Component {
       >
         {/* Welcome Message */}
         <div className="text-cyan-400 mb-3">
-          <div className="text-lg font-bold">Windows PowerShell</div>
-          <div className="text-xs text-gray-400 mt-1">Copyright (c) Portfolio Inc. All rights reserved.</div>
+          <div className="text-lg font-bold">Tanveer&apos;s Terminal Resume</div>
+          <div className="text-xs text-gray-400 mt-1">Interactive Portfolio Terminal - Explore my professional journey</div>
         </div>
         
         <div className="mb-3 text-gray-300">
-          <span className="text-green-400">✓</span> Welcome to the terminal! Type <span className="text-cyan-400">help</span> to get started.
+          <span className="text-green-400">✓</span> Welcome! Type <span className="text-cyan-400">help</span> to see available commands or <span className="text-cyan-400">cat readme.txt</span> to get started.
         </div>
 
         {/* Terminal Content */}

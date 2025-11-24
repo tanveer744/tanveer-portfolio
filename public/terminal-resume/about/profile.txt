@@ -1,0 +1,45 @@
+================================================
+PROFILE - SHAIK TANVEER LOHARE
+================================================
+
+NAME:       Shaik Tanveer Lohare
+EMAIL:      shaiktanveer07404@gmail.com
+PHONE:      7411628475
+GITHUB:     tanveer744
+LINKEDIN:   shaik-tanveer-lohare
+
+TAGLINE:
+--------
+Analytically-driven and results-oriented Computer Science (AI & ML) graduate with a passion 
+for building intelligent systems and scalable software solutions.
+
+ABOUT ME:
+---------
+I am a final-year Computer Science student specializing in Artificial Intelligence and Machine 
+Learning at Reva University, Bangalore. My expertise lies in developing AI-powered applications, 
+full-stack web development, and solving complex problems through innovative technical solutions.
+
+With a strong foundation in data structures, algorithms, and modern development frameworks, I have 
+successfully completed multiple real-world projects including an intelligent document query system, 
+road rage detection using deep learning, and LinkedIn automation tools. I am passionate about 
+leveraging technology to create meaningful impact and continuously learning new technologies to 
+stay at the forefront of innovation.
+
+Currently working as a Software Developer Intern at Dev Creations and Solutions, I have gained 
+hands-on experience in building responsive web applications, desktop applications, and working 
+with diverse technology stacks in Agile environments.
+
+PROFESSIONAL FOCUS:
+-------------------
+• AI/ML Solution Development
+• Full-Stack Web Development
+• Computer Vision Applications
+• Automation and Productivity Tools
+• Enterprise Software Solutions
+• Digital Transformation Initiatives
+
+CONTACT:
+--------
+Feel free to reach out for collaboration, opportunities, or just to connect!
+Email: shaiktanveer07404@gmail.com
+Phone: 7411628475

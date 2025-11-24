@@ -1,0 +1,425 @@
+================================================================================
+AI/ML TECH STACK
+================================================================================
+
+This document outlines the comprehensive Artificial Intelligence and Machine Learning
+technology stack, covering frameworks, tools, and practical applications.
+
+================================================================================
+DEEP LEARNING FRAMEWORKS
+================================================================================
+
+TENSORFLOW (Proficient):
+------------------------
+TensorFlow is Google's industry-standard open-source deep learning framework.
+
+CORE CAPABILITIES:
+• Building neural network architectures:
+  - Sequential models for simple architectures
+  - Functional API for complex, multi-input/output models
+  - Custom layers and model subclassing
+  
+• Training Pipeline:
+  - Data preprocessing and augmentation
+  - Model compilation (optimizer, loss, metrics)
+  - Training with validation split
+  - Callbacks (EarlyStopping, ModelCheckpoint, ReduceLROnPlateau)
+  - TensorBoard for training visualization
+
+• Model Optimization:
+  - Hyperparameter tuning
+  - Learning rate scheduling
+  - Regularization (Dropout, L1/L2)
+  - Batch normalization
+  - Gradient clipping
+
+• Deployment:
+  - Model saving and loading
+  - TensorFlow Serving basics
+  - Model conversion for inference
+
+PRACTICAL APPLICATIONS:
+• Road Rage Detection System:
+  - 3D CNN architecture for video classification
+  - Achieved 94% accuracy on road rage detection
+  - Transfer learning with pre-trained models
+  - Data augmentation for 2200+ video dataset
+
+---
+
+KERAS (Proficient):
+-------------------
+Keras is a high-level neural network API that runs on top of TensorFlow.
+
+FEATURES USED:
+• Model Building:
+  - Sequential model for straightforward architectures
+  - Functional API for complex models with multiple inputs/outputs
+  - Layer stacking and configuration
+  - Custom activation functions
+
+• Layers & Components:
+  - Dense (fully connected) layers
+  - Convolutional layers (Conv2D, Conv3D)
+  - Pooling layers (MaxPooling, AveragePooling)
+  - Recurrent layers (LSTM, GRU)
+  - Dropout and normalization layers
+
+• Training Features:
+  - fit() method with flexible training options
+  - Built-in data generators
+  - Custom callbacks
+  - Model evaluation and prediction
+
+ADVANTAGES:
+• User-friendly and intuitive API
+• Rapid prototyping capabilities
+• Extensive documentation and community support
+• Seamless integration with TensorFlow
+
+PRACTICAL APPLICATIONS:
+• Quick model prototyping for experiments
+• Educational projects and learning
+• Production-ready model development
+• Research implementations
+
+================================================================================
+COMPUTER VISION
+================================================================================
+
+OPENCV (Proficient):
+--------------------
+OpenCV is the leading computer vision library for image and video processing.
+
+IMAGE PROCESSING:
+• Basic Operations:
+  - Image reading, writing, and display
+  - Color space conversions (BGR, RGB, HSV, Grayscale)
+  - Image resizing, cropping, and rotation
+  - Geometric transformations
+
+• Image Enhancement:
+  - Histogram equalization
+  - Brightness and contrast adjustment
+  - Noise reduction and filtering
+  - Sharpening and edge detection
+
+• Feature Extraction:
+  - Edge detection (Canny, Sobel)
+  - Corner detection (Harris, Shi-Tomasi)
+  - Feature descriptors (SIFT, SURF, ORB)
+  - HOG (Histogram of Oriented Gradients)
+
+VIDEO PROCESSING:
+• Video Capture:
+  - Reading video files and camera streams
+  - Frame-by-frame processing
+  - Video writing and encoding
+  - Frame rate control
+
+• Video Analysis:
+  - Frame extraction for dataset creation
+  - Temporal analysis across frames
+  - Motion detection and tracking
+  - Object tracking algorithms
+
+PRACTICAL APPLICATIONS:
+• Road Rage Detection Project:
+  - Frame extraction from 2200+ videos
+  - Video preprocessing and normalization
+  - Data augmentation for training dataset
+  - Real-time video analysis capabilities
+
+• Data Preprocessing:
+  - Image normalization for neural networks
+  - Batch processing of image datasets
+  - Creating training/validation splits
+  - Augmentation pipelines
+
+---
+
+3D CONVOLUTIONAL NEURAL NETWORKS:
+----------------------------------
+Specialized architecture for spatiotemporal analysis of video data.
+
+CONCEPTS & IMPLEMENTATION:
+• 3D Convolutions:
+  - Capturing spatial features (height, width)
+  - Capturing temporal features (time/frames)
+  - Learning motion patterns over time
+  - Understanding action sequences
+
+• Architecture Design:
+  - Multiple 3D convolutional layers
+  - 3D pooling for dimension reduction
+  - Fully connected layers for classification
+  - Activation functions (ReLU, softmax)
+
+• Training Strategies:
+  - Handling high-dimensional input (frames × height × width)
+  - Managing computational complexity
+  - Transfer learning from 2D CNNs
+  - Data augmentation in temporal dimension
+
+PRACTICAL APPLICATION:
+• Road Rage Detection System:
+  - Processing video sequences for behavior detection
+  - 94% accuracy in identifying aggressive driving
+  - Spatiotemporal feature learning
+  - Real-world video classification
+
+================================================================================
+LARGE LANGUAGE MODELS & PROMPT ENGINEERING
+================================================================================
+
+LLM PROMPT ENGINEERING (Proficient):
+------------------------------------
+Crafting effective prompts to guide AI model outputs for desired results.
+
+CORE TECHNIQUES:
+• Prompt Design:
+  - Clear and specific instructions
+  - Context provision for better understanding
+  - Examples for few-shot learning
+  - Role assignment (system prompts)
+  - Output format specification
+
+• Advanced Strategies:
+  - Chain-of-thought prompting
+  - Self-consistency techniques
+  - Prompt templates for reusability
+  - Parameter tuning (temperature, top-p)
+  - Token limit management
+
+• Domain-Specific Prompts:
+  - Policy-specific queries for document analysis
+  - Code generation prompts
+  - Content creation templates
+  - Conversational AI prompts
+
+PRACTICAL APPLICATIONS:
+• HackRx Query System:
+  - Domain-specific prompt engineering for policy documents
+  - Structured answer generation
+  - Context-aware response formatting
+  - Source attribution prompts
+
+• LinkedIn Automation Tool:
+  - Context-aware message generation
+  - Personalized content creation
+  - Professional tone maintenance
+  - Dynamic prompt construction
+
+---
+
+GOOGLE GEMINI API (Proficient):
+-------------------------------
+Google's multimodal large language model API integration.
+
+CAPABILITIES:
+• API Integration:
+  - Authentication and API key management
+  - Request/response handling
+  - Error handling and retry logic
+  - Rate limiting compliance
+  - Cost optimization strategies
+
+• Use Cases:
+  - Natural language understanding
+  - Text generation and completion
+  - Question answering
+  - Content summarization
+  - Translation and paraphrasing
+
+• Optimization:
+  - Prompt engineering for Gemini
+  - Token usage optimization
+  - Response caching for efficiency
+  - Batch processing strategies
+
+PRACTICAL APPLICATIONS:
+• Policy Query System:
+  - Generating policy-specific answers
+  - Structured response formatting
+  - Explainable AI responses
+
+• LinkedIn Automation:
+  - Personalized message generation
+  - Comment generation for posts
+  - Profile-aware content creation
+
+================================================================================
+DOCUMENT INTELLIGENCE
+================================================================================
+
+AZURE DOCUMENT INTELLIGENCE (Working Knowledge):
+------------------------------------------------
+Microsoft Azure's AI service for document analysis and data extraction.
+
+FEATURES USED:
+• Document Analysis:
+  - OCR (Optical Character Recognition)
+  - Layout analysis and structure detection
+  - Table extraction
+  - Key-value pair extraction
+  - Multi-page document processing
+
+• API Integration:
+  - REST API calls to Azure services
+  - Asynchronous processing for large documents
+  - Result parsing and structuring
+  - Error handling and fallbacks
+
+PRACTICAL APPLICATION:
+• HackRx Policy Query System:
+  - Extracting text from complex 40+ page PDFs
+  - Superior OCR quality for scanned documents
+  - Handling diverse document formats
+  - 100% document coverage achievement
+
+---
+
+PyPDF2 (Proficient):
+--------------------
+Python library for PDF file manipulation and text extraction.
+
+CAPABILITIES:
+• PDF Reading:
+  - Text extraction from PDF pages
+  - Metadata extraction
+  - Page-by-page processing
+  - Handling multi-page documents
+
+• Integration:
+  - Complementing Azure Document Intelligence
+  - Fallback extraction method
+  - Local processing without API calls
+  - Batch PDF processing
+
+PRACTICAL APPLICATION:
+• Hybrid Extraction Pipeline:
+  - Primary text extraction method
+  - Combined with Azure for comprehensive coverage
+  - Cost-effective solution for simple PDFs
+  - Reliable fallback mechanism
+
+================================================================================
+MACHINE LEARNING TECHNIQUES
+================================================================================
+
+VECTOR SEARCH & EMBEDDINGS:
+---------------------------
+• FAISS (Facebook AI Similarity Search):
+  - Efficient similarity search in high-dimensional spaces
+  - Vector indexing for fast retrieval
+  - Semantic search capabilities
+  - Scalable to large datasets
+
+• Vector Embeddings:
+  - Text embedding models
+  - Semantic similarity computation
+  - Document chunking strategies
+  - Embedding dimension optimization
+
+PRACTICAL APPLICATION:
+• Policy Query System:
+  - First-stage retrieval using FAISS
+  - Semantic search across document chunks
+  - Fast similarity matching
+  - Reduced latency by 50%
+
+---
+
+CROSS-ENCODER RERANKING:
+------------------------
+Advanced technique for improving search result relevance.
+
+CONCEPTS:
+• Two-stage retrieval pipeline:
+  - Stage 1: Fast retrieval with bi-encoder (FAISS)
+  - Stage 2: Precise reranking with cross-encoder
+  
+• Benefits:
+  - Improved contextual relevance
+  - Better accuracy than single-stage retrieval
+  - Balanced speed and quality
+
+PRACTICAL APPLICATION:
+• Policy Query System:
+  - 60% improvement in answer relevance
+  - Context-aware result ordering
+  - High-quality answer selection
+
+---
+
+TRANSFER LEARNING:
+------------------
+Leveraging pre-trained models to improve performance and reduce training time.
+
+TECHNIQUES:
+• Using pre-trained models as feature extractors
+• Fine-tuning top layers for specific tasks
+• Freezing early layers, training later layers
+• Domain adaptation strategies
+
+PRACTICAL APPLICATION:
+• Road Rage Detection:
+  - Pre-trained CNN models for initial weights
+  - Fine-tuning on road rage dataset
+  - Improved generalization
+  - Reduced training time
+
+---
+
+DATA AUGMENTATION:
+------------------
+Expanding training datasets through transformations to improve model robustness.
+
+TECHNIQUES:
+• Image Augmentation:
+  - Rotation, flipping, scaling
+  - Brightness and contrast adjustment
+  - Random cropping
+  - Color jittering
+
+• Video Augmentation:
+  - Frame extraction strategies
+  - Temporal shifting
+  - Speed variation
+  - Frame sampling
+
+PRACTICAL APPLICATION:
+• Road Rage Detection:
+  - Dataset expansion from 2200+ videos
+  - Balancing classes
+  - Reducing overfitting
+  - Improving generalization
+
+================================================================================
+AI/ML DEVELOPMENT WORKFLOW
+================================================================================
+
+COMPLETE ML PIPELINE:
+• Problem definition and data collection
+• Exploratory data analysis (EDA)
+• Data preprocessing and cleaning
+• Feature engineering
+• Model selection and architecture design
+• Training with validation
+• Hyperparameter tuning
+• Model evaluation and metrics
+• Deployment preparation
+• Monitoring and maintenance
+
+TOOLS & ENVIRONMENT:
+• Jupyter Notebook for experimentation
+• Python ecosystem (NumPy, Pandas, Matplotlib)
+• GPU utilization for training acceleration
+• Version control for model experiments
+• Documentation and reproducibility
+
+================================================================================
+
+This comprehensive AI/ML tech stack enables development of intelligent systems
+ranging from computer vision applications to natural language processing and 
+document intelligence solutions, with practical experience in real-world projects.

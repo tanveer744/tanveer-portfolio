@@ -1,0 +1,275 @@
+================================================================================
+TECHNICAL SKILLS
+================================================================================
+
+This document outlines the comprehensive technical skills acquired through education,
+professional experience, personal projects, and continuous learning.
+
+================================================================================
+PROGRAMMING LANGUAGES
+================================================================================
+
+PYTHON (Advanced):
+------------------
+• Primary language for AI/ML development, data science, and scripting
+• Expertise in writing clean, efficient, and maintainable Python code
+• Strong understanding of Python standard library and ecosystem
+• Experience with object-oriented and functional programming paradigms
+• Used extensively in:
+  - Machine Learning model development
+  - Deep Learning implementations
+  - Web scraping and automation
+  - Backend API development
+  - Data analysis and visualization
+  - Script automation
+
+JAVASCRIPT (Proficient):
+------------------------
+• Modern ES6+ syntax and features
+• Frontend and backend development capabilities
+• Asynchronous programming (Promises, async/await)
+• DOM manipulation and event handling
+• Used in:
+  - React applications
+  - Node.js backend services
+  - RESTful API consumption
+  - Interactive web applications
+  - Real-time features
+
+HTML5 & CSS3 (Advanced):
+------------------------
+• Semantic HTML markup
+• Modern CSS features (Flexbox, Grid, Animations)
+• Responsive design principles
+• Cross-browser compatibility
+• Accessibility standards (ARIA)
+• Used in:
+  - Web application frontends
+  - Responsive layouts
+  - User interface design
+  - Email templates
+  - Landing pages
+
+OTHER LANGUAGES:
+----------------
+• Java - Object-oriented programming, Android development basics
+• C/C++ - System programming, algorithms, data structures
+• SQL - Database queries, data manipulation, optimization
+
+================================================================================
+WEB DEVELOPMENT
+================================================================================
+
+FRONTEND TECHNOLOGIES:
+----------------------
+• React.js - Component-based UI development, hooks, state management
+• Modern JavaScript frameworks and libraries
+• Responsive Web Design - Mobile-first approach
+• CSS Preprocessors - Sass/SCSS for maintainable styles
+• Frontend Build Tools - Webpack, Vite, Babel
+• Browser DevTools - Debugging and performance profiling
+
+BACKEND TECHNOLOGIES:
+---------------------
+• Node.js - Server-side JavaScript runtime
+• FastAPI - High-performance Python web framework
+• Flask - Lightweight Python web framework
+• RESTful API Design - Resource-oriented architecture
+• API Authentication - JWT, OAuth integration
+• Middleware Development - Request/response processing
+
+FULL-STACK CAPABILITIES:
+------------------------
+• End-to-end application development
+• Frontend-backend integration
+• State management (Redux, Context API)
+• Client-server communication
+• Error handling and validation
+• Security best practices (XSS, CSRF protection)
+
+================================================================================
+ARTIFICIAL INTELLIGENCE & MACHINE LEARNING
+================================================================================
+
+DEEP LEARNING FRAMEWORKS:
+--------------------------
+• TensorFlow - Industry-standard deep learning framework
+• Keras - High-level neural network API
+• Experience with:
+  - Neural network architectures (CNN, RNN, LSTM)
+  - Model training and optimization
+  - Transfer learning and fine-tuning
+  - Model evaluation and validation
+  - Hyperparameter tuning
+
+COMPUTER VISION:
+----------------
+• OpenCV - Image and video processing
+• Techniques:
+  - Image preprocessing and augmentation
+  - Object detection and recognition
+  - Video analysis and frame extraction
+  - Feature extraction
+  - 3D CNN for spatiotemporal analysis
+
+NATURAL LANGUAGE PROCESSING:
+-----------------------------
+• LLM Prompt Engineering - Crafting effective prompts for AI models
+• Google Gemini API - Integration and optimization
+• Text processing and analysis
+• Context-aware content generation
+
+DOCUMENT INTELLIGENCE:
+----------------------
+• Azure Document Intelligence - OCR and document parsing
+• PDF processing (PyPDF2)
+• Structured data extraction
+• Document layout analysis
+
+MACHINE LEARNING TECHNIQUES:
+----------------------------
+• Supervised Learning - Classification, Regression
+• Data Preprocessing - Cleaning, normalization, feature engineering
+• Model Evaluation - Accuracy, precision, recall, F1-score
+• Data Augmentation - Improving model generalization
+• Vector Embeddings - FAISS for similarity search
+• Cross-Encoder - Reranking and relevance scoring
+
+================================================================================
+DATABASES
+================================================================================
+
+RELATIONAL DATABASES:
+---------------------
+• MySQL - Primary SQL database
+• SQL Fundamentals:
+  - Complex queries (JOINs, subqueries, CTEs)
+  - Database design and normalization
+  - Indexing and optimization
+  - Stored procedures and triggers
+  - Transaction management
+
+NoSQL DATABASES:
+----------------
+• MongoDB - Document-oriented database
+• JSON data modeling
+• CRUD operations
+• Aggregation pipelines
+• Schema design for flexible data
+
+DATABASE SKILLS:
+----------------
+• Database schema design
+• Query optimization
+• Data modeling
+• Migration strategies
+• Backup and recovery concepts
+
+================================================================================
+TOOLS & PLATFORMS
+================================================================================
+
+VERSION CONTROL:
+----------------
+• Git - Distributed version control system
+  - Branching and merging strategies
+  - Commit best practices
+  - Conflict resolution
+  - Git workflows (Feature branch, Gitflow)
+
+• GitHub - Code collaboration and hosting
+  - Pull requests and code reviews
+  - Issue tracking
+  - GitHub Actions (CI/CD basics)
+  - Repository management
+
+DEVELOPMENT ENVIRONMENTS:
+-------------------------
+• Visual Studio Code - Primary IDE
+  - Extensions and customization
+  - Debugging capabilities
+  - Integrated terminal
+  - Git integration
+
+• Jupyter Notebook - Data science and experimentation
+  - Interactive Python development
+  - Data visualization
+  - Documentation with markdown
+  - Reproducible research
+
+AUTOMATION & TESTING:
+---------------------
+• Selenium WebDriver - Browser automation
+• Chrome DevTools Protocol - Advanced browser control
+• Postman - API testing and documentation
+• Unit testing frameworks (pytest, Jest)
+
+CLOUD & DEPLOYMENT:
+-------------------
+• Azure Services - Document Intelligence, Cloud basics
+• RESTful API deployment
+• Environment configuration
+• Basic DevOps understanding
+
+================================================================================
+SOFTWARE DEVELOPMENT PRACTICES
+================================================================================
+
+CODE QUALITY:
+-------------
+• Clean Code principles
+• DRY (Don't Repeat Yourself)
+• SOLID principles
+• Code documentation
+• Meaningful variable and function naming
+
+ARCHITECTURE & DESIGN:
+----------------------
+• Modular architecture
+• Component-based design
+• Separation of concerns
+• Design patterns basics
+• Scalable system design
+
+WORKFLOW & METHODOLOGY:
+-----------------------
+• Agile development
+• Git/GitHub workflows
+• Code reviews
+• Documentation practices
+• Testing and debugging strategies
+
+PERFORMANCE OPTIMIZATION:
+-------------------------
+• Code profiling and optimization
+• Load time reduction
+• Memory management
+• Algorithm optimization
+• Caching strategies
+
+================================================================================
+ADDITIONAL TECHNICAL COMPETENCIES
+================================================================================
+
+• API Integration - Third-party service integration
+• Data Structures & Algorithms - Strong foundation for problem-solving
+• Regular Expressions - Pattern matching and text processing
+• JSON/XML - Data interchange formats
+• Command Line - Shell scripting, terminal proficiency
+• Package Management - npm, pip, conda
+• Cross-platform Development - Web, desktop, considerations
+• Responsive Design - Mobile-first, adaptive layouts
+• Web Security - Basic understanding of common vulnerabilities
+
+================================================================================
+CONTINUOUS LEARNING
+================================================================================
+
+• Staying updated with latest technology trends
+• Exploring emerging frameworks and tools
+• Participating in online courses and certifications
+• Contributing to open-source projects
+• Reading technical documentation and articles
+• Experimenting with new technologies through personal projects
+
+================================================================================
