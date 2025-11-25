@@ -28,6 +28,10 @@ class Terminal extends Component {
     this.generateInputRow(this.state.curInputTimes)
   }
 
+  componentWillUnmount() {
+    // Clean up any event listeners if needed
+  }
+
   reset = () => {
     const terminalContent = document.querySelector('#terminal-content')
     if (terminalContent) {
@@ -313,7 +317,7 @@ class Terminal extends Component {
       <div key={`terminal-input-row-${id}`} className="flex items-center">
         <div className="flex items-center space-x-2 flex-shrink-0">
           <span className="text-green-400 font-semibold">
-            user@windows
+            tanveer@windows
           </span>
           <span className="text-blue-400 font-semibold">
             {this.getCurDirName()}
@@ -349,7 +353,7 @@ class Terminal extends Component {
       >
         {/* Welcome Message */}
         <div className="text-cyan-400 mb-3">
-          <div className="text-lg font-bold">Tanveer&apos;s Terminal Resume</div>
+          <div className="text-lg font-bold">Tanveer&apos;s Terminal</div>
           <div className="text-xs text-gray-400 mt-1">Interactive Portfolio Terminal - Explore my professional journey</div>
         </div>
         
