@@ -46,7 +46,7 @@ style.textContent = `
 `
 document.head.appendChild(style)
 
-export default function Notepad() {
+export default function Notepad({ windowData }) {
   const [currentFile, setCurrentFile] = useState('about-me')
   const [noteContent, setNoteContent] = useState('')
   const [loading, setLoading] = useState(false)
@@ -76,6 +76,13 @@ export default function Notepad() {
       icon: getNoteIcon(note.id)
     }))
   )
+
+  // Set initial file from window data if provided
+  useEffect(() => {
+    if (windowData?.data?.initialFile) {
+      setCurrentFile(windowData.data.initialFile)
+    }
+  }, [windowData?.data?.initialFile])
 
   useEffect(() => {
     const note = allNotes.find(n => n.id === currentFile)

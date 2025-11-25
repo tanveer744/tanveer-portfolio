@@ -1,5 +1,13 @@
 import { Component } from 'react'
 import terminal from '@/config/terminal'
+import { useStore } from '@/stores'
+import notepadData from '@/config/notepad'
+
+// Wrapper component to provide store to Terminal class
+export function TerminalWrapper(props) {
+  const store = useStore()
+  return <Terminal {...props} store={store} />
+}
 
 class Terminal extends Component {
   constructor(props) {
@@ -138,6 +146,49 @@ class Terminal extends Component {
         <span className="text-red-400">{`cat: ${args}: No such file or directory`}</span>
       )
     } else {
+      // Check if this is a project file - strip .txt extension
+      const fileName = args.endsWith('.txt') ? args.slice(0, -4) : args
+      
+      // Map terminal file names to notepad project IDs
+      const projectMapping = {
+        'road_rage_detection': 'road-rage',
+        'linkedin_automation_tool': 'linkedin-automator',
+        'hackrx_query_system': 'query-document'
+      }
+      
+      const projectId = projectMapping[fileName]
+      
+      // If it's a project file, open in Notepad instead
+      if (projectId && this.props.store) {
+        const notepadNote = notepadData
+          .flatMap(section => section.notes)
+          .find(note => note.id === projectId)
+        
+        if (notepadNote) {
+          // Open the file in Notepad app
+          this.props.store.addWindow({
+            appId: 'notepad',
+            title: `Notepad - ${notepadNote.title}`,
+            icon: '📝',
+            x: 200,
+            y: 100,
+            width: 900,
+            height: 700,
+            minWidth: 400,
+            minHeight: 300,
+            data: {
+              initialFile: projectId
+            }
+          })
+          
+          this.generateResultRow(
+            this.state.curInputTimes,
+            <span className="text-green-400">✓ Opening {notepadNote.title} in Notepad...</span>
+          )
+          return
+        }
+      }
+      
       // Show loading message
       this.generateResultRow(
         this.state.curInputTimes,
@@ -207,6 +258,14 @@ class Terminal extends Component {
         </div>
         <div className="text-cyan-400 mt-3">
           📁 Available folders: about, projects, experience, education, skills, certifications, achievements, interests
+        </div>
+        <div className="text-blue-300 mt-3">
+          🚀 Projects: Access projects from the projects folder:
+        </div>
+        <div className="text-gray-300 ml-4 mt-1">
+          <div>cat road_rage_detection - Opens in Notepad</div>
+          <div>cat linkedin_automation_tool - Opens in Notepad</div>
+          <div>cat hackrx_query_system - Opens in Notepad</div>
         </div>
       </div>
     )
@@ -358,7 +417,7 @@ class Terminal extends Component {
         </div>
         
         <div className="mb-3 text-gray-300">
-          <span className="text-green-400">✓</span> Welcome! Type <span className="text-cyan-400">help</span> to see available commands or <span className="text-cyan-400">cat readme.txt</span> to get started.
+          <span className="text-green-400">✓</span> Welcome! Type <span className="text-cyan-400">help</span> to see available commands.
         </div>
 
         {/* Terminal Content */}
@@ -370,4 +429,4 @@ class Terminal extends Component {
   }
 }
 
-export default Terminal
+export default TerminalWrapper

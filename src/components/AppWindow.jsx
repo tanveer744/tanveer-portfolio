@@ -507,7 +507,7 @@ export default function AppWindow({ window: windowData }) {
 
         {/* Window Content */}
         <div className="window-content flex-1 bg-white dark:bg-gray-900 overflow-auto">
-          <AppContent appId={windowData.appId} />
+          <AppContent appId={windowData.appId} windowData={windowData} />
         </div>
 
         {/* Resize Handles - only show when not maximized/fullscreen */}
@@ -536,9 +536,9 @@ import Terminal from './apps/Terminal'
 import Camera from './apps/Camera'
 
 // Placeholder content for different apps
-function AppContent({ appId }) {
+function AppContent({ appId, windowData }) {
   const contentMap = {
-    notepad: <Notepad />,
+    notepad: <Notepad windowData={windowData} />,
     edge: <BrowserContent />,
     vscode: <VSCodeContent />,
     terminal: <Terminal />,
