@@ -430,12 +430,29 @@ export default function AppWindow({ window: windowData }) {
         >
           {/* Left - App Icon & Title */}
           <div className="flex items-center gap-2 flex-1 min-w-0 pointer-events-none">
-            {typeof windowData.icon === 'string' && windowData.icon.startsWith('http') ? (
-              <img src={windowData.icon} alt={windowData.title} className="w-4 h-4 flex-shrink-0" />
+            {windowData.icon ? (
+              typeof windowData.icon === 'string' ? (
+                windowData.icon.startsWith('http') || windowData.icon.startsWith('/') ? (
+                  <img 
+                    src={windowData.icon} 
+                    alt={windowData.title} 
+                    className="w-4 h-4 flex-shrink-0 object-contain"
+                    onError={(e) => {
+                      // Fallback to a default icon if the image fails to load
+                      e.target.style.display = 'none'
+                      e.target.nextSibling.style.display = 'inline'
+                    }}
+                  />
+                ) : (
+                  <span className="text-sm w-4 h-4 flex items-center justify-center">{windowData.icon}</span>
+                )
+              ) : (
+                <span className="text-sm w-4 h-4 flex items-center justify-center">{windowData.icon}</span>
+              )
             ) : (
-              <span className="text-sm">{windowData.icon}</span>
+              <div className="w-4 h-4 bg-gray-300 rounded-sm flex-shrink-0"></div>
             )}
-            <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
+            <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate ml-1">
               {windowData.title}
             </span>
           </div>

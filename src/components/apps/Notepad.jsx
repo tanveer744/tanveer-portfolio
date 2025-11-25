@@ -127,11 +127,25 @@ export default function Notepad() {
   const loadNote = async (file) => {
     setLoading(true)
     try {
-      const response = await fetch(file)
+      // Ensure the path starts with a slash and is relative to the public directory
+      const filePath = file.startsWith('/') ? file : `/${file}`
+      const response = await fetch(filePath)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const text = await response.text()
+      
+      // If the response is empty, throw an error
+      if (!text || text.trim() === '') {
+        throw new Error('Empty content received')
+      }
+      
       setNoteContent(text)
     } catch (error) {
-      setNoteContent(`# Error Loading Content\n\nCould not load: ${file}`)
+      console.error('Error loading note:', error)
+      setNoteContent(`# Error Loading Content\n\n**File:** ${file}\n\n**Error:** ${error.message || 'Unknown error occurred'}\n\nPlease check the console for more details.`)
     } finally {
       setLoading(false)
     }
