@@ -28,6 +28,8 @@ export default function Login({ onLogin }) {
   const [pin, setPin] = useState('')
   const [shake, setShake] = useState(false)
   const [attempts, setAttempts] = useState(0)
+  // track whether avatar image loaded successfully to hide fallback svg
+  const [imageLoaded, setImageLoaded] = useState(false)
   const [hintMessage, setHintMessage] = useState('')
   const [showHint, setShowHint] = useState(false)
 
@@ -108,11 +110,22 @@ export default function Login({ onLogin }) {
       <div className="relative z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-5">
         {/* User Avatar */}
         <div 
-          className="w-36 h-36 rounded-full bg-white flex items-center justify-center shadow-2xl"
+          className="relative w-36 h-36 rounded-full bg-white flex items-center justify-center shadow-2xl overflow-hidden"
         >
-          <svg className="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+          {/* Image falls back to embedded SVG if it fails to load */}
+          <img
+            src="/img/Profile1.png"
+            alt="Shaik Tanveer"
+            className="w-full h-full object-cover"
+            onLoad={() => setImageLoaded(true)}
+            onError={(e) => { e.target.style.display = 'none'; setImageLoaded(false) }}
+          />
+          {/* only show fallback SVG when image isn't available */}
+          {!imageLoaded && (
+            <svg className="w-20 h-20 text-gray-400 absolute" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
           </svg>
+          )}
         </div>
         
         {/* Username */}
