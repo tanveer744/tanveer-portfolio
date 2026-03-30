@@ -561,8 +561,9 @@ export default function AppWindow({ window: windowData }) {
             {/* Minimize */}
             <button
               onClick={handleMinimize}
-              className="w-11 h-8 hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 transition-colors flex items-center justify-center group"
+              className="w-11 h-8 hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-400 dark:focus-visible:ring-blue-300 transition-colors flex items-center justify-center group"
               title="Minimize"
+              aria-label="Minimize window"
             >
               <svg className="w-3 h-3" viewBox="0 0 12 12">
                 <rect x="0" y="5" width="12" height="2" className="fill-gray-700 dark:fill-gray-300" />
@@ -572,8 +573,9 @@ export default function AppWindow({ window: windowData }) {
             {/* Maximize/Restore */}
             <button
               onClick={handleMaximize}
-              className="w-11 h-8 hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 transition-colors flex items-center justify-center group"
+              className="w-11 h-8 hover:bg-gray-200 dark:hover:bg-gray-700 active:bg-gray-300 dark:active:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-400 dark:focus-visible:ring-blue-300 transition-colors flex items-center justify-center group"
               title={windowData.isMaximized ? "Restore Down" : "Maximize"}
+              aria-label={windowData.isMaximized ? "Restore window" : "Maximize window"}
             >
               {windowData.isMaximized ? (
                 <svg className="w-3 h-3" viewBox="0 0 12 12">
@@ -590,8 +592,9 @@ export default function AppWindow({ window: windowData }) {
             {/* Close */}
             <button
               onClick={handleClose}
-              className="w-11 h-8 hover:bg-red-500 active:bg-red-600 transition-colors flex items-center justify-center group"
+              className="w-11 h-8 hover:bg-red-500 active:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-400 transition-colors flex items-center justify-center group"
               title="Close"
+              aria-label="Close window"
             >
               <svg className="w-3 h-3" viewBox="0 0 12 12">
                 <path

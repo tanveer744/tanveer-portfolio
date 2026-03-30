@@ -190,10 +190,12 @@ export default function Taskbar() {
           {/* Start Button */}
           <button
             onClick={toggleStartMenu}
-            className={`h-12 w-12 flex items-center justify-center transition-all duration-200 hover:bg-white/10 hover:scale-[1.03] ${
+            className={`h-12 w-12 flex items-center justify-center transition-all duration-200 hover:bg-white/10 hover:scale-[1.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset rounded ${
               showStartMenu ? 'bg-white/10' : ''
             }`}
             title="Start"
+            aria-label="Start menu"
+            aria-expanded={showStartMenu}
           >
             <div className="grid grid-cols-2 gap-[2px] w-5 h-5">
               <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-[1px]" />
@@ -220,7 +222,8 @@ export default function Taskbar() {
               }}
               onFocus={() => setShowSearchResults(true)}
               placeholder="Type here to search..."
-              className="flex-1 bg-transparent text-sm text-white placeholder-white/70 font-['Segoe_UI'] focus:outline-none"
+              className="flex-1 bg-transparent text-sm text-white placeholder-white/70 font-['Segoe_UI'] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-0 rounded"
+              aria-label="Search apps and files"
             />
           </div>
 
@@ -249,19 +252,21 @@ export default function Taskbar() {
               >
                 <button
                   onClick={() => handleAppClick(app)}
-                  className={`h-12 w-12 rounded-md hover:bg-white/10 active:bg-white/5 transition-all flex items-center justify-center ${
+                  className={`h-12 w-12 rounded-md hover:bg-white/10 active:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all flex items-center justify-center ${
                     isActive ? 'bg-white/15' : ''
                   }`}
                   title={app.title}
+                  aria-label={`${app.title}${isRunning ? ' (running)' : ''}`}
                 >
-                  <img src={app.icon} alt={app.title} className="w-6 h-6" />
+                  <img src={app.icon} alt="" className="w-6 h-6" />
                 </button>
                 {/* Windows 11 Style Running Indicator - Animated Underline */}
                 {isRunning && (
                   <div 
                     className={`taskbar-indicator ${
                       isActive ? 'taskbar-indicator-active' : 'taskbar-indicator-inactive'
-                    }`} 
+                    }`}
+                    aria-hidden="true"
                   />
                 )}
                 {/* Thumbnail Preview */}
@@ -287,28 +292,30 @@ export default function Taskbar() {
                 setShowQuickSettings(!showQuickSettings)
                 setShowCalendar(false)
               }}
-              className="flex items-center h-10 px-3 rounded-md hover:bg-white/10 transition-all gap-3"
+              className="flex items-center h-10 px-3 rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all gap-3"
+              aria-label="Quick settings"
+              aria-expanded={showQuickSettings}
             >
               {/* Caret Up */}
-              <span className="text-white/80 hover:text-white transition-colors" title="Show hidden icons">
+              <span className="text-white/80 hover:text-white transition-colors" title="Show hidden icons" aria-hidden="true">
                 <IoChevronUp className="w-4 h-4" />
               </span>
               
               {/* Divider */}
-              <div className="w-px h-5 bg-white/10" />
+              <div className="w-px h-5 bg-white/10" aria-hidden="true" />
               
               {/* WiFi */}
-              <span className="text-white/80 hover:text-white transition-colors" title="Network">
+              <span className="text-white/80 hover:text-white transition-colors" title="Network" aria-hidden="true">
                 <IoWifiSharp className="w-5 h-5" />
               </span>
               
               {/* Volume */}
-              <span className="text-white/80 hover:text-white transition-colors" title="Volume">
+              <span className="text-white/80 hover:text-white transition-colors" title="Volume" aria-hidden="true">
                 <IoVolumeHigh className="w-5 h-5" />
               </span>
               
               {/* Battery */}
-              <span className="text-white/80 hover:text-white transition-colors" title="Battery">
+              <span className="text-white/80 hover:text-white transition-colors" title="Battery" aria-hidden="true">
                 <IoBatteryFull className="w-6 h-6" />
               </span>
             </button>
@@ -326,8 +333,10 @@ export default function Taskbar() {
                 setShowCalendar(!showCalendar)
                 setShowQuickSettings(false)
               }}
-              className="h-11 px-3 rounded-md hover:bg-white/10 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[80px]"
+              className="h-11 px-3 rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[80px]"
               title="Date and Time"
+              aria-label={`Current time: ${currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`}
+              aria-expanded={showCalendar}
             >
               <div className="text-[11px] font-medium">
                 {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
@@ -345,8 +354,9 @@ export default function Taskbar() {
 
           {/* Notification Center */}
           <button
-            className="h-10 w-10 rounded-md hover:bg-white/10 transition-all flex items-center justify-center"
+            className="h-10 w-10 rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all flex items-center justify-center"
             title="Notification Center"
+            aria-label="Notification Center"
           >
             <IoNotificationsOutline className="w-5 h-5 text-white/80" />
           </button>
