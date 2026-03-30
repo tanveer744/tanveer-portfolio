@@ -3,16 +3,22 @@ import { useState, useRef, useEffect } from 'react'
 export default function Camera() {
   const [isRecording, setIsRecording] = useState(false)
   const [capturedPhotos, setCapturedPhotos] = useState([])
+  const [recordedVideos, setRecordedVideos] = useState([])
   const [selectedPhoto, setSelectedPhoto] = useState(null)
+  const [selectedVideo, setSelectedVideo] = useState(null)
   const [cameraActive, setCameraActive] = useState(false)
   const [cameraError, setCameraError] = useState(null)
   const [activeMode, setActiveMode] = useState('photo') // 'photo' or 'video'
   const [countdown, setCountdown] = useState(null)
   const [flashEffect, setFlashEffect] = useState(false)
+  const [recordingDuration, setRecordingDuration] = useState(0)
   
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
+  const mediaRecorderRef = useRef(null)
+  const recordedChunksRef = useRef([])
+  const recordingTimerRef = useRef(null)
 
   // Initialize camera on mount
   useEffect(() => {
@@ -190,6 +196,112 @@ export default function Camera() {
     link.click()
   }
 
+  // Video recording functions
+  const startRecording = async () => {
+    if (!streamRef.current) return
+
+    try {
+      recordedChunksRef.current = []
+      
+      const options = {
+        mimeType: 'video/webm;codecs=vp9',
+        videoBitsPerSecond: 2500000
+      }
+
+      // Fallback for browsers that don't support vp9
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options.mimeType = 'video/webm'
+      }
+
+      const mediaRecorder = new MediaRecorder(streamRef.current, options)
+      mediaRecorderRef.current = mediaRecorder
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedChunksRef.current.push(event.data)
+        }
+      }
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunksRef.current, {
+          type: 'video/webm'
+        })
+        const videoURL = URL.createObjectURL(blob)
+
+        const newVideo = {
+          id: Date.now(),
+          data: videoURL,
+          blob: blob,
+          timestamp: new Date().toLocaleString(),
+          duration: recordingDuration
+        }
+
+        setRecordedVideos(prev => [newVideo, ...prev])
+        setRecordingDuration(0)
+        
+        if (recordingTimerRef.current) {
+          clearInterval(recordingTimerRef.current)
+          recordingTimerRef.current = null
+        }
+      }
+
+      mediaRecorder.start()
+      setIsRecording(true)
+      setRecordingDuration(0)
+
+      // Start duration timer
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingDuration(prev => prev + 1)
+      }, 1000)
+    } catch (error) {
+      console.error('Error starting recording:', error)
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+      setIsRecording(false)
+    }
+  }
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording()
+    } else {
+      startRecording()
+    }
+  }
+
+  const deleteVideo = (videoId) => {
+    setRecordedVideos(prev => prev.filter(video => video.id !== videoId))
+    if (selectedVideo?.id === videoId) {
+      setSelectedVideo(null)
+    }
+  }
+
+  const downloadVideo = (video) => {
+    const link = document.createElement('a')
+    link.href = video.data
+    link.download = `video_${video.id}.webm`
+    link.click()
+  }
+
+  const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
+  // Cleanup recording timer on unmount
+  useEffect(() => {
+    return () => {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current)
+      }
+    }
+  }, [])
+
   return (
     <div className="w-full h-full flex flex-col bg-black">
       {/* Top Toolbar */}
@@ -324,7 +436,7 @@ export default function Camera() {
                     </button>
                   ) : (
                     <button
-                      onClick={() => setIsRecording(!isRecording)}
+                      onClick={toggleRecording}
                       className={`w-16 h-16 rounded-full border-4 transition-all shadow-lg ${
                         isRecording
                           ? 'border-red-600 bg-red-600'
@@ -333,20 +445,30 @@ export default function Camera() {
                       title={isRecording ? 'Stop recording' : 'Start recording'}
                     >
                       <div className={`w-full h-full transition-all ${
-                        isRecording ? 'bg-red-600 rounded-sm scale-50' : 'bg-red-600 rounded-full'
+                        isRecording ? 'bg-white rounded-sm scale-50' : 'bg-red-600 rounded-full'
                       }`} />
                     </button>
                   )}
 
                   {/* Gallery Button */}
                   <button
-                    onClick={() => setSelectedPhoto(capturedPhotos[0] || null)}
+                    onClick={() => {
+                      if (activeMode === 'photo') {
+                        setSelectedPhoto(capturedPhotos[0] || null)
+                      } else {
+                        setSelectedVideo(recordedVideos[0] || null)
+                      }
+                    }}
                     className="w-10 h-10 bg-gray-800/80 hover:bg-gray-700 rounded-lg overflow-hidden transition-colors border border-gray-600"
-                    disabled={capturedPhotos.length === 0}
+                    disabled={activeMode === 'photo' ? capturedPhotos.length === 0 : recordedVideos.length === 0}
                     title="View gallery"
                   >
-                    {capturedPhotos.length > 0 ? (
+                    {activeMode === 'photo' && capturedPhotos.length > 0 ? (
                       <img src={capturedPhotos[0].data} alt="Latest" className="w-full h-full object-cover" />
+                    ) : activeMode === 'video' && recordedVideos.length > 0 ? (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-700">
+                        <span className="text-white text-xl">▶️</span>
+                      </div>
                     ) : (
                       <span className="text-white text-lg">🖼️</span>
                     )}
@@ -357,8 +479,8 @@ export default function Camera() {
           )}
         </div>
 
-        {/* Photo Gallery Sidebar */}
-        {capturedPhotos.length > 0 && !selectedPhoto && (
+        {/* Photo/Video Gallery Sidebar */}
+        {activeMode === 'photo' && capturedPhotos.length > 0 && !selectedPhoto && !selectedVideo && (
           <div className="w-80 bg-gray-900 border-l border-gray-800 overflow-y-auto">
             <div className="p-4">
               <h3 className="text-white font-medium mb-4">Recent Photos ({capturedPhotos.length})</h3>
@@ -396,6 +518,52 @@ export default function Camera() {
                     </div>
                     <div className="p-2">
                       <p className="text-xs text-gray-400">{photo.timestamp}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Video Gallery Sidebar */}
+        {activeMode === 'video' && recordedVideos.length > 0 && !selectedPhoto && !selectedVideo && (
+          <div className="w-80 bg-gray-900 border-l border-gray-800 overflow-y-auto">
+            <div className="p-4">
+              <h3 className="text-white font-medium mb-4">Recorded Videos ({recordedVideos.length})</h3>
+              <div className="space-y-3">
+                {recordedVideos.map(video => (
+                  <div
+                    key={video.id}
+                    className="group relative bg-gray-800 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
+                    onClick={() => setSelectedVideo(video)}
+                  >
+                    <div className="w-full h-40 bg-gray-700 flex items-center justify-center">
+                      <span className="text-6xl">▶️</span>
+                    </div>
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          downloadVideo(video)
+                        }}
+                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
+                      >
+                        💾 Save
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          deleteVideo(video.id)
+                        }}
+                        className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition-colors"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                    <div className="p-2">
+                      <p className="text-xs text-gray-400">{video.timestamp}</p>
+                      <p className="text-xs text-gray-500">Duration: {formatDuration(video.duration)}</p>
                     </div>
                   </div>
                 ))}
@@ -446,13 +614,59 @@ export default function Camera() {
             </div>
           </div>
         )}
+
+        {/* Video Viewer */}
+        {selectedVideo && (
+          <div className="absolute inset-0 bg-black z-50 flex flex-col">
+            {/* Viewer Toolbar */}
+            <div className="h-12 bg-gray-900/90 backdrop-blur-sm flex items-center justify-between px-4">
+              <button
+                onClick={() => setSelectedVideo(null)}
+                className="px-4 py-1.5 text-white hover:bg-gray-800 rounded transition-colors flex items-center gap-2"
+              >
+                ← Back
+              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => downloadVideo(selectedVideo)}
+                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                >
+                  💾 Save
+                </button>
+                <button
+                  onClick={() => deleteVideo(selectedVideo.id)}
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+            
+            {/* Video Display */}
+            <div className="flex-1 flex items-center justify-center p-4">
+              <video
+                src={selectedVideo.data}
+                controls
+                autoPlay
+                className="max-w-full max-h-full"
+              />
+            </div>
+            
+            {/* Video Info */}
+            <div className="h-16 bg-gray-900/90 backdrop-blur-sm flex items-center justify-center gap-4">
+              <p className="text-gray-400 text-sm">{selectedVideo.timestamp}</p>
+              <span className="text-gray-600">•</span>
+              <p className="text-gray-400 text-sm">Duration: {formatDuration(selectedVideo.duration)}</p>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Recording Indicator */}
+      {/* Recording Indicator with Duration */}
       {isRecording && (
         <div className="absolute top-16 right-4 bg-red-600 text-white px-3 py-1.5 rounded-full flex items-center gap-2 animate-pulse">
           <div className="w-2 h-2 bg-white rounded-full" />
-          <span className="text-sm font-medium">Recording</span>
+          <span className="text-sm font-medium">REC {formatDuration(recordingDuration)}</span>
         </div>
       )}
     </div>

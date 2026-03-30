@@ -54,6 +54,13 @@ export default function Notepad({ windowData }) {
   const [fontSize, setFontSize] = useState(14)
   const [wordWrap, setWordWrap] = useState(true)
   const [selectedIndex, setSelectedIndex] = useState(0)
+  
+  // Find functionality
+  const [showFindBar, setShowFindBar] = useState(false)
+  const [findText, setFindText] = useState('')
+  const [matchCount, setMatchCount] = useState(0)
+  const [currentMatch, setCurrentMatch] = useState(0)
+  const [highlightedContent, setHighlightedContent] = useState('')
 
   // Function to get appropriate icon based on note ID
   const getNoteIcon = (noteId) => {
@@ -92,9 +99,68 @@ export default function Notepad({ windowData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFile])
 
+  // Highlight matches in content
+  useEffect(() => {
+    if (findText && noteContent) {
+      const regex = new RegExp(`(${findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+      const matches = noteContent.match(regex)
+      setMatchCount(matches ? matches.length : 0)
+      
+      // Reset current match if search changed
+      if (currentMatch > (matches?.length || 0)) {
+        setCurrentMatch(matches?.length || 0)
+      }
+    } else {
+      setMatchCount(0)
+      setCurrentMatch(0)
+    }
+  }, [findText, noteContent, currentMatch])
+
+  // Navigate to next match
+  const findNext = () => {
+    if (matchCount > 0) {
+      setCurrentMatch(prev => (prev >= matchCount ? 1 : prev + 1))
+    }
+  }
+
+  // Navigate to previous match
+  const findPrevious = () => {
+    if (matchCount > 0) {
+      setCurrentMatch(prev => (prev <= 1 ? matchCount : prev - 1))
+    }
+  }
+
   // Keyboard shortcuts handler
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Ctrl + F to open Find bar
+      if (e.ctrlKey && e.key.toLowerCase() === 'f') {
+        e.preventDefault()
+        setShowFindBar(true)
+        setTimeout(() => {
+          document.getElementById('find-input')?.focus()
+        }, 100)
+      }
+      
+      // Esc to close Find bar
+      if (e.key === 'Escape' && showFindBar) {
+        e.preventDefault()
+        setShowFindBar(false)
+        setFindText('')
+      }
+      
+      // F3 to find next
+      if (e.key === 'F3' && !e.shiftKey) {
+        e.preventDefault()
+        findNext()
+      }
+      
+      // Shift + F3 to find previous
+      if (e.key === 'F3' && e.shiftKey) {
+        e.preventDefault()
+        findPrevious()
+      }
+      
       // Alt + F to toggle File menu
       if (e.altKey && e.key.toLowerCase() === 'f') {
         e.preventDefault()
@@ -156,6 +222,35 @@ export default function Notepad({ windowData }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Helper function to highlight search matches in text
+  const highlightMatches = (text) => {
+    if (!findText || typeof text !== 'string') return text
+    
+    const regex = new RegExp(`(${findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+    const parts = text.split(regex)
+    
+    let matchIndex = 0
+    return parts.map((part, i) => {
+      if (part.toLowerCase() === findText.toLowerCase()) {
+        matchIndex++
+        const isCurrentMatch = matchIndex === currentMatch
+        return (
+          <mark
+            key={i}
+            className={`${
+              isCurrentMatch
+                ? 'bg-yellow-400 text-gray-900'
+                : 'bg-yellow-200 text-gray-900'
+            } px-0.5 rounded`}
+          >
+            {part}
+          </mark>
+        )
+      }
+      return part
+    })
   }
 
   const currentNote = allNotes.find(n => n.id === currentFile)
@@ -325,6 +420,71 @@ export default function Notepad({ windowData }) {
         </div>
       )}
 
+      {/* Find Bar */}
+      {showFindBar && (
+        <div className="h-12 bg-yellow-50 border-b border-yellow-200 flex items-center px-4 gap-3">
+          <div className="flex items-center gap-2 flex-1">
+            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              id="find-input"
+              type="text"
+              value={findText}
+              onChange={(e) => setFindText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  findNext()
+                } else if (e.key === 'Enter' && e.shiftKey) {
+                  e.preventDefault()
+                  findPrevious()
+                }
+              }}
+              placeholder="Find in document..."
+              className="flex-1 px-3 py-1.5 bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            />
+            {matchCount > 0 && (
+              <span className="text-xs text-gray-600 whitespace-nowrap">
+                {currentMatch} of {matchCount}
+              </span>
+            )}
+            <button
+              onClick={findPrevious}
+              disabled={matchCount === 0}
+              className="p-1.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Previous match (Shift+F3)"
+            >
+              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            </button>
+            <button
+              onClick={findNext}
+              disabled={matchCount === 0}
+              className="p-1.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Next match (F3)"
+            >
+              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => {
+                setShowFindBar(false)
+                setFindText('')
+              }}
+              className="p-1.5 hover:bg-gray-200 rounded transition-colors"
+              title="Close (Esc)"
+            >
+              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
@@ -364,8 +524,10 @@ export default function Notepad({ windowData }) {
                     <h3 {...props} className="text-xl font-bold mb-2 mt-4 text-gray-900" />
                   ),
                   // Custom paragraph styling
-                  p: ({ ...props }) => (
-                    <p {...props} className="mb-4 text-gray-700 leading-relaxed" />
+                  p: ({ children, ...props }) => (
+                    <p {...props} className="mb-4 text-gray-700 leading-relaxed">
+                      {findText ? highlightMatches(children) : children}
+                    </p>
                   ),
                   // Custom list styling
                   ul: ({ ...props }) => (
@@ -374,21 +536,27 @@ export default function Notepad({ windowData }) {
                   ol: ({ ...props }) => (
                     <ol {...props} className="mb-4 ml-6 list-decimal text-gray-700" />
                   ),
-                  li: ({ ...props }) => (
-                    <li {...props} className="mb-2" />
+                  li: ({ children, ...props }) => (
+                    <li {...props} className="mb-2">
+                      {findText ? highlightMatches(children) : children}
+                    </li>
                   ),
                   // Custom code block styling
-                  code: ({ inline, ...props }) =>
+                  code: ({ inline, children, ...props }) =>
                     inline ? (
                       <code
                         {...props}
                         className="px-1.5 py-0.5 bg-gray-100 text-gray-800 rounded text-sm font-mono"
-                      />
+                      >
+                        {findText ? highlightMatches(children) : children}
+                      </code>
                     ) : (
                       <code 
                         {...props} 
-                        className="block p-4 bg-gray-100 text-gray-800 rounded-lg overflow-x-auto text-sm font-mono my-4" 
-                      />
+                        className="block p-4 bg-gray-100 text-gray-800 rounded-lg overflow-x-auto text-sm font-mono my-4"
+                      >
+                        {children}
+                      </code>
                     ),
                   // Custom blockquote styling
                   blockquote: ({ ...props }) => (
@@ -435,13 +603,17 @@ export default function Notepad({ windowData }) {
       {/* Status Bar */}
       <div className="h-7 bg-gray-50 border-t border-gray-200 flex items-center justify-between px-4 select-none" style={{ fontSize: '12px', color: '#6b7280' }}>
         <div className="flex items-center gap-3">
-          <span className="opacity-70">Press <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Alt + F</kbd> to open File menu</span>
+          <span className="opacity-70">
+            <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Ctrl + F</kbd> Find
+          </span>
           <span className="opacity-50">•</span>
-          <span className="opacity-70"><kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Esc</kbd> to close</span>
+          <span className="opacity-70">
+            <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">F3</kbd> Next
+          </span>
           <span className="opacity-50">•</span>
-          <span className="opacity-70"><kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">↑</kbd>/<kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">↓</kbd> to navigate</span>
-          <span className="opacity-50">•</span>
-          <span className="opacity-70"><kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Enter</kbd> to open</span>
+          <span className="opacity-70">
+            <kbd className="px-1 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">Alt + F</kbd> File menu
+          </span>
         </div>
         <div className="flex items-center gap-3 opacity-70">
           <span>Zoom: {Math.round((fontSize / 14) * 100)}%</span>

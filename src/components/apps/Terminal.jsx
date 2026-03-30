@@ -18,7 +18,9 @@ class Terminal extends Component {
       curHistory: 0,
       curInputTimes: 0,
       curDirPath: [],
-      curChildren: terminal
+      curChildren: terminal,
+      activeTab: 0,
+      tabs: [{ id: 0, title: 'PowerShell' }]
     }
     
     this.commands = {
@@ -27,7 +29,13 @@ class Terminal extends Component {
       cat: this.cat,
       open: this.cat, // Alias for cat
       clear: this.clear,
-      help: this.help
+      help: this.help,
+      pwd: this.pwd,
+      echo: this.echo,
+      whoami: this.whoami,
+      neofetch: this.neofetch,
+      date: this.date,
+      hostname: this.hostname
     }
   }
 
@@ -240,6 +248,148 @@ class Terminal extends Component {
     })
   }
 
+  // Print working directory
+  pwd = () => {
+    const path = this.state.curDirPath.length === 0 
+      ? '/home/tanveer' 
+      : `/home/tanveer/${this.state.curDirPath.join('/')}`
+    this.generateResultRow(
+      this.state.curInputTimes,
+      <span className="text-gray-100">{path}</span>
+    )
+  }
+
+  // Echo text
+  echo = (args) => {
+    // Handle full command text after "echo "
+    const inputElement = document.querySelector(`#terminal-input-${this.state.curInputTimes}`)
+    const fullText = inputElement?.value || ''
+    const echoText = fullText.replace(/^echo\s*/, '')
+    this.generateResultRow(
+      this.state.curInputTimes,
+      <span className="text-gray-100">{echoText || ''}</span>
+    )
+  }
+
+  // Show current user
+  whoami = () => {
+    this.generateResultRow(
+      this.state.curInputTimes,
+      <span className="text-gray-100">tanveer</span>
+    )
+  }
+
+  // Get current date
+  date = () => {
+    const now = new Date()
+    const dateStr = now.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short'
+    })
+    this.generateResultRow(
+      this.state.curInputTimes,
+      <span className="text-gray-100">{dateStr}</span>
+    )
+  }
+
+  // Get hostname
+  hostname = () => {
+    this.generateResultRow(
+      this.state.curInputTimes,
+      <span className="text-gray-100">tanveer-portfolio</span>
+    )
+  }
+
+  // Neofetch - Fun system info display
+  neofetch = () => {
+    const neofetchArt = (
+      <div className="font-mono text-sm">
+        <div className="flex gap-6">
+          {/* ASCII Art Logo */}
+          <pre className="text-cyan-400 leading-tight">
+{`    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀
+    ⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀
+    ⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠋⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣿⣿⣿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`}
+          </pre>
+          
+          {/* System Info */}
+          <div className="space-y-1">
+            <div>
+              <span className="text-cyan-400 font-bold">tanveer</span>
+              <span className="text-gray-500">@</span>
+              <span className="text-cyan-400 font-bold">portfolio</span>
+            </div>
+            <div className="text-gray-500">──────────────────</div>
+            <div>
+              <span className="text-cyan-400 font-bold">OS:</span>
+              <span className="text-gray-100 ml-2">Windows 11 Portfolio Edition</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Host:</span>
+              <span className="text-gray-100 ml-2">React 18.2 + Vite</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Kernel:</span>
+              <span className="text-gray-100 ml-2">Tailwind CSS 3.4</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Shell:</span>
+              <span className="text-gray-100 ml-2">Portfolio Terminal v1.0</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">DE:</span>
+              <span className="text-gray-100 ml-2">Windows 11 Desktop</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Theme:</span>
+              <span className="text-gray-100 ml-2">Dark Mode / Fluent Design</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Icons:</span>
+              <span className="text-gray-100 ml-2">React Icons + Custom</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Terminal:</span>
+              <span className="text-gray-100 ml-2">Windows Terminal Style</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">CPU:</span>
+              <span className="text-gray-100 ml-2">JavaScript V8 Engine</span>
+            </div>
+            <div>
+              <span className="text-cyan-400 font-bold">Memory:</span>
+              <span className="text-gray-100 ml-2">Zustand State Management</span>
+            </div>
+            <div className="flex gap-1 mt-3">
+              <span className="w-4 h-4 rounded-sm bg-gray-900"></span>
+              <span className="w-4 h-4 rounded-sm bg-red-500"></span>
+              <span className="w-4 h-4 rounded-sm bg-green-500"></span>
+              <span className="w-4 h-4 rounded-sm bg-yellow-500"></span>
+              <span className="w-4 h-4 rounded-sm bg-blue-500"></span>
+              <span className="w-4 h-4 rounded-sm bg-purple-500"></span>
+              <span className="w-4 h-4 rounded-sm bg-cyan-500"></span>
+              <span className="w-4 h-4 rounded-sm bg-white"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+    this.generateResultRow(this.state.curInputTimes, neofetchArt)
+  }
+
   // Show help
   help = () => {
     const help = (
@@ -250,6 +400,12 @@ class Terminal extends Component {
           <div><span className="text-cyan-400">open &lt;file&gt;</span> - Display the content of a file (alias for cat)</div>
           <div><span className="text-cyan-400">cd &lt;dir&gt;</span> - Change directory (cd .. for parent, cd ~ for root)</div>
           <div><span className="text-cyan-400">ls</span> - List files and folders in current directory</div>
+          <div><span className="text-cyan-400">pwd</span> - Print current working directory</div>
+          <div><span className="text-cyan-400">echo &lt;text&gt;</span> - Print text to terminal</div>
+          <div><span className="text-cyan-400">whoami</span> - Show current user</div>
+          <div><span className="text-cyan-400">hostname</span> - Show system hostname</div>
+          <div><span className="text-cyan-400">date</span> - Show current date and time</div>
+          <div><span className="text-cyan-400">neofetch</span> - Display system info with ASCII art</div>
           <div><span className="text-cyan-400">clear</span> - Clear the terminal screen</div>
           <div><span className="text-cyan-400">help</span> - Display this help menu</div>
         </div>
@@ -406,23 +562,60 @@ class Terminal extends Component {
 
   render() {
     return (
-      <div
-        className="terminal h-full bg-gray-900 text-white font-mono text-sm overflow-y-auto p-4"
-        onClick={() => this.focusOnInput(this.state.curInputTimes)}
-      >
-        {/* Welcome Message */}
-        <div className="text-cyan-400 mb-3">
-          <div className="text-lg font-bold">Tanveer&apos;s Terminal</div>
-          <div className="text-xs text-gray-400 mt-1">Interactive Portfolio Terminal - Explore my professional journey</div>
-        </div>
-        
-        <div className="mb-3 text-gray-300">
-          <span className="text-green-400">✓</span> Welcome! Type <span className="text-cyan-400">help</span> to see available commands.
+      <div className="terminal h-full flex flex-col bg-[#0c0c0c] text-white font-mono text-sm overflow-hidden">
+        {/* Tab Bar - Windows Terminal Style */}
+        <div className="h-10 bg-[#1e1e1e]/95 backdrop-blur-md border-b border-white/5 flex items-center px-2 gap-1 select-none">
+          {this.state.tabs.map((tab, index) => (
+            <div
+              key={tab.id}
+              className={`h-8 px-3 rounded-t flex items-center gap-2 cursor-pointer transition-all ${
+                index === this.state.activeTab
+                  ? 'bg-[#0c0c0c] text-white'
+                  : 'bg-transparent text-gray-400 hover:bg-white/5'
+              }`}
+              onClick={() => this.setState({ activeTab: index })}
+            >
+              <span className="text-xs">⚡</span>
+              <span className="text-xs font-medium">{tab.title}</span>
+            </div>
+          ))}
+          <button
+            className="h-8 w-8 flex items-center justify-center text-gray-400 hover:bg-white/10 hover:text-white rounded transition-all"
+            title="New tab"
+          >
+            <span className="text-lg leading-none">+</span>
+          </button>
         </div>
 
-        {/* Terminal Content */}
-        <div id="terminal-content" className="space-y-1">
-          {this.state.content}
+        {/* Terminal Content Area with Acrylic Effect */}
+        <div
+          className="flex-1 overflow-y-auto p-4 bg-gradient-to-br from-[#0c0c0c] via-[#0c0c0c] to-[#1a1a2e]/30"
+          onClick={() => this.focusOnInput(this.state.curInputTimes)}
+          style={{
+            backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 50%)'
+          }}
+        >
+          {/* Welcome Message */}
+          <div className="text-cyan-400 mb-3">
+            <div className="text-lg font-bold flex items-center gap-2">
+              <span>⚡</span>
+              <span>Tanveer&apos;s Terminal</span>
+            </div>
+            <div className="text-xs text-gray-400 mt-1">
+              Interactive Portfolio Terminal - Explore my professional journey
+            </div>
+          </div>
+          
+          <div className="mb-3 text-gray-300">
+            <span className="text-green-400">✓</span> Welcome! Type{' '}
+            <span className="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded">help</span>{' '}
+            to see available commands.
+          </div>
+
+          {/* Terminal Content */}
+          <div id="terminal-content" className="space-y-1">
+            {this.state.content}
+          </div>
         </div>
       </div>
     )
