@@ -286,6 +286,11 @@ export const useStore = create((set) => ({
   })),
   resetIconPositions: () => set({ iconPositions: {} }),
   
+  // Desktop icon selection
+  selectedIcons: [],
+  setSelectedIcons: (icons) => set({ selectedIcons: icons }),
+  clearSelectedIcons: () => set({ selectedIcons: [] }),
+  
   // Page navigation
   currentPage: 'boot',
   setCurrentPage: (page) => set({ currentPage: page }),
