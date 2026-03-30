@@ -3,6 +3,9 @@ import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import WindowsSearch, { searchableItems } from '../WindowsSearch'
 import { getCenteredPosition } from '@/constants/layout'
+import TaskbarThumbnail from './TaskbarThumbnail'
+import CalendarPopup from './CalendarPopup'
+import QuickSettings from './QuickSettings'
 import { 
   IoSearchOutline,
   IoWifiSharp,
@@ -27,6 +30,10 @@ export default function Taskbar() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [searchQuery, setSearchQuery] = useState('')
   const [showSearchResults, setShowSearchResults] = useState(false)
+  const [hoveredApp, setHoveredApp] = useState(null)
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [showQuickSettings, setShowQuickSettings] = useState(false)
+  const hoverTimeoutRef = useRef(null)
   const searchInputRef = useRef(null)
 
   useEffect(() => {
@@ -226,7 +233,20 @@ export default function Taskbar() {
             const isActive = activeAppWindow && !activeAppWindow.isMinimized
             
             return (
-              <div key={app.id} className="relative flex flex-col items-center">
+              <div 
+                key={app.id} 
+                className="relative flex flex-col items-center"
+                onMouseEnter={() => {
+                  if (isRunning) {
+                    clearTimeout(hoverTimeoutRef.current)
+                    hoverTimeoutRef.current = setTimeout(() => setHoveredApp(app.id), 300)
+                  }
+                }}
+                onMouseLeave={() => {
+                  clearTimeout(hoverTimeoutRef.current)
+                  setHoveredApp(null)
+                }}
+              >
                 <button
                   onClick={() => handleAppClick(app)}
                   className={`h-12 w-12 rounded-md hover:bg-white/10 active:bg-white/5 transition-all flex items-center justify-center ${
@@ -236,12 +256,20 @@ export default function Taskbar() {
                 >
                   <img src={app.icon} alt={app.title} className="w-6 h-6" />
                 </button>
-                {/* Running Indicator Dot */}
+                {/* Windows 11 Style Running Indicator - Animated Underline */}
                 {isRunning && (
                   <div 
-                    className={`absolute -bottom-1 w-1 h-1 rounded-full transition-all ${
-                      isActive ? 'bg-white/90 scale-110' : 'bg-white/50'
+                    className={`taskbar-indicator ${
+                      isActive ? 'taskbar-indicator-active' : 'taskbar-indicator-inactive'
                     }`} 
+                  />
+                )}
+                {/* Thumbnail Preview */}
+                {hoveredApp === app.id && isRunning && (
+                  <TaskbarThumbnail 
+                    app={app} 
+                    windows={appWindows}
+                    onClose={() => setHoveredApp(null)}
                   />
                 )}
               </div>
@@ -252,44 +280,68 @@ export default function Taskbar() {
 
         {/* Right Section - System Tray */}
         <div className="flex items-center gap-1">
-          {/* System Tray Icons Group */}
-          <div className="flex items-center h-10 px-3 rounded-md hover:bg-white/10 transition-all gap-3">
-            {/* Caret Up */}
-            <button className="text-white/80 hover:text-white transition-colors" title="Show hidden icons">
-              <IoChevronUp className="w-4 h-4" />
+          {/* System Tray Icons Group - Opens Quick Settings */}
+          <div className="relative">
+            <button 
+              onClick={() => {
+                setShowQuickSettings(!showQuickSettings)
+                setShowCalendar(false)
+              }}
+              className="flex items-center h-10 px-3 rounded-md hover:bg-white/10 transition-all gap-3"
+            >
+              {/* Caret Up */}
+              <span className="text-white/80 hover:text-white transition-colors" title="Show hidden icons">
+                <IoChevronUp className="w-4 h-4" />
+              </span>
+              
+              {/* Divider */}
+              <div className="w-px h-5 bg-white/10" />
+              
+              {/* WiFi */}
+              <span className="text-white/80 hover:text-white transition-colors" title="Network">
+                <IoWifiSharp className="w-5 h-5" />
+              </span>
+              
+              {/* Volume */}
+              <span className="text-white/80 hover:text-white transition-colors" title="Volume">
+                <IoVolumeHigh className="w-5 h-5" />
+              </span>
+              
+              {/* Battery */}
+              <span className="text-white/80 hover:text-white transition-colors" title="Battery">
+                <IoBatteryFull className="w-6 h-6" />
+              </span>
             </button>
             
-            {/* Divider */}
-            <div className="w-px h-5 bg-white/10" />
-            
-            {/* WiFi */}
-            <button className="text-white/80 hover:text-white transition-colors" title="Network">
-              <IoWifiSharp className="w-5 h-5" />
-            </button>
-            
-            {/* Volume */}
-            <button className="text-white/80 hover:text-white transition-colors" title="Volume">
-              <IoVolumeHigh className="w-5 h-5" />
-            </button>
-            
-            {/* Battery */}
-            <button className="text-white/80 hover:text-white transition-colors" title="Battery">
-              <IoBatteryFull className="w-6 h-6" />
-            </button>
+            {/* Quick Settings Panel */}
+            {showQuickSettings && (
+              <QuickSettings onClose={() => setShowQuickSettings(false)} />
+            )}
           </div>
 
-{/* Date & Time */}
-          <button
-            className="h-11 px-3 rounded-md hover:bg-white/10 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[80px]"
-            title="Date and Time"
-          >
-            <div className="text-[11px] font-medium">
-              {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
-            </div>
-            <div className="text-[11px] text-white/70">
-              {currentTime.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
-            </div>
-          </button>
+          {/* Date & Time - Opens Calendar */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowCalendar(!showCalendar)
+                setShowQuickSettings(false)
+              }}
+              className="h-11 px-3 rounded-md hover:bg-white/10 transition-all flex flex-col items-center justify-center text-white leading-tight min-w-[80px]"
+              title="Date and Time"
+            >
+              <div className="text-[11px] font-medium">
+                {currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+              </div>
+              <div className="text-[11px] text-white/70">
+                {currentTime.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
+              </div>
+            </button>
+            
+            {/* Calendar Popup */}
+            {showCalendar && (
+              <CalendarPopup onClose={() => setShowCalendar(false)} />
+            )}
+          </div>
 
           {/* Notification Center */}
           <button

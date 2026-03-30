@@ -113,6 +113,103 @@ body {
   animation: contextMenuIn 0.1s ease-out forwards;
 }
 
+/* Window Open Animation */
+@keyframes windowOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-window-open {
+  animation: windowOpen 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Window Close Animation */
+@keyframes windowClose {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.animate-window-close {
+  animation: windowClose 0.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Window Minimize Animation */
+@keyframes windowMinimize {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5) translateY(100px);
+  }
+}
+
+.animate-window-minimize {
+  animation: windowMinimize 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Window Restore Animation */
+@keyframes windowRestore {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-window-restore {
+  animation: windowRestore 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Active Window Shadow */
+.window-shadow-active {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14),
+              0 0 0 1px rgba(0, 120, 215, 0.3);
+}
+
+/* Inactive Window Shadow */
+.window-shadow-inactive {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Taskbar Running Indicator - Windows 11 Style */
+.taskbar-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 3px;
+  border-radius: 3px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.taskbar-indicator-active {
+  width: 24px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+}
+
+.taskbar-indicator-inactive {
+  width: 6px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
 /* Window Styles */
 .window-container {
   will-change: transform, width, height;

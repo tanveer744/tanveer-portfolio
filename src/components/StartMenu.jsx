@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FiSearch, FiPower, FiUser } from 'react-icons/fi'
+import { FiSearch, FiPower, FiUser, FiChevronRight } from 'react-icons/fi'
+import { IoMoon, IoRefresh, IoPower } from 'react-icons/io5'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import { startMenuProjects } from '@/config/wallpapers'
@@ -7,7 +8,9 @@ import { getCenteredPosition } from '@/constants/layout'
 
 export default function StartMenu() {
   const [searchQuery, setSearchQuery] = useState('')
-  const { addWindow, setShowStartMenu, user, powerOff } = useStore()
+  const [showAllApps, setShowAllApps] = useState(false)
+  const [showPowerMenu, setShowPowerMenu] = useState(false)
+  const { addWindow, setShowStartMenu, user, powerOff, setCurrentPage } = useStore()
 
   const handleAppClick = (app) => {
     // If it's an external link (like GitHub), open it
@@ -43,10 +46,88 @@ export default function StartMenu() {
     setShowStartMenu(false)
   }
 
+  const handlePowerAction = (action) => {
+    setShowPowerMenu(false)
+    setShowStartMenu(false)
+    
+    switch (action) {
+      case 'sleep':
+        // Go to lock screen
+        setCurrentPage('lock')
+        break
+      case 'restart':
+        // Go to boot screen then back to lock
+        setCurrentPage('boot')
+        break
+      case 'shutdown':
+        powerOff()
+        break
+      default:
+        break
+    }
+  }
+
   const desktopApps = apps.filter(app => app.desktop)
+  const allApps = [...apps].sort((a, b) => a.title.localeCompare(b.title))
+  
+  // Group apps by first letter
+  const groupedApps = allApps.reduce((acc, app) => {
+    const letter = app.title[0].toUpperCase()
+    if (!acc[letter]) acc[letter] = []
+    acc[letter].push(app)
+    return acc
+  }, {})
+
   const filteredProjects = searchQuery
     ? startMenuProjects.filter(proj => proj.title.toLowerCase().includes(searchQuery.toLowerCase()))
     : startMenuProjects
+
+  // All Apps View
+  if (showAllApps) {
+    return (
+      <div className="fixed bottom-14 left-0 right-0 mx-auto w-[640px] z-50 animate-slide-up will-change-transform">
+        <div className="w-[640px] rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
+          {/* Header */}
+          <div className="p-4 flex items-center justify-between border-b border-white/10">
+            <button 
+              onClick={() => setShowAllApps(false)}
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+            >
+              <FiChevronRight className="rotate-180" />
+              <span className="text-sm">Back</span>
+            </button>
+            <h2 className="text-lg font-semibold text-white">All apps</h2>
+            <div className="w-16" /> {/* Spacer for centering */}
+          </div>
+
+          {/* Apps list with letter headers */}
+          <div className="h-[400px] overflow-y-auto p-4">
+            {Object.keys(groupedApps).sort().map(letter => (
+              <div key={letter} className="mb-4">
+                {/* Letter header */}
+                <div className="sticky top-0 bg-gray-800/90 backdrop-blur px-2 py-1 rounded text-sm font-semibold text-blue-400 mb-2">
+                  {letter}
+                </div>
+                {/* Apps under this letter */}
+                <div className="space-y-1">
+                  {groupedApps[letter].map(app => (
+                    <button
+                      key={app.id}
+                      onClick={() => handleAppClick(app)}
+                      className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                      <img src={app.icon} alt={app.title} className="w-8 h-8" />
+                      <span className="text-white/90 text-sm">{app.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="fixed bottom-14 left-0 right-0 mx-auto w-[640px] z-50 animate-slide-up will-change-transform">
@@ -74,8 +155,11 @@ export default function StartMenu() {
             <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               Pinned
             </h3>
-            <button className="text-xs text-win-accent hover:underline">
-              All apps →
+            <button 
+              onClick={() => setShowAllApps(true)}
+              className="text-xs text-win-accent hover:underline flex items-center gap-1"
+            >
+              All apps <FiChevronRight size={12} />
             </button>
           </div>
 
@@ -181,14 +265,43 @@ export default function StartMenu() {
             </span>
           </button>
 
-          {/* Power Button */}
-          <button
-            onClick={powerOff}
-            className="w-10 h-10 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/30 dark:active:bg-white/5 transition-all flex items-center justify-center text-gray-800 dark:text-gray-200"
-            title="Power"
-          >
-            <FiPower size={20} />
-          </button>
+          {/* Power Button with Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setShowPowerMenu(!showPowerMenu)}
+              className="w-10 h-10 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/30 dark:active:bg-white/5 transition-all flex items-center justify-center text-gray-800 dark:text-gray-200"
+              title="Power"
+            >
+              <FiPower size={20} />
+            </button>
+            
+            {/* Power Menu Dropdown */}
+            {showPowerMenu && (
+              <div className="absolute bottom-full right-0 mb-2 w-48 bg-gray-900/95 backdrop-blur-xl rounded-lg border border-white/10 shadow-2xl overflow-hidden">
+                <button
+                  onClick={() => handlePowerAction('sleep')}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 transition-colors"
+                >
+                  <IoMoon className="w-5 h-5" />
+                  <span className="text-sm">Sleep</span>
+                </button>
+                <button
+                  onClick={() => handlePowerAction('restart')}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 transition-colors"
+                >
+                  <IoRefresh className="w-5 h-5" />
+                  <span className="text-sm">Restart</span>
+                </button>
+                <button
+                  onClick={() => handlePowerAction('shutdown')}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 transition-colors"
+                >
+                  <IoPower className="w-5 h-5" />
+                  <span className="text-sm">Shut down</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

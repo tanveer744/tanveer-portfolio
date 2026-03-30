@@ -82,6 +82,9 @@ export const useStore = create((set) => ({
       minWidth: window.minWidth ?? 400,
       minHeight: window.minHeight ?? 300,
       isMinimized: false,
+      isMinimizing: false,
+      isRestoring: false,
+      isClosing: false,
       isMaximized: false,
       isFullscreen: false,
       zIndex: newZIndex,
@@ -108,6 +111,13 @@ export const useStore = create((set) => ({
     }
   }),
   
+  // Mark window as closing (for animation)
+  closeWindow: (id) => set((state) => ({
+    windows: state.windows.map(w => 
+      w.id === id ? { ...w, isClosing: true } : w
+    )
+  })),
+  
   setActiveWindow: (id) => set((state) => {
     const maxZ = Math.max(...state.windows.map(w => w.zIndex), state.nextZIndex - 1)
     return {
@@ -121,7 +131,22 @@ export const useStore = create((set) => ({
   
   minimizeWindow: (id) => set((state) => {
     const newWindows = state.windows.map(w => 
-      w.id === id ? { ...w, isMinimized: true } : w
+      w.id === id ? { ...w, isMinimized: true, isMinimizing: false } : w
+    )
+    const nextActive = newWindows
+      .filter(w => !w.isMinimized)
+      .sort((a, b) => b.zIndex - a.zIndex)[0]
+    
+    return {
+      windows: newWindows,
+      activeWindow: nextActive?.id || null
+    }
+  }),
+  
+  // Actually hide the minimized window (called after animation)
+  completeMinimize: (id) => set((state) => {
+    const newWindows = state.windows.map(w => 
+      w.id === id ? { ...w, isMinimized: true, isMinimizing: false } : w
     )
     const nextActive = newWindows
       .filter(w => !w.isMinimized)
@@ -137,12 +162,19 @@ export const useStore = create((set) => ({
     const maxZ = Math.max(...state.windows.map(w => w.zIndex), state.nextZIndex - 1)
     return {
       windows: state.windows.map(w => 
-        w.id === id ? { ...w, isMinimized: false, zIndex: maxZ + 1 } : w
+        w.id === id ? { ...w, isMinimized: false, isRestoring: true, zIndex: maxZ + 1 } : w
       ),
       activeWindow: id,
       nextZIndex: maxZ + 2
     }
   }),
+  
+  // Clear restoring state after animation
+  completeRestore: (id) => set((state) => ({
+    windows: state.windows.map(w => 
+      w.id === id ? { ...w, isRestoring: false } : w
+    )
+  })),
   
   toggleMaximizeWindow: (id) => set((state) => ({
     windows: state.windows.map(w => {

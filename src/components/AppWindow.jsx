@@ -64,17 +64,16 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useStore } from '@/stores'
 import { TASKBAR_HEIGHT, getWorkspaceHeight, clampToWorkspace } from '@/constants/layout'
+import SnapAssist from './window/SnapAssist'
 
 export default function AppWindow({ window: windowData }) {
-  // Don't render minimized windows - must be before any hooks
-  if (windowData.isMinimized) {
-    return null
-  }
-
   const { 
     setActiveWindow, 
-    removeWindow, 
-    minimizeWindow, 
+    removeWindow,
+    closeWindow,
+    minimizeWindow,
+    completeMinimize,
+    completeRestore,
     toggleMaximizeWindow,
     toggleFullscreenWindow,
     updateWindowPosition,
@@ -92,10 +91,50 @@ export default function AppWindow({ window: windowData }) {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, windowX: 0, windowY: 0 })
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, windowX: 0, windowY: 0 })
   const [snapZone, setSnapZone] = useState(null)
+  const [showSnapAssist, setShowSnapAssist] = useState(false)
+  const [snapAssistPosition, setSnapAssistPosition] = useState(null)
+  const [isOpening, setIsOpening] = useState(true)
+  const snapHoldTimer = useRef(null)
   const lastClickTimeRef = useRef(0)
 
+  // Handle opening animation
+  useEffect(() => {
+    const timer = setTimeout(() => setIsOpening(false), 200)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Handle minimize animation completion
+  useEffect(() => {
+    if (windowData.isMinimizing) {
+      const timer = setTimeout(() => {
+        completeMinimize(windowData.id)
+      }, 250) // Match animation duration
+      return () => clearTimeout(timer)
+    }
+  }, [windowData.isMinimizing, windowData.id, completeMinimize])
+
+  // Handle restore animation completion
+  useEffect(() => {
+    if (windowData.isRestoring) {
+      const timer = setTimeout(() => {
+        completeRestore(windowData.id)
+      }, 250) // Match animation duration
+      return () => clearTimeout(timer)
+    }
+  }, [windowData.isRestoring, windowData.id, completeRestore])
+
+  // Handle close animation completion
+  useEffect(() => {
+    if (windowData.isClosing) {
+      const timer = setTimeout(() => {
+        removeWindow(windowData.id)
+      }, 150) // Match animation duration
+      return () => clearTimeout(timer)
+    }
+  }, [windowData.isClosing, windowData.id, removeWindow])
+
   const handleClose = () => {
-    removeWindow(windowData.id)
+    closeWindow(windowData.id)
   }
 
   const handleMinimize = () => {
@@ -201,37 +240,50 @@ export default function AppWindow({ window: windowData }) {
       let newX = dragStart.windowX + deltaX
       let newY = dragStart.windowY + deltaY
 
-      // Debug logging for drag (throttled to avoid spam)
-      if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
-        console.log('[Window Drag]', {
-          position: { x: newX, y: newY },
-          size: { width: windowData.width, height: windowData.height },
-          workspaceHeight: getWorkspaceHeight(),
-          taskbarHeight: TASKBAR_HEIGHT
-        })
-      }
-
       // Update position (store will clamp to workspace)
       updateWindowPosition(windowData.id, newX, newY)
 
       // Detect snap zone
       const zone = detectSnapZone(e.clientX, e.clientY)
       setSnapZone(zone)
+      
+      // Start timer for snap assist if hovering at edge
+      if (zone && !snapHoldTimer.current) {
+        snapHoldTimer.current = setTimeout(() => {
+          setShowSnapAssist(true)
+          setSnapAssistPosition(zone)
+        }, 500) // Show after 500ms hold at edge
+      } else if (!zone && snapHoldTimer.current) {
+        clearTimeout(snapHoldTimer.current)
+        snapHoldTimer.current = null
+        setShowSnapAssist(false)
+        setSnapAssistPosition(null)
+      }
     }
 
     const handleMouseUp = (e) => {
       setIsDragging(false)
       
-      // Apply snap if in snap zone
-      const zone = detectSnapZone(e.clientX, e.clientY)
-      if (zone === 'top') {
-        toggleMaximizeWindow(windowData.id)
-      } else if (zone === 'left') {
-        snapWindowLeft(windowData.id)
-      } else if (zone === 'right') {
-        snapWindowRight(windowData.id)
+      // Clear snap assist timer
+      if (snapHoldTimer.current) {
+        clearTimeout(snapHoldTimer.current)
+        snapHoldTimer.current = null
+      }
+      
+      // Apply snap if in snap zone (and not showing assist)
+      if (!showSnapAssist) {
+        const zone = detectSnapZone(e.clientX, e.clientY)
+        if (zone === 'top') {
+          toggleMaximizeWindow(windowData.id)
+        } else if (zone === 'left') {
+          snapWindowLeft(windowData.id)
+        } else if (zone === 'right') {
+          snapWindowRight(windowData.id)
+        }
       }
       setSnapZone(null)
+      setShowSnapAssist(false)
+      setSnapAssistPosition(null)
     }
 
     document.addEventListener('mousemove', handleMouseMove)
@@ -240,8 +292,29 @@ export default function AppWindow({ window: windowData }) {
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
+      if (snapHoldTimer.current) {
+        clearTimeout(snapHoldTimer.current)
+      }
     }
-  }, [isDragging, dragStart, windowData.id, windowData.width, windowData.height, clampPosition, detectSnapZone, updateWindowPosition, toggleMaximizeWindow, snapWindowLeft, snapWindowRight])
+  }, [isDragging, dragStart, windowData.id, windowData.width, windowData.height, showSnapAssist, clampPosition, detectSnapZone, updateWindowPosition, toggleMaximizeWindow, snapWindowLeft, snapWindowRight])
+
+  // Handle snap layout selection
+  const handleSnapLayoutSelect = useCallback((layoutId) => {
+    setShowSnapAssist(false)
+    setSnapAssistPosition(null)
+    setIsDragging(false)
+    
+    if (layoutId === 'maximize') {
+      toggleMaximizeWindow(windowData.id)
+    } else if (layoutId === 'half') {
+      if (snapAssistPosition === 'left') {
+        snapWindowLeft(windowData.id)
+      } else {
+        snapWindowRight(windowData.id)
+      }
+    }
+    // Other layouts can be implemented later
+  }, [windowData.id, snapAssistPosition, toggleMaximizeWindow, snapWindowLeft, snapWindowRight])
 
   // Start resizing
   const handleResizeStart = useCallback((direction, e) => {
@@ -347,6 +420,11 @@ export default function AppWindow({ window: windowData }) {
     }
   }, [isResizing, resizeDirection, resizeStart, windowData.id, windowData.minWidth, windowData.minHeight, windowData.x, windowData.y, updateWindowSize, updateWindowPosition])
 
+  // Don't render fully minimized windows (must be after all hooks!)
+  if (windowData.isMinimized && !windowData.isMinimizing) {
+    return null
+  }
+
   // Calculate window styles
   // Store guarantees all positions are valid - no need to re-clamp here
   const getWindowStyle = () => {
@@ -388,6 +466,15 @@ export default function AppWindow({ window: windowData }) {
     }
   }
 
+  // Get animation class based on window state
+  const getAnimationClass = () => {
+    if (windowData.isClosing) return 'animate-window-close'
+    if (windowData.isMinimizing) return 'animate-window-minimize'
+    if (windowData.isRestoring) return 'animate-window-restore'
+    if (isOpening) return 'animate-window-open'
+    return ''
+  }
+
   const ResizeHandle = ({ direction, className, cursor }) => (
     <div
       className={`absolute ${className} resize-handle`}
@@ -397,30 +484,42 @@ export default function AppWindow({ window: windowData }) {
   )
 
   return (
-    <div
-      ref={windowRef}
-      style={getWindowStyle()}
-      onMouseDown={() => setActiveWindow(windowData.id)}
-      className="window-container"
-    >
-      <div className={`w-full h-full flex flex-col rounded-win overflow-hidden shadow-win ${
-        isActive ? 'ring-2 ring-win-accent/50' : 'ring-1 ring-gray-300/50 dark:ring-gray-700/50'
-      }`}>
-        
-        {/* Snap preview overlay */}
-        {snapZone && (
-          <div className="fixed inset-0 pointer-events-none z-[9999]">
-            <div 
-              className="absolute bg-win-accent/20 border-2 border-win-accent transition-all duration-150"
-              style={{
-                left: snapZone === 'left' ? 0 : snapZone === 'right' ? '50%' : 0,
-                top: 0,
-                width: snapZone === 'top' ? '100%' : '50%',
-                height: `${getWorkspaceHeight()}px`
-              }}
-            />
-          </div>
-        )}
+    <>
+      {/* Snap Assist Grid */}
+      <SnapAssist
+        isVisible={showSnapAssist}
+        position={snapAssistPosition}
+        onSelectLayout={handleSnapLayoutSelect}
+        onClose={() => {
+          setShowSnapAssist(false)
+          setSnapAssistPosition(null)
+        }}
+      />
+      
+      <div
+        ref={windowRef}
+        style={getWindowStyle()}
+        onMouseDown={() => setActiveWindow(windowData.id)}
+        className={`window-container ${getAnimationClass()}`}
+      >
+        <div className={`w-full h-full flex flex-col rounded-win overflow-hidden ${
+          isActive ? 'window-shadow-active' : 'window-shadow-inactive'
+        }`}>
+          
+          {/* Snap preview overlay */}
+          {snapZone && !showSnapAssist && (
+            <div className="fixed inset-0 pointer-events-none z-[9999]">
+              <div 
+                className="absolute bg-win-accent/20 border-2 border-win-accent transition-all duration-150"
+                style={{
+                  left: snapZone === 'left' ? 0 : snapZone === 'right' ? '50%' : 0,
+                  top: 0,
+                  width: snapZone === 'top' ? '100%' : '50%',
+                  height: `${getWorkspaceHeight()}px`
+                }}
+              />
+            </div>
+          )}
 
         {/* Title Bar */}
         <div 
@@ -528,6 +627,7 @@ export default function AppWindow({ window: windowData }) {
         )}
       </div>
     </div>
+    </>
   )
 }
 
