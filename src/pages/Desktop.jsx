@@ -6,7 +6,7 @@ import AppWindow from '@/components/AppWindow'
 import DesktopIcons from '@/components/desktop/DesktopIcons'
 import ContextMenu from '@/components/desktop/ContextMenu'
 import KeyboardShortcuts from '@/components/KeyboardShortcuts'
-import { wallpapers } from '@/config/wallpapers'
+import { wallpapersList } from '@/config/wallpapers'
 import { getCenteredPosition } from '@/constants/layout'
 
 export default function Desktop() {
@@ -19,10 +19,15 @@ export default function Desktop() {
     setIconSort,
     setShowDesktopIcons,
     setAutoArrangeIcons,
-    setAlignToGrid
+    setAlignToGrid,
+    darkMode,
+    currentWallpaper
   } = useStore()
   const [contextMenu, setContextMenu] = useState(null)
   const [showShortcuts, setShowShortcuts] = useState(false)
+
+  // Get current wallpaper from list
+  const selectedWallpaper = wallpapersList.find(w => w.id === currentWallpaper) || wallpapersList[0]
 
   // Open Notepad whenever user enters desktop
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '@/stores'
-import { wallpapers } from '@/config/wallpapers'
+import { wallpapersList } from '@/config/wallpapers'
 import {
   IoPersonOutline,
   IoColorPaletteOutline,
@@ -63,7 +63,7 @@ export default function Settings() {
 }
 
 function PersonalizationSection() {
-  const { darkMode, setDarkMode, iconSize, setIconSize, iconSort, setIconSort } = useStore()
+  const { darkMode, setDarkMode, iconSize, setIconSize, iconSort, setIconSort, currentWallpaper, setCurrentWallpaper } = useStore()
 
   return (
     <div className="space-y-6">
@@ -160,24 +160,49 @@ function PersonalizationSection() {
         </div>
       </div>
 
-      {/* Wallpaper Preview */}
+      {/* Wallpaper Picker */}
       <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Wallpaper</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {wallpapers.map((wallpaper) => (
-            <div
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Choose a background for your desktop
+        </p>
+        
+        <div className="grid grid-cols-3 gap-3">
+          {wallpapersList.map((wallpaper) => (
+            <button
               key={wallpaper.id}
-              className="relative aspect-video rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 transition-colors cursor-pointer"
+              onClick={() => setCurrentWallpaper(wallpaper.id)}
+              className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
+                currentWallpaper === wallpaper.id
+                  ? 'border-blue-500 ring-2 ring-blue-500/50'
+                  : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+              }`}
             >
               <img
-                src={wallpaper.url}
+                src={wallpaper.thumbnail}
                 alt={wallpaper.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
                 <p className="text-xs text-white font-medium">{wallpaper.name}</p>
               </div>
-            </div>
+              {currentWallpaper === wallpaper.id && (
+                <div className="absolute top-2 right-2 bg-blue-500 rounded-full p-1">
+                  <IoCheckmark className="w-4 h-4 text-white" />
+                </div>
+              )}
+              {wallpaper.theme !== 'both' && (
+                <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm rounded px-2 py-1">
+                  <span className="text-xs text-white flex items-center gap-1">
+                    {wallpaper.theme === 'light' ? <IoSunny className="w-3 h-3" /> : <IoMoon className="w-3 h-3" />}
+                    {wallpaper.theme}
+                  </span>
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
           ))}
         </div>
       </div>

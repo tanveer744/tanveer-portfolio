@@ -404,4 +404,8 @@ export const useStore = create((set) => ({
   })),
   
   clearAllNotifications: () => set({ notifications: [] }),
+  
+  // Wallpaper management
+  currentWallpaper: 'windows-default',
+  setCurrentWallpaper: (id) => set({ currentWallpaper: id }),
 }))

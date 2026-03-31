@@ -1,6 +1,53 @@
+// Wallpaper collection with theme variants
+export const wallpapersList = [
+  {
+    id: 'windows-default',
+    name: 'Windows Default',
+    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
+    image: '/img/wallpapers/windows-wallpaper2.png',
+    theme: 'both' // Works for both light and dark
+  },
+  {
+    id: 'windows-bloom',
+    name: 'Windows Bloom',
+    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
+    image: '/img/wallpapers/windows-wallpaper2.png',
+    theme: 'light'
+  },
+  {
+    id: 'windows-flow',
+    name: 'Windows Flow',
+    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
+    image: '/img/wallpapers/windows-wallpaper2.png',
+    theme: 'both'
+  },
+  {
+    id: 'gradient-sunset',
+    name: 'Gradient Sunset',
+    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
+    image: '/img/wallpapers/windows-wallpaper2.png',
+    theme: 'light'
+  },
+  {
+    id: 'gradient-ocean',
+    name: 'Gradient Ocean',
+    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
+    image: '/img/wallpapers/windows-wallpaper2.png',
+    theme: 'dark'
+  },
+  {
+    id: 'minimal-dark',
+    name: 'Minimal Dark',
+    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
+    image: '/img/wallpapers/windows-wallpaper2.png',
+    theme: 'dark'
+  }
+]
+
+// Legacy support for existing code
 export const wallpapers = {
-  light: '/img/wallpapers/windows-wallpaper2.png',
-  dark: '/img/wallpapers/windows-wallpaper2.png', // Using same for now
+  light: wallpapersList[0].image,
+  dark: wallpapersList[0].image,
 }
 
 // Projects to show in Start Menu (like Launchpad in macOS)
