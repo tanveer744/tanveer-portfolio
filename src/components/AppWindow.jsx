@@ -690,20 +690,42 @@ export default function AppWindow({ window: windowData }) {
   )
 }
 
-import Notepad from './apps/Notepad'
-import Terminal from './apps/Terminal'
-import Camera from './apps/Camera'
+// Lazy loaded components are imported at the top of the file
 
 // Placeholder content for different apps
 function AppContent({ appId, windowData }) {
+  const { removeWindow } = useStore()
+  
   const contentMap = {
-    notepad: <Notepad windowData={windowData} />,
+    notepad: (
+      <ErrorBoundary componentName="Notepad" onClose={() => removeWindow(windowData.id)}>
+        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Notepad..." className="h-full" />}>
+          <Notepad windowData={windowData} />
+        </Suspense>
+      </ErrorBoundary>
+    ),
     edge: <BrowserContent />,
     vscode: <VSCodeContent />,
-    terminal: <Terminal />,
-    camera: <Camera />,
+    terminal: (
+      <ErrorBoundary componentName="Terminal" onClose={() => removeWindow(windowData.id)}>
+        <TerminalWrapper />
+      </ErrorBoundary>
+    ),
+    camera: (
+      <ErrorBoundary componentName="Camera" onClose={() => removeWindow(windowData.id)}>
+        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Camera..." className="h-full" />}>
+          <Camera />
+        </Suspense>
+      </ErrorBoundary>
+    ),
     explorer: <ExplorerContent />,
-    settings: <Settings />,
+    settings: (
+      <ErrorBoundary componentName="Settings" onClose={() => removeWindow(windowData.id)}>
+        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Settings..." className="h-full" />}>
+          <Settings />
+        </Suspense>
+      </ErrorBoundary>
+    ),
   }
 
   return contentMap[appId] || <DefaultContent appId={appId} />
