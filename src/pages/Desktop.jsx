@@ -142,7 +142,7 @@ export default function Desktop() {
       {/* Windows 11 Wallpaper Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center" 
-        style={{ backgroundImage: `url(${wallpapers.light})` }}
+        style={{ backgroundImage: `url(${selectedWallpaper.image})` }}
       />
       
       {/* Subtle overlay for better contrast */}

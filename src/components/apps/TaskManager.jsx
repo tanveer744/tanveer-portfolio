@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
-  FaCpu, 
+  FaServer, 
   FaMemory, 
   FaNetworkWired, 
   FaDatabase,
@@ -11,7 +11,9 @@ import {
   FaDocker,
   FaGitAlt,
   FaAws,
-  FaCode
+  FaCode,
+  FaCogs,
+  FaChartBar
 } from 'react-icons/fa'
 import { 
   SiJavascript,
@@ -100,7 +102,7 @@ function ProcessTab() {
 function PerformanceTab() {
   const categories = [
     { name: 'Web Development', skills: skillsData.webDevelopment, icon: <FaCode />, color: 'blue' },
-    { name: 'AI & Machine Learning', skills: skillsData.aiMl, icon: <FaCpu />, color: 'purple' },
+    { name: 'AI & Machine Learning', skills: skillsData.aiMl, icon: <FaServer />, color: 'purple' },
     { name: 'Tools & Platforms', skills: skillsData.toolsPlatforms, icon: <FaNetworkWired />, color: 'green' }
   ]
 
@@ -200,7 +202,7 @@ function PerformanceTab() {
         className="mt-6 grid grid-cols-3 gap-4"
       >
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 text-center">
-          <FaCpu className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+          <FaServer className="w-8 h-8 mx-auto mb-2 text-blue-500" />
           <div className="text-sm text-gray-600 dark:text-gray-400">Total Skills</div>
           <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {Object.values(skillsData).flat().length}
@@ -235,7 +237,7 @@ export default function TaskManager({ windowData }) {
 
   const tabs = [
     { id: 'processes', label: 'Processes', icon: <FaCode /> },
-    { id: 'performance', label: 'Performance', icon: <FaCpu /> },
+    { id: 'performance', label: 'Performance', icon: <FaChartBar /> },
   ]
 
   return (

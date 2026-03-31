@@ -61,11 +61,22 @@
  * })
  * ```
  */
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, Suspense, lazy } from 'react'
 import { useStore } from '@/stores'
 import { TASKBAR_HEIGHT, getWorkspaceHeight, clampToWorkspace } from '@/constants/layout'
 import { Z_INDEX } from '@/constants/zIndex'
 import SnapAssist from './window/SnapAssist'
+import TerminalWrapper from './apps/Terminal'
+import ErrorBoundary from './ErrorBoundary'
+import LoadingSpinner from './LoadingSpinner'
+
+// Lazy load heavy components
+const Notepad = lazy(() => import('./apps/Notepad'))
+const Camera = lazy(() => import('./apps/Camera'))
+const Settings = lazy(() => import('./apps/Settings'))
+const FileExplorer = lazy(() => import('./apps/FileExplorer'))
+const TaskManager = lazy(() => import('./apps/TaskManager'))
+const Browser = lazy(() => import('./apps/Browser'))
 
 export default function AppWindow({ window: windowData }) {
   const { 
@@ -704,7 +715,13 @@ function AppContent({ appId, windowData }) {
         </Suspense>
       </ErrorBoundary>
     ),
-    edge: <BrowserContent />,
+    edge: (
+      <ErrorBoundary componentName="Browser" onClose={() => removeWindow(windowData.id)}>
+        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Browser..." className="h-full" />}>
+          <Browser windowData={windowData} />
+        </Suspense>
+      </ErrorBoundary>
+    ),
     vscode: <VSCodeContent />,
     terminal: (
       <ErrorBoundary componentName="Terminal" onClose={() => removeWindow(windowData.id)}>
@@ -718,7 +735,6 @@ function AppContent({ appId, windowData }) {
         </Suspense>
       </ErrorBoundary>
     ),
-    explorer: <ExplorerContent />,
     settings: (
       <ErrorBoundary componentName="Settings" onClose={() => removeWindow(windowData.id)}>
         <Suspense fallback={<LoadingSpinner size="lg" message="Loading Settings..." className="h-full" />}>
@@ -726,32 +742,23 @@ function AppContent({ appId, windowData }) {
         </Suspense>
       </ErrorBoundary>
     ),
+    explorer: (
+      <ErrorBoundary componentName="FileExplorer" onClose={() => removeWindow(windowData.id)}>
+        <Suspense fallback={<LoadingSpinner size="lg" message="Loading File Explorer..." className="h-full" />}>
+          <FileExplorer windowData={windowData} />
+        </Suspense>
+      </ErrorBoundary>
+    ),
+    'task-manager': (
+      <ErrorBoundary componentName="TaskManager" onClose={() => removeWindow(windowData.id)}>
+        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Task Manager..." className="h-full" />}>
+          <TaskManager windowData={windowData} />
+        </Suspense>
+      </ErrorBoundary>
+    ),
   }
 
   return contentMap[appId] || <DefaultContent appId={appId} />
-}
-
-function BrowserContent() {
-  return (
-    <div className="w-full h-full flex flex-col">
-      <div className="h-10 bg-gray-100 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 flex items-center px-4 gap-2">
-        <button className="text-gray-500">←</button>
-        <button className="text-gray-500">→</button>
-        <button className="text-gray-500">↻</button>
-        <input
-          type="text"
-          defaultValue="https://github.com"
-          className="flex-1 px-3 py-1 text-sm rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
-        />
-      </div>
-      <div className="flex-1 flex items-center justify-center text-gray-500">
-        <div className="text-center">
-          <div className="text-4xl mb-2">🌐</div>
-          <div>Browser Content</div>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 function VSCodeContent() {
