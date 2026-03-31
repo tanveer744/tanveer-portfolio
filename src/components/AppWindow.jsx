@@ -69,6 +69,7 @@ import SnapAssist from './window/SnapAssist'
 import TerminalWrapper from './apps/Terminal'
 import ErrorBoundary from './ErrorBoundary'
 import LoadingSpinner from './LoadingSpinner'
+import VSCode from './apps/VSCode'
 
 // Lazy load heavy components
 const Notepad = lazy(() => import('./apps/Notepad'))
@@ -722,7 +723,11 @@ function AppContent({ appId, windowData }) {
         </Suspense>
       </ErrorBoundary>
     ),
-    vscode: <VSCodeContent />,
+    vscode: (
+      <ErrorBoundary componentName="VSCode" onClose={() => removeWindow(windowData.id)}>
+        <VSCode windowData={windowData} />
+      </ErrorBoundary>
+    ),
     terminal: (
       <ErrorBoundary componentName="Terminal" onClose={() => removeWindow(windowData.id)}>
         <TerminalWrapper />
@@ -759,26 +764,6 @@ function AppContent({ appId, windowData }) {
   }
 
   return contentMap[appId] || <DefaultContent appId={appId} />
-}
-
-function VSCodeContent() {
-  return (
-    <div className="w-full h-full bg-[#1e1e1e] text-gray-300 p-4 font-mono text-sm">
-      <div className="text-green-400">{'//'} Visual Studio Code</div>
-      <div className="mt-2">
-        <span className="text-purple-400">function</span>
-        <span className="text-yellow-300"> hello</span>
-        <span>() {'{'}</span>
-      </div>
-      <div className="ml-4">
-        <span className="text-blue-400">console</span>
-        <span>.log(</span>
-        <span className="text-orange-400">&quot;Hello, Windows 11!&quot;</span>
-        <span>);</span>
-      </div>
-      <div>{'}'}</div>
-    </div>
-  )
 }
 
 function ExplorerContent() {
