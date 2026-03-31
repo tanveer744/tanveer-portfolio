@@ -10,37 +10,42 @@ export const wallpapersList = [
   {
     id: 'windows-bloom',
     name: 'Windows Bloom',
-    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
-    image: '/img/wallpapers/windows-wallpaper2.png',
-    theme: 'light'
+    thumbnail: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    image: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    theme: 'light',
+    type: 'gradient'
   },
   {
     id: 'windows-flow',
     name: 'Windows Flow',
-    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
-    image: '/img/wallpapers/windows-wallpaper2.png',
-    theme: 'both'
+    thumbnail: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    image: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    theme: 'both',
+    type: 'gradient'
   },
   {
     id: 'gradient-sunset',
     name: 'Gradient Sunset',
-    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
-    image: '/img/wallpapers/windows-wallpaper2.png',
-    theme: 'light'
+    thumbnail: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    image: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    theme: 'light',
+    type: 'gradient'
   },
   {
     id: 'gradient-ocean',
     name: 'Gradient Ocean',
-    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
-    image: '/img/wallpapers/windows-wallpaper2.png',
-    theme: 'dark'
+    thumbnail: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
+    image: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
+    theme: 'dark',
+    type: 'gradient'
   },
   {
     id: 'minimal-dark',
     name: 'Minimal Dark',
-    thumbnail: '/img/wallpapers/windows-wallpaper2.png',
-    image: '/img/wallpapers/windows-wallpaper2.png',
-    theme: 'dark'
+    thumbnail: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
+    image: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
+    theme: 'dark',
+    type: 'gradient'
   }
 ]
 

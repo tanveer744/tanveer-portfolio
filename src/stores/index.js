@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { TASKBAR_HEIGHT, clampToWorkspace } from '@/constants/layout'
 
 /**
@@ -30,10 +31,12 @@ const enforceWindowBoundaries = (x, y, width, height, debugContext = '') => {
   return { x: clampedX, y: clampedY }
 }
 
-export const useStore = create((set) => ({
-  // System state
-  darkMode: false,
-  setDarkMode: (darkMode) => set({ darkMode }),
+export const useStore = create(
+  persist(
+    (set) => ({
+      // System state
+      darkMode: false,
+      setDarkMode: (darkMode) => set({ darkMode }),
   
   // Window management
   windows: [],
@@ -408,4 +411,41 @@ export const useStore = create((set) => ({
   // Wallpaper management
   currentWallpaper: 'windows-default',
   setCurrentWallpaper: (id) => set({ currentWallpaper: id }),
-}))
+}),
+{
+  name: 'portfolio-storage',
+  partialize: (state) => ({
+    // Persist user preferences
+    darkMode: state.darkMode,
+    currentWallpaper: state.currentWallpaper,
+    
+    // Persist desktop customization
+    iconPositions: state.iconPositions,
+    iconSize: state.iconSize,
+    iconSort: state.iconSort,
+    showDesktopIcons: state.showDesktopIcons,
+    autoArrangeIcons: state.autoArrangeIcons,
+    alignToGrid: state.alignToGrid,
+    
+    // Persist window positions (but not active state or animations)  
+    windows: state.windows?.map(window => ({
+      id: window.id,
+      x: window.x,
+      y: window.y,
+      width: window.width,
+      height: window.height,
+      isMaximized: window.isMaximized,
+      isMinimized: window.isMinimized
+    })) || []
+  }),
+  
+  // Migration function for future state structure changes
+  migrate: (persistedState, version) => {
+    // Handle version migrations here if needed
+    return persistedState
+  },
+  
+  // Only persist after user interactions (not initial loads)
+  skipHydration: false,
+}
+))

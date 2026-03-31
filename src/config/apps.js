@@ -30,7 +30,7 @@ export const apps = [
   {
     id: 'settings',
     title: 'Settings',
-    icon: '/img/icons/notepad.png', // Placeholder - will use gear icon later
+    icon: '/img/icons/settings.svg',
     desktop: true,
     width: 1100,
     height: 700,
@@ -39,7 +39,7 @@ export const apps = [
   {
     id: 'explorer',
     title: 'File Explorer',
-    icon: '/img/icons/vscode.png', // Placeholder - will use folder icon later
+    icon: '/img/icons/explorer.svg',
     desktop: true,
     width: 1000,
     height: 700,
@@ -48,7 +48,7 @@ export const apps = [
   {
     id: 'task-manager',
     title: 'Task Manager',
-    icon: '/img/icons/terminal.png', // Placeholder - will use system monitor icon later
+    icon: '/img/icons/task-manager.svg',
     desktop: true,
     width: 900,
     height: 600,

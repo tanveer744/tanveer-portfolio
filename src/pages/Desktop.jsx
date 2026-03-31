@@ -45,6 +45,20 @@ export default function Desktop() {
     })
   }, [addWindow])
 
+  // Keyboard shortcuts listener
+  useEffect(() => {
+    const handleKeydown = (e) => {
+      // Ctrl+? or Ctrl+/ to show help
+      if (e.ctrlKey && (e.key === '?' || e.key === '/')) {
+        e.preventDefault()
+        setShowShortcuts(true)
+      }
+    }
+    
+    document.addEventListener('keydown', handleKeydown)
+    return () => document.removeEventListener('keydown', handleKeydown)
+  }, [])
+
   // Handle right-click on desktop
   const handleContextMenu = useCallback((e) => {
     // Only show context menu if clicking on the desktop background
@@ -141,8 +155,17 @@ export default function Desktop() {
     >
       {/* Windows 11 Wallpaper Background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center" 
-        style={{ backgroundImage: `url(${selectedWallpaper.image})` }}
+        className="absolute inset-0"
+        style={
+          selectedWallpaper.type === 'gradient' 
+            ? { background: selectedWallpaper.image }
+            : { 
+                backgroundImage: `url(${selectedWallpaper.image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }
+        }
       />
       
       {/* Subtle overlay for better contrast */}
