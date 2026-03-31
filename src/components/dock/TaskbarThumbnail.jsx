@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useStore } from '@/stores'
 import { IoClose } from 'react-icons/io5'
+import { Z_INDEX } from '@/constants/zIndex'
 
 /**
  * Windows 11 Style Taskbar Thumbnail Preview
@@ -36,9 +37,10 @@ export default function TaskbarThumbnail({ app, windows, onClose }) {
   return (
     <div
       ref={thumbnailRef}
-      className={`absolute bottom-full mb-3 left-1/2 -translate-x-1/2 z-[100] transition-all duration-200 ${
+      className={`absolute bottom-full mb-3 left-1/2 -translate-x-1/2 transition-all duration-200 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
       }`}
+      style={{ zIndex: Z_INDEX.tooltips }}
     >
       <div className="bg-gray-900/95 backdrop-blur-xl rounded-lg border border-white/10 shadow-2xl overflow-hidden">
         {/* App title header */}

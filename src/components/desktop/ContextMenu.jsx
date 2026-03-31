@@ -5,6 +5,7 @@ import {
   HiSortAscending,
   HiOutlineColorSwatch
 } from 'react-icons/hi'
+import { Z_INDEX } from '@/constants/zIndex'
 
 /**
  * Windows 11 Style Desktop Context Menu
@@ -129,10 +130,11 @@ export default function ContextMenu({ x, y, onClose, onAction }) {
   return (
     <div
       ref={menuRef}
-      className="fixed z-[100] min-w-[200px] py-1.5 rounded-lg bg-gray-900/95 backdrop-blur-xl border border-white/10 shadow-2xl animate-context-menu"
+      className={`fixed z-[${Z_INDEX.contextMenu}] min-w-[200px] py-1.5 rounded-lg bg-gray-900/95 backdrop-blur-xl border border-white/10 shadow-2xl animate-context-menu`}
       style={{
         left: `${menuPosition.x}px`,
         top: `${menuPosition.y}px`,
+        zIndex: Z_INDEX.contextMenu,
       }}
     >
       {menuItems.map((item, index) => {

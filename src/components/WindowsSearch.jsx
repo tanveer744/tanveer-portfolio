@@ -1,5 +1,6 @@
 import { apps } from '@/config/apps'
 import { startMenuProjects } from '@/config/wallpapers'
+import { Z_INDEX } from '@/constants/zIndex'
 import { 
   IoDocumentTextOutline, 
   IoGlobeOutline,
@@ -107,18 +108,19 @@ export default function WindowsSearch({ filteredItems, onItemClick }) {
 
   return (
     <div 
-      className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] w-[600px] max-w-[90vw] animate-slide-up"
+      className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 w-[95vw] sm:w-[90vw] md:w-[600px] max-w-[600px] animate-slide-up"
+      style={{ zIndex: Z_INDEX.search }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="rounded-win acrylic border border-white/20 shadow-win overflow-hidden max-h-[500px] overflow-y-auto">
-        <div className="p-4">
+      <div className="rounded-win acrylic border border-white/20 shadow-win overflow-hidden max-h-[70vh] sm:max-h-[500px] overflow-y-auto">
+        <div className="p-3 sm:p-4">
           {['Apps', 'Projects', 'Social Media', 'Documents', 'System', 'Web'].map(category => {
             const categoryItems = filteredItems.filter(item => item.category === category)
             
             if (categoryItems.length === 0) return null
             
             return (
-              <div key={category} className="mb-4 last:mb-0">
+              <div key={category} className="mb-3 sm:mb-4 last:mb-0">
                 <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 px-2">
                   {getCategoryIcon(category)}
                   <span>{category.toUpperCase()}</span>
@@ -128,28 +130,28 @@ export default function WindowsSearch({ filteredItems, onItemClick }) {
                     <button
                       key={item.id}
                       onClick={() => onItemClick(item)}
-                      className="w-full flex items-center gap-4 p-3 rounded-win-sm hover:bg-white/70 dark:hover:bg-white/10 active:bg-white/50 dark:active:bg-white/5 transition-all group"
+                      className="w-full flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-win-sm hover:bg-white/70 dark:hover:bg-white/10 active:bg-white/50 dark:active:bg-white/5 transition-all group"
                     >
-                      <div className="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                         {item.icon?.startsWith?.('/') ? (
-                          <img src={item.icon} alt={item.title} className="w-8 h-8 object-contain" />
+                          <img src={item.icon} alt={item.title} className="w-6 h-6 sm:w-8 sm:h-8 object-contain" />
                         ) : typeof item.icon === 'string' ? (
-                          <div className="text-2xl">{item.icon}</div>
+                          <div className="text-xl sm:text-2xl">{item.icon}</div>
                         ) : (
                           <div className="text-gray-600 dark:text-gray-300">{item.icon}</div>
                         )}
                       </div>
-                      <div className="flex-1 text-left">
-                        <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      <div className="flex-1 text-left min-w-0">
+                        <div className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
                           {item.title}
                         </div>
                         {item.description && (
-                          <div className="text-xs text-gray-500 line-clamp-1">
+                          <div className="text-xs text-gray-500 line-clamp-1 hidden sm:block">
                             {item.description}
                           </div>
                         )}
                       </div>
-                      <IoArrowForwardOutline className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <IoArrowForwardOutline className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                     </button>
                   ))}
                 </div>

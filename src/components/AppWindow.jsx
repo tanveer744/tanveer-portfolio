@@ -64,6 +64,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useStore } from '@/stores'
 import { TASKBAR_HEIGHT, getWorkspaceHeight, clampToWorkspace } from '@/constants/layout'
+import { Z_INDEX } from '@/constants/zIndex'
 import SnapAssist from './window/SnapAssist'
 
 export default function AppWindow({ window: windowData }) {
@@ -508,7 +509,10 @@ export default function AppWindow({ window: windowData }) {
           
           {/* Snap preview overlay */}
           {snapZone && !showSnapAssist && (
-            <div className="fixed inset-0 pointer-events-none z-[9999]">
+            <div 
+              className="fixed inset-0 pointer-events-none"
+              style={{ zIndex: Z_INDEX.snapPreview }}
+            >
               <div 
                 className="absolute bg-win-accent/20 border-2 border-win-accent transition-all duration-150"
                 style={{

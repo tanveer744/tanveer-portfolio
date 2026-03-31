@@ -3,6 +3,7 @@ import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import WindowsSearch, { searchableItems } from '../WindowsSearch'
 import { getCenteredPosition } from '@/constants/layout'
+import { Z_INDEX } from '@/constants/zIndex'
 import TaskbarThumbnail from './TaskbarThumbnail'
 import CalendarPopup from './CalendarPopup'
 import QuickSettings from './QuickSettings'
@@ -165,7 +166,10 @@ export default function Taskbar() {
   const pinnedApps = apps.filter(app => app.desktop || app.link) // Show desktop apps and links
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-16 z-50">
+    <div 
+      className="fixed bottom-0 left-0 right-0 h-16"
+      style={{ zIndex: Z_INDEX.taskbar }}
+    >
       {/* Taskbar Background with Windows 11 Acrylic Effect */}
       <div className="absolute inset-0 bg-gray-900/70 backdrop-blur-2xl border-t border-white/10" />
       
@@ -205,13 +209,13 @@ export default function Taskbar() {
             </div>
           </button>
 
-          {/* Search Box with Input */}
+          {/* Search Box with Input - Responsive width */}
           <div 
-            className={`h-9 w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-4 gap-3 border ${
+            className={`h-9 w-[140px] sm:w-[200px] md:w-[280px] bg-white/10 hover:bg-white/15 transition-all duration-200 rounded-full flex items-center px-3 sm:px-4 gap-2 sm:gap-3 border ${
               showSearchResults ? 'border-white/20 bg-white/15' : 'border-white/5 hover:border-white/10'
             }`}
           >
-            <IoSearchOutline className="w-4 h-4 text-white/60" />
+            <IoSearchOutline className="w-4 h-4 text-white/60 flex-shrink-0" />
             <input
               ref={searchInputRef}
               type="text"
@@ -221,8 +225,8 @@ export default function Taskbar() {
                 setShowSearchResults(true)
               }}
               onFocus={() => setShowSearchResults(true)}
-              placeholder="Type here to search..."
-              className="flex-1 bg-transparent text-sm text-white placeholder-white/70 font-['Segoe_UI'] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-0 rounded"
+              placeholder="Search..."
+              className="flex-1 bg-transparent text-sm text-white placeholder-white/70 font-['Segoe_UI'] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-0 rounded min-w-0"
               aria-label="Search apps and files"
             />
           </div>
@@ -367,7 +371,8 @@ export default function Taskbar() {
       {showSearchResults && searchQuery && (
         <>
           <div 
-            className="fixed inset-0 z-[60]"
+            className="fixed inset-0"
+            style={{ zIndex: Z_INDEX.search - 1 }}
             onClick={() => {
               setShowSearchResults(false)
               setSearchQuery('')

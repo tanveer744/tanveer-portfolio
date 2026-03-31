@@ -5,6 +5,7 @@ import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import { startMenuProjects } from '@/config/wallpapers'
 import { getCenteredPosition } from '@/constants/layout'
+import { Z_INDEX } from '@/constants/zIndex'
 
 export default function StartMenu() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -85,10 +86,13 @@ export default function StartMenu() {
   // All Apps View
   if (showAllApps) {
     return (
-      <div className="fixed bottom-14 left-0 right-0 mx-auto w-[640px] z-50 animate-slide-up will-change-transform">
-        <div className="w-[640px] rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
+      <div 
+        className="fixed bottom-14 left-0 right-0 mx-auto w-[95vw] max-w-[640px] sm:w-[640px] animate-slide-up will-change-transform"
+        style={{ zIndex: Z_INDEX.startMenu }}
+      >
+        <div className="w-full rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
           {/* Header */}
-          <div className="p-4 flex items-center justify-between border-b border-white/10">
+          <div className="p-3 sm:p-4 flex items-center justify-between border-b border-white/10">
             <button 
               onClick={() => setShowAllApps(false)}
               className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
@@ -96,12 +100,12 @@ export default function StartMenu() {
               <FiChevronRight className="rotate-180" />
               <span className="text-sm">Back</span>
             </button>
-            <h2 className="text-lg font-semibold text-white">All apps</h2>
-            <div className="w-16" /> {/* Spacer for centering */}
+            <h2 className="text-base sm:text-lg font-semibold text-white">All apps</h2>
+            <div className="w-12 sm:w-16" /> {/* Spacer for centering */}
           </div>
 
           {/* Apps list with letter headers */}
-          <div className="h-[400px] overflow-y-auto p-4">
+          <div className="h-[350px] sm:h-[400px] overflow-y-auto p-3 sm:p-4">
             {Object.keys(groupedApps).sort().map(letter => (
               <div key={letter} className="mb-4">
                 {/* Letter header */}
@@ -130,19 +134,22 @@ export default function StartMenu() {
   }
 
   return (
-    <div className="fixed bottom-14 left-0 right-0 mx-auto w-[640px] z-50 animate-slide-up will-change-transform">
+    <div 
+      className="fixed bottom-14 left-0 right-0 mx-auto w-[95vw] max-w-[640px] sm:w-[640px] animate-slide-up will-change-transform"
+      style={{ zIndex: Z_INDEX.startMenu }}
+    >
       {/* Start Menu Container */}
-      <div className="w-[640px] rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
+      <div className="w-full rounded-win acrylic border border-white/20 shadow-win overflow-hidden">
         
         {/* Search Box */}
-        <div className="p-6 pb-4">
+        <div className="p-4 sm:p-6 pb-3 sm:pb-4">
           <div className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for apps, settings, and documents"
-              className="w-full px-4 py-3 pl-10 rounded-win-sm bg-white/50 dark:bg-black/30 border border-gray-300/50 dark:border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-win-accent focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 sm:py-3 pl-10 rounded-win-sm bg-white/50 dark:bg-black/30 border border-gray-300/50 dark:border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-win-accent focus:border-transparent transition-all text-sm sm:text-base"
               autoFocus
             />
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
@@ -150,8 +157,8 @@ export default function StartMenu() {
         </div>
 
         {/* Pinned Apps Section */}
-        <div className="px-6 pb-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="px-4 sm:px-6 pb-3 sm:pb-4">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               Pinned
             </h3>
@@ -163,8 +170,8 @@ export default function StartMenu() {
             </button>
           </div>
 
-          {/* Apps Grid - Desktop Apps */}
-          <div className="grid grid-cols-6 gap-2">
+          {/* Apps Grid - Desktop Apps - Responsive columns */}
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1.5 sm:gap-2">
             {desktopApps.map((app) => (
               <button
                 key={app.id}
@@ -182,24 +189,24 @@ export default function StartMenu() {
         </div>
 
         {/* Portfolio Projects Section */}
-        <div className="px-6 pb-4">
+        <div className="px-4 sm:px-6 pb-3 sm:pb-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               My Projects
             </h3>
           </div>
 
-          {/* Project Links */}
-          <div className="grid grid-cols-2 gap-2">
+          {/* Project Links - Responsive: 1 col on tiny screens, 2 cols on larger */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-2">
             {filteredProjects.map((project) => (
               <button
                 key={project.id}
                 onClick={() => handleProjectClick(project)}
-                className="flex items-center gap-3 p-2 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 transition-all"
+                className="flex items-center gap-2 sm:gap-3 p-2 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 transition-all"
               >
-                <img src={project.img} alt={project.title} className="w-8 h-8" />
-                <div className="flex-1 text-left">
-                  <div className="text-sm text-gray-800 dark:text-gray-200 truncate">
+                <img src={project.img} alt={project.title} className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0" />
+                <div className="flex-1 text-left min-w-0">
+                  <div className="text-xs sm:text-sm text-gray-800 dark:text-gray-200 truncate">
                     {project.title}
                   </div>
                 </div>
@@ -209,17 +216,17 @@ export default function StartMenu() {
         </div>
 
         {/* Social Media Links */}
-        <div className="px-6 py-4 border-t border-white/10 bg-white/20 dark:bg-black/20">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-white/10 bg-white/20 dark:bg-black/20">
           <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
             Connect with me
           </h3>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-3 sm:gap-4 justify-center">
             <button 
               onClick={() => window.open('https://www.linkedin.com/in/shaik-tanveer-lohare/', '_blank')}
               className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
               title="LinkedIn"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-[#0A66C2]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-[#0A66C2] w-5 h-5 sm:w-6 sm:h-6">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
             </button>
@@ -254,13 +261,13 @@ export default function StartMenu() {
         </div>
 
         {/* Footer - User Profile & Power */}
-        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between bg-white/20 dark:bg-black/20">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-white/10 flex items-center justify-between bg-white/20 dark:bg-black/20">
           {/* User Profile */}
-          <button className="flex items-center gap-3 px-3 py-2 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 transition-all">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
-              <FiUser className="text-gray-700" size={18} />
+          <button className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 transition-all">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center flex-shrink-0">
+              <FiUser className="text-gray-700" size={16} />
             </div>
-            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+            <span className="text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200 truncate max-w-[120px] sm:max-w-none">
               {user.name}
             </span>
           </button>
@@ -269,34 +276,34 @@ export default function StartMenu() {
           <div className="relative">
             <button
               onClick={() => setShowPowerMenu(!showPowerMenu)}
-              className="w-10 h-10 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/30 dark:active:bg-white/5 transition-all flex items-center justify-center text-gray-800 dark:text-gray-200"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-win-sm hover:bg-white/50 dark:hover:bg-white/10 active:bg-white/30 dark:active:bg-white/5 transition-all flex items-center justify-center text-gray-800 dark:text-gray-200"
               title="Power"
             >
-              <FiPower size={20} />
+              <FiPower size={18} />
             </button>
             
             {/* Power Menu Dropdown */}
             {showPowerMenu && (
-              <div className="absolute bottom-full right-0 mb-2 w-48 bg-gray-900/95 backdrop-blur-xl rounded-lg border border-white/10 shadow-2xl overflow-hidden">
+              <div className="absolute bottom-full right-0 mb-2 w-40 sm:w-48 bg-gray-900/95 backdrop-blur-xl rounded-lg border border-white/10 shadow-2xl overflow-hidden">
                 <button
                   onClick={() => handlePowerAction('sleep')}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 transition-colors"
+                  className="w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/90 hover:bg-white/10 transition-colors"
                 >
-                  <IoMoon className="w-5 h-5" />
+                  <IoMoon className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="text-sm">Sleep</span>
                 </button>
                 <button
                   onClick={() => handlePowerAction('restart')}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 transition-colors"
+                  className="w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/90 hover:bg-white/10 transition-colors"
                 >
-                  <IoRefresh className="w-5 h-5" />
+                  <IoRefresh className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="text-sm">Restart</span>
                 </button>
                 <button
                   onClick={() => handlePowerAction('shutdown')}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-white/90 hover:bg-white/10 transition-colors"
+                  className="w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/90 hover:bg-white/10 transition-colors"
                 >
-                  <IoPower className="w-5 h-5" />
+                  <IoPower className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="text-sm">Shut down</span>
                 </button>
               </div>

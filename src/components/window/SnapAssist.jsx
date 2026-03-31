@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getWorkspaceHeight } from '@/constants/layout'
+import { Z_INDEX } from '@/constants/zIndex'
 
 /**
  * Windows 11 Style Snap Assist Grid
@@ -80,9 +81,9 @@ export default function SnapAssist({
 
   const layouts = getLayouts()
 
-  // Position the assist panel
+  // Position the assist panel - responsive padding
   const getPanelPosition = () => {
-    const padding = 16
+    const padding = window.innerWidth < 640 ? 8 : 16
     
     if (position === 'left') {
       return { left: padding, top: '50%', transform: 'translateY(-50%)' }
@@ -93,22 +94,30 @@ export default function SnapAssist({
     return { left: '50%', top: padding, transform: 'translateX(-50%)' }
   }
 
+  // Responsive panel width
+  const getPanelWidth = () => {
+    return window.innerWidth < 640 ? 220 : 280
+  }
+
   return (
-    <div className="fixed inset-0 z-[9998] pointer-events-none">
+    <div 
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: Z_INDEX.snapPreview }}
+    >
       {/* Semi-transparent backdrop */}
       <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
       
-      {/* Snap Assist Panel */}
+      {/* Snap Assist Panel - Responsive */}
       <div
-        className="absolute pointer-events-auto bg-gray-900/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl p-4"
+        className="absolute pointer-events-auto bg-gray-900/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl p-3 sm:p-4"
         style={{
           ...getPanelPosition(),
-          width: 280
+          width: getPanelWidth()
         }}
       >
-        <h3 className="text-white/90 text-sm font-medium mb-3">Snap layouts</h3>
+        <h3 className="text-white/90 text-xs sm:text-sm font-medium mb-2 sm:mb-3">Snap layouts</h3>
         
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           {layouts.map((layout) => (
             <button
               key={layout.id}
