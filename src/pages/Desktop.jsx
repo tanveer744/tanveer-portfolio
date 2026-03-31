@@ -5,12 +5,24 @@ import StartMenu from '@/components/StartMenu'
 import AppWindow from '@/components/AppWindow'
 import DesktopIcons from '@/components/desktop/DesktopIcons'
 import ContextMenu from '@/components/desktop/ContextMenu'
+import KeyboardShortcuts from '@/components/KeyboardShortcuts'
 import { wallpapers } from '@/config/wallpapers'
 import { getCenteredPosition } from '@/constants/layout'
 
 export default function Desktop() {
-  const { windows, showStartMenu, addWindow, clearSelectedIcons } = useStore()
+  const { 
+    windows, 
+    showStartMenu, 
+    addWindow, 
+    clearSelectedIcons,
+    setIconSize,
+    setIconSort,
+    setShowDesktopIcons,
+    setAutoArrangeIcons,
+    setAlignToGrid
+  } = useStore()
   const [contextMenu, setContextMenu] = useState(null)
+  const [showShortcuts, setShowShortcuts] = useState(false)
 
   // Open Notepad whenever user enters desktop
   useEffect(() => {
@@ -53,27 +65,67 @@ export default function Desktop() {
       case 'refresh':
         window.location.reload()
         break
+      
+      // View submenu - Icon sizes
       case 'large-icons':
+        setIconSize('large')
+        break
       case 'medium-icons':
+        setIconSize('medium')
+        break
       case 'small-icons':
-        // TODO: Implement icon size changes
-        console.log('Icon size:', action)
+        setIconSize('small')
         break
+      
+      // View submenu - Icon settings
+      case 'auto-arrange':
+        setAutoArrangeIcons(true)
+        break
+      case 'align-to-grid':
+        setAlignToGrid(true)
+        break
+      case 'show-desktop-icons':
+        setShowDesktopIcons((prev) => !prev)
+        break
+      
+      // Sort by submenu
       case 'sort-name':
-      case 'sort-size':
-      case 'sort-type':
-      case 'sort-date':
-        // TODO: Implement sorting
-        console.log('Sort by:', action)
+        setIconSort('name')
         break
+      case 'sort-size':
+        setIconSort('size')
+        break
+      case 'sort-type':
+        setIconSort('type')
+        break
+      case 'sort-date':
+        setIconSort('date')
+        break
+      
+      // Settings
       case 'personalize':
       case 'display-settings':
-        // TODO: Open settings
         console.log('Settings:', action)
+        // TODO: Open settings app
         break
+      
       default:
         console.log('Context menu action:', action)
     }
+  }, [setIconSize, setIconSort, setShowDesktopIcons, setAutoArrangeIcons, setAlignToGrid])
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Show keyboard shortcuts on '?' or 'Shift+/'
+      if ((e.key === '?' || (e.key === '/' && e.shiftKey)) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        e.preventDefault()
+        setShowShortcuts(true)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   return (
@@ -112,6 +164,9 @@ export default function Desktop() {
           onAction={handleContextMenuAction}
         />
       )}
+
+      {/* Keyboard Shortcuts Modal */}
+      {showShortcuts && <KeyboardShortcuts onClose={() => setShowShortcuts(false)} />}
 
       {/* Taskbar - includes Start Menu and Search overlays */}
       <Taskbar />

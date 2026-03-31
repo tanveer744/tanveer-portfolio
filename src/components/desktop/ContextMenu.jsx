@@ -6,6 +6,7 @@ import {
   HiOutlineColorSwatch
 } from 'react-icons/hi'
 import { Z_INDEX } from '@/constants/zIndex'
+import { useStore } from '@/stores'
 
 /**
  * Windows 11 Style Desktop Context Menu
@@ -15,6 +16,9 @@ export default function ContextMenu({ x, y, onClose, onAction }) {
   const menuRef = useRef(null)
   const [submenu, setSubmenu] = useState(null)
   const [menuPosition, setMenuPosition] = useState({ x, y })
+  
+  // Get current settings from store
+  const { iconSize, iconSort, showDesktopIcons, autoArrangeIcons, alignToGrid } = useStore()
 
   // Adjust menu position to stay within viewport
   useEffect(() => {
@@ -74,14 +78,14 @@ export default function ContextMenu({ x, y, onClose, onAction }) {
       label: 'View',
       icon: <HiOutlineViewGrid className="w-4 h-4" />,
       submenu: [
-        { id: 'large-icons', label: 'Large icons', checked: false },
-        { id: 'medium-icons', label: 'Medium icons', checked: true },
-        { id: 'small-icons', label: 'Small icons', checked: false },
+        { id: 'large-icons', label: 'Large icons', checked: iconSize === 'large' },
+        { id: 'medium-icons', label: 'Medium icons', checked: iconSize === 'medium' },
+        { id: 'small-icons', label: 'Small icons', checked: iconSize === 'small' },
         { type: 'separator' },
-        { id: 'auto-arrange', label: 'Auto arrange icons', checked: true },
-        { id: 'align-to-grid', label: 'Align icons to grid', checked: true },
+        { id: 'auto-arrange', label: 'Auto arrange icons', checked: autoArrangeIcons },
+        { id: 'align-to-grid', label: 'Align icons to grid', checked: alignToGrid },
         { type: 'separator' },
-        { id: 'show-desktop-icons', label: 'Show desktop icons', checked: true },
+        { id: 'show-desktop-icons', label: 'Show desktop icons', checked: showDesktopIcons },
       ]
     },
     {
@@ -89,10 +93,10 @@ export default function ContextMenu({ x, y, onClose, onAction }) {
       label: 'Sort by',
       icon: <HiSortAscending className="w-4 h-4" />,
       submenu: [
-        { id: 'sort-name', label: 'Name', checked: true },
-        { id: 'sort-size', label: 'Size', checked: false },
-        { id: 'sort-type', label: 'Item type', checked: false },
-        { id: 'sort-date', label: 'Date modified', checked: false },
+        { id: 'sort-name', label: 'Name', checked: iconSort === 'name' },
+        { id: 'sort-size', label: 'Size', checked: iconSort === 'size' },
+        { id: 'sort-type', label: 'Item type', checked: iconSort === 'type' },
+        { id: 'sort-date', label: 'Date modified', checked: iconSort === 'date' },
       ]
     },
     { type: 'separator' },

@@ -467,3 +467,163 @@ body {
     height: auto !important;
   }
 }
+
+/* ===== DARK MODE STYLES ===== */
+
+/* Dark mode base styles */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
+}
+
+/* Desktop wallpaper overlay for dark mode */
+.dark .desktop-bg {
+  filter: brightness(0.7);
+}
+
+/* Window dark mode */
+.dark .window-container {
+  background-color: #2d2d2d;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .window-shadow-active {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(0, 120, 215, 0.4);
+}
+
+.dark .window-shadow-inactive {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Taskbar dark mode */
+.dark .taskbar {
+  background: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Start menu dark mode */
+.dark .start-menu {
+  background: rgba(30, 30, 30, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Context menu dark mode */
+.dark .context-menu {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .context-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Notepad dark mode */
+.dark .notepad-content {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.dark .notepad-sidebar {
+  background-color: #252526;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Terminal dark mode (already dark, but ensure consistency) */
+.dark .terminal-bg {
+  background-color: #0c0c0c;
+}
+
+/* Scrollbar dark mode */
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Card/Panel dark mode */
+.dark .bg-white {
+  background-color: #2d2d2d;
+  color: #e5e5e5;
+}
+
+.dark .bg-gray-50 {
+  background-color: #252526;
+}
+
+.dark .bg-gray-100 {
+  background-color: #2d2d2d;
+}
+
+.dark .bg-gray-200 {
+  background-color: #3e3e42;
+}
+
+/* Text color adjustments */
+.dark .text-gray-900 {
+  color: #e5e5e5;
+}
+
+.dark .text-gray-700 {
+  color: #cccccc;
+}
+
+.dark .text-gray-600 {
+  color: #b0b0b0;
+}
+
+.dark .text-gray-500 {
+  color: #999999;
+}
+
+/* Border color adjustments */
+.dark .border-gray-200 {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .border-gray-300 {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Input fields dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #3c3c3c;
+  color: #e5e5e5;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: #4a4a4a;
+  border-color: rgba(0, 120, 215, 0.6);
+}
+
+/* Button hover states in dark mode */
+.dark .hover\:bg-gray-100:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .hover\:bg-gray-200:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Dark mode transition for smooth theme switching */
+.dark * {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Prevent transition on page load */
+.dark.no-transition * {
+  transition: none !important;
+}
+

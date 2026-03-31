@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Z_INDEX } from '@/constants/zIndex'
-import { 
+import { useStore } from '@/stores'
+import {
   IoWifiSharp, 
   IoBluetoothSharp, 
   IoAirplane, 
@@ -32,6 +33,9 @@ export default function QuickSettings({ onClose }) {
     accessibility: false
   })
   const panelRef = useRef(null)
+  
+  // Get dark mode state from store
+  const { darkMode, setDarkMode } = useStore()
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50)
@@ -70,6 +74,13 @@ export default function QuickSettings({ onClose }) {
   }
 
   const quickButtons = [
+    { 
+      id: 'darkMode', 
+      icon: darkMode ? <IoMoon className="w-5 h-5" /> : <IoSunny className="w-5 h-5" />, 
+      label: darkMode ? 'Dark mode' : 'Light mode', 
+      active: darkMode,
+      onClick: () => setDarkMode(!darkMode)
+    },
     { id: 'wifi', icon: <IoWifiSharp className="w-5 h-5" />, label: 'Wi-Fi', active: settings.wifi },
     { id: 'bluetooth', icon: <IoBluetoothSharp className="w-5 h-5" />, label: 'Bluetooth', active: settings.bluetooth },
     { id: 'airplane', icon: <IoAirplane className="w-5 h-5" />, label: 'Airplane mode', active: settings.airplane },
@@ -92,7 +103,7 @@ export default function QuickSettings({ onClose }) {
           {quickButtons.map((btn) => (
             <button
               key={btn.id}
-              onClick={() => toggleSetting(btn.id)}
+              onClick={() => btn.onClick ? btn.onClick() : toggleSetting(btn.id)}
               className={`flex flex-col items-start gap-1 p-2 sm:p-3 rounded-lg transition-all ${
                 btn.active 
                   ? 'bg-blue-500/80 text-white' 

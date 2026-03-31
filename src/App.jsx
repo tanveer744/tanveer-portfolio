@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Boot from './pages/Boot'
 import Lock from './pages/Lock'
 import Login from './pages/Login'
@@ -5,7 +6,16 @@ import Desktop from './pages/Desktop'
 import { useStore } from '@/stores'
 
 function App() {
-  const { currentPage, setCurrentPage } = useStore()
+  const { currentPage, setCurrentPage, darkMode } = useStore()
+
+  // Apply dark mode to HTML element
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [darkMode])
 
   const handleBootComplete = () => {
     setCurrentPage('lock')

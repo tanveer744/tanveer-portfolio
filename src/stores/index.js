@@ -318,6 +318,22 @@ export const useStore = create((set) => ({
   })),
   resetIconPositions: () => set({ iconPositions: {} }),
   
+  // Desktop view settings
+  iconSize: 'medium', // 'small' | 'medium' | 'large'
+  setIconSize: (size) => set({ iconSize: size }),
+  
+  iconSort: 'name', // 'name' | 'size' | 'type' | 'date'
+  setIconSort: (sort) => set({ iconSort: sort }),
+  
+  showDesktopIcons: true,
+  setShowDesktopIcons: (show) => set({ showDesktopIcons: show }),
+  
+  autoArrangeIcons: true,
+  setAutoArrangeIcons: (enabled) => set({ autoArrangeIcons: enabled }),
+  
+  alignToGrid: true,
+  setAlignToGrid: (enabled) => set({ alignToGrid: enabled }),
+  
   // Desktop icon selection
   selectedIcons: [],
   setSelectedIcons: (icons) => set({ selectedIcons: icons }),
