@@ -4,6 +4,8 @@ import { IoMoon, IoRefresh, IoPower } from 'react-icons/io5'
 import { useStore } from '@/stores'
 import { apps } from '@/config/apps'
 import { startMenuProjects } from '@/config/wallpapers'
+import projectsData from '@/config/projects'
+import ProjectModal from '@/components/ProjectModal'
 import { getCenteredPosition } from '@/constants/layout'
 import { Z_INDEX } from '@/constants/zIndex'
 
@@ -11,6 +13,7 @@ export default function StartMenu() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showAllApps, setShowAllApps] = useState(false)
   const [showPowerMenu, setShowPowerMenu] = useState(false)
+  const [selectedProject, setSelectedProject] = useState(null)
   const { addWindow, setShowStartMenu, user, powerOff, setCurrentPage } = useStore()
 
   const handleAppClick = (app) => {
@@ -43,8 +46,15 @@ export default function StartMenu() {
   }
 
   const handleProjectClick = (project) => {
-    window.open(project.link, '_blank')
-    setShowStartMenu(false)
+    // Find full project data
+    const fullProjectData = projectsData.find(p => p.id === project.id)
+    if (fullProjectData) {
+      setSelectedProject(fullProjectData)
+    } else {
+      // Fallback to opening link if no detailed data
+      window.open(project.link, '_blank')
+      setShowStartMenu(false)
+    }
   }
 
   const handlePowerAction = (action) => {
@@ -311,6 +321,14 @@ export default function StartMenu() {
           </div>
         </div>
       </div>
+      
+      {/* Project Modal */}
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </div>
   )
 }

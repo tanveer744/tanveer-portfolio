@@ -703,7 +703,7 @@ function AppContent({ appId, windowData }) {
     terminal: <Terminal />,
     camera: <Camera />,
     explorer: <ExplorerContent />,
-    settings: <SettingsContent />,
+    settings: <Settings />,
   }
 
   return contentMap[appId] || <DefaultContent appId={appId} />
@@ -776,25 +776,8 @@ function ExplorerContent() {
   )
 }
 
-function SettingsContent() {
-  return (
-    <div className="w-full h-full flex">
-      <div className="w-48 bg-gray-100 dark:bg-gray-800 border-r border-gray-300 dark:border-gray-700 p-4">
-        <div className="space-y-2">
-          {['System', 'Personalization', 'Apps', 'Accounts', 'Network'].map((item) => (
-            <div key={item} className="px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded cursor-pointer text-sm">
-              {item}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex-1 p-6">
-        <h2 className="text-2xl font-semibold mb-4">System Settings</h2>
-        <p className="text-gray-600 dark:text-gray-400">Configure your Windows experience</p>
-      </div>
-    </div>
-  )
-}
+// Settings component is now in ./apps/Settings.jsx
+// Removed old SettingsContent function
 
 function DefaultContent({ appId }) {
   return (

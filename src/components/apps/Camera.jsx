@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import LoadingSpinner from '@/components/LoadingSpinner'
 
 export default function Camera() {
   const [isRecording, setIsRecording] = useState(false)
@@ -8,6 +9,7 @@ export default function Camera() {
   const [selectedVideo, setSelectedVideo] = useState(null)
   const [cameraActive, setCameraActive] = useState(false)
   const [cameraError, setCameraError] = useState(null)
+  const [cameraLoading, setCameraLoading] = useState(true)
   const [activeMode, setActiveMode] = useState('photo') // 'photo' or 'video'
   const [countdown, setCountdown] = useState(null)
   const [flashEffect, setFlashEffect] = useState(false)
@@ -50,6 +52,7 @@ export default function Camera() {
               videoRef.current.onloadedmetadata = () => {
                 console.log('✅ Metadata loaded, activating camera')
                 setCameraActive(true)
+                setCameraLoading(false)
               }
             }
           }, 100)
@@ -57,6 +60,7 @@ export default function Camera() {
       } catch (err) {
         console.error('❌ Error accessing camera:', err)
         setCameraError('Unable to access camera. Please ensure camera permissions are granted.')
+        setCameraLoading(false)
       }
     }
 
@@ -304,6 +308,13 @@ export default function Camera() {
 
   return (
     <div className="w-full h-full flex flex-col bg-black">
+      {/* Loading State */}
+      {cameraLoading && !cameraError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-10">
+          <LoadingSpinner size="lg" message="Initializing camera..." className="text-white" />
+        </div>
+      )}
+      
       {/* Top Toolbar */}
       <div className="h-12 bg-gray-900/90 backdrop-blur-sm flex items-center justify-between px-4 select-none">
         {/* Left Controls */}

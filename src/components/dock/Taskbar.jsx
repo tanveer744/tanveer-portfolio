@@ -7,6 +7,7 @@ import { Z_INDEX } from '@/constants/zIndex'
 import TaskbarThumbnail from './TaskbarThumbnail'
 import CalendarPopup from './CalendarPopup'
 import QuickSettings from './QuickSettings'
+import NotificationPanel from '../NotificationPanel'
 import { 
   IoSearchOutline,
   IoWifiSharp,
@@ -26,7 +27,8 @@ export default function Taskbar() {
     setActiveWindow, 
     restoreWindow, 
     minimizeWindow, 
-    activeWindow 
+    activeWindow,
+    notifications
   } = useStore()
   const [currentTime, setCurrentTime] = useState(new Date())
   const [searchQuery, setSearchQuery] = useState('')
@@ -34,6 +36,7 @@ export default function Taskbar() {
   const [hoveredApp, setHoveredApp] = useState(null)
   const [showCalendar, setShowCalendar] = useState(false)
   const [showQuickSettings, setShowQuickSettings] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
   const hoverTimeoutRef = useRef(null)
   const searchInputRef = useRef(null)
 
@@ -328,6 +331,10 @@ export default function Taskbar() {
             {showQuickSettings && (
               <QuickSettings onClose={() => setShowQuickSettings(false)} />
             )}
+            
+            {showNotifications && (
+              <NotificationPanel onClose={() => setShowNotifications(false)} />
+            )}
           </div>
 
           {/* Date & Time - Opens Calendar */}
@@ -357,13 +364,23 @@ export default function Taskbar() {
           </div>
 
           {/* Notification Center */}
-          <button
-            className="h-10 w-10 rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all flex items-center justify-center"
-            title="Notification Center"
-            aria-label="Notification Center"
-          >
-            <IoNotificationsOutline className="w-5 h-5 text-white/80" />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowNotifications(!showNotifications)
+                setShowQuickSettings(false)
+                setShowCalendar(false)
+              }}
+              className="h-10 w-10 rounded-md hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 transition-all flex items-center justify-center relative"
+              title="Notification Center"
+              aria-label="Notification Center"
+            >
+              <IoNotificationsOutline className="w-5 h-5 text-white/80" />
+              {notifications.filter(n => !n.read).length > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
       

@@ -352,4 +352,56 @@ export const useStore = create((set) => ({
       currentPage: 'boot'
     })
   },
+  
+  // Notifications
+  notifications: [
+    {
+      id: 'welcome',
+      title: 'Welcome to Windows 11 Portfolio',
+      message: 'Explore my projects, skills, and experience through this interactive desktop.',
+      icon: '👋',
+      type: 'info',
+      time: 'Just now',
+      read: false
+    },
+    {
+      id: 'terminal-tip',
+      title: 'Terminal Pro Tip',
+      message: 'Try typing "contact", "projects", "skills", or "resume" in the Terminal app!',
+      icon: '💡',
+      type: 'success',
+      time: '2 min ago',
+      read: false
+    },
+    {
+      id: 'dark-mode',
+      title: 'Dark Mode Available',
+      message: 'Toggle between light and dark themes using Quick Settings (bottom-right).',
+      icon: '🌙',
+      type: 'info',
+      time: '5 min ago',
+      read: true
+    }
+  ],
+  
+  addNotification: (notification) => set((state) => ({
+    notifications: [{
+      id: `notif-${Date.now()}`,
+      read: false,
+      time: 'Just now',
+      ...notification
+    }, ...state.notifications]
+  })),
+  
+  removeNotification: (id) => set((state) => ({
+    notifications: state.notifications.filter(n => n.id !== id)
+  })),
+  
+  markNotificationRead: (id) => set((state) => ({
+    notifications: state.notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    )
+  })),
+  
+  clearAllNotifications: () => set({ notifications: [] }),
 }))

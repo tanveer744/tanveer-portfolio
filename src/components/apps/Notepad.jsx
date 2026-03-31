@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { FaUser, FaFolder, FaGithub, FaGlobe, FaRobot, FaBrain, FaCarCrash } from 'react-icons/fa'
 import notepadData from '@/config/notepad'
+import LoadingSpinner from '@/components/LoadingSpinner'
 
 // Add keyframes and tooltip styles
 const style = document.createElement('style')
@@ -516,12 +517,7 @@ export default function Notepad({ windowData }) {
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-8 h-8 border-4 border-gray-200 border-t-win-accent rounded-full animate-spin" />
-              <div className="text-sm text-gray-500">Loading document...</div>
-            </div>
-          </div>
+          <LoadingSpinner size="md" message="Loading document..." className="h-full" />
         ) : (
           <div 
             className={`px-8 py-6 ${wordWrap ? '' : 'overflow-x-auto'}`}

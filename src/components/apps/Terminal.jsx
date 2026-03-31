@@ -35,7 +35,11 @@ class Terminal extends Component {
       whoami: this.whoami,
       neofetch: this.neofetch,
       date: this.date,
-      hostname: this.hostname
+      hostname: this.hostname,
+      contact: this.contact,
+      resume: this.resume,
+      projects: this.projects,
+      skills: this.skills
     }
   }
 
@@ -408,6 +412,12 @@ class Terminal extends Component {
           <div><span className="text-cyan-400">neofetch</span> - Display system info with ASCII art</div>
           <div><span className="text-cyan-400">clear</span> - Clear the terminal screen</div>
           <div><span className="text-cyan-400">help</span> - Display this help menu</div>
+          
+          <div className="mt-3 text-yellow-400 font-semibold">🌟 Portfolio Commands:</div>
+          <div><span className="text-green-400">contact</span> - Show contact information (email, LinkedIn, GitHub)</div>
+          <div><span className="text-green-400">resume</span> - Download resume PDF</div>
+          <div><span className="text-green-400">projects</span> - List all projects with details</div>
+          <div><span className="text-green-400">skills</span> - Display technical skills tree</div>
         </div>
         <div className="text-yellow-300 mt-3">
           💡 Tips: Use ↑/↓ arrow keys for command history, Tab for auto-complete
@@ -426,6 +436,203 @@ class Terminal extends Component {
       </div>
     )
     this.generateResultRow(this.state.curInputTimes, help)
+  }
+
+  // Contact command - show contact information
+  contact = () => {
+    const contact = (
+      <div className="text-gray-100 space-y-2">
+        <div className="text-green-400 font-bold text-lg mb-3">📬 Contact Information</div>
+        <div className="ml-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400 font-semibold">Email:</span>
+            <a href="mailto:tanveerlohare744@gmail.com" className="text-blue-400 hover:underline">
+              tanveerlohare744@gmail.com
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400 font-semibold">LinkedIn:</span>
+            <a href="https://www.linkedin.com/in/shaik-tanveer-lohare/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+              linkedin.com/in/shaik-tanveer-lohare
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400 font-semibold">GitHub:</span>
+            <a href="https://github.com/tanveer744" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+              github.com/tanveer744
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400 font-semibold">Instagram:</span>
+            <a href="https://www.instagram.com/shaiktanveer_74" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+              @shaiktanveer_74
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-cyan-400 font-semibold">Location:</span>
+            <span className="text-gray-300">Bangalore, India</span>
+          </div>
+        </div>
+        <div className="text-yellow-300 mt-3">
+          💡 Feel free to reach out for collaboration or opportunities!
+        </div>
+      </div>
+    )
+    this.generateResultRow(this.state.curInputTimes, contact)
+  }
+
+  // Resume command - download resume
+  resume = () => {
+    const resume = (
+      <div className="text-gray-100 space-y-2">
+        <div className="text-green-400 font-bold mb-2">📄 Resume Download</div>
+        <div className="ml-4">
+          <div className="text-gray-300 mb-2">Preparing to download resume...</div>
+          <div className="text-cyan-400">
+            → <span className="text-blue-400">Shaik_Tanveer_Lohare_Resume.pdf</span>
+          </div>
+          <div className="text-yellow-300 mt-2">
+            ✓ Download started! Check your downloads folder.
+          </div>
+        </div>
+      </div>
+    )
+    this.generateResultRow(this.state.curInputTimes, resume)
+    
+    // Trigger actual download
+    const link = document.createElement('a')
+    link.href = '/resume/Shaik_Tanveer_Lohare_Resume.pdf'
+    link.download = 'Shaik_Tanveer_Lohare_Resume.pdf'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  // Projects command - list all projects
+  projects = () => {
+    const projects = (
+      <div className="text-gray-100 space-y-2">
+        <div className="text-green-400 font-bold text-lg mb-3">🚀 My Projects</div>
+        
+        <div className="ml-4 space-y-4">
+          {/* LinkedIn Automator */}
+          <div className="border-l-2 border-cyan-500 pl-3">
+            <div className="text-cyan-400 font-semibold text-base">🤖 LinkedIn Automator</div>
+            <div className="text-gray-300 text-sm mt-1">
+              AI-powered LinkedIn automation assistant with Tkinter GUI, Chrome sessions, and smart delays
+            </div>
+            <div className="flex gap-4 mt-2 text-xs">
+              <span className="text-purple-400">Python • Selenium • AI/ML</span>
+              <a href="https://github.com/tanveer744/linkedin-automator" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                GitHub →
+              </a>
+            </div>
+          </div>
+
+          {/* HackRx Query System */}
+          <div className="border-l-2 border-blue-500 pl-3">
+            <div className="text-blue-400 font-semibold text-base">🧠 HackRx Query System</div>
+            <div className="text-gray-300 text-sm mt-1">
+              Intelligent document Q&A using FAISS, Azure OCR, and Gemini AI for policy documents
+            </div>
+            <div className="flex gap-4 mt-2 text-xs">
+              <span className="text-purple-400">Python • FAISS • Azure • Gemini</span>
+              <span className="text-yellow-400">🏆 HackRx 5.0 Finalist</span>
+            </div>
+          </div>
+
+          {/* Road Rage Detection */}
+          <div className="border-l-2 border-green-500 pl-3">
+            <div className="text-green-400 font-semibold text-base">🚗 Road Rage Detection</div>
+            <div className="text-gray-300 text-sm mt-1">
+              Real-time aggressive driving detection using 3D CNN, transfer learning, and computer vision
+            </div>
+            <div className="flex gap-4 mt-2 text-xs">
+              <span className="text-purple-400">Python • TensorFlow • OpenCV</span>
+              <span className="text-yellow-400">📄 IEEE Publication</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-yellow-300 mt-3">
+          💡 Tip: Navigate to /projects folder for more details (cd projects)
+        </div>
+      </div>
+    )
+    this.generateResultRow(this.state.curInputTimes, projects)
+  }
+
+  // Skills command - show skills tree
+  skills = () => {
+    const skills = (
+      <div className="text-gray-100 space-y-2 font-mono">
+        <div className="text-green-400 font-bold text-lg mb-3">🛠️ Technical Skills</div>
+        
+        <div className="ml-4 space-y-3">
+          {/* Programming Languages */}
+          <div>
+            <div className="text-cyan-400 font-semibold">📝 Programming Languages</div>
+            <div className="ml-4 text-sm space-y-0.5 mt-1">
+              <div className="text-gray-300">├─ <span className="text-yellow-400">Python</span> <span className="text-green-500">██████████</span> Expert</div>
+              <div className="text-gray-300">├─ <span className="text-yellow-400">JavaScript</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-yellow-400">TypeScript</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-yellow-400">Java</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+              <div className="text-gray-300">└─ <span className="text-yellow-400">C++</span> <span className="text-green-500">██████░░░░</span> Intermediate</div>
+            </div>
+          </div>
+
+          {/* Web Development */}
+          <div>
+            <div className="text-cyan-400 font-semibold">🌐 Web Development</div>
+            <div className="ml-4 text-sm space-y-0.5 mt-1">
+              <div className="text-gray-300">├─ <span className="text-blue-400">React.js</span> <span className="text-green-500">█████████░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-blue-400">Node.js</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-blue-400">Express.js</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-blue-400">Next.js</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+              <div className="text-gray-300">└─ <span className="text-blue-400">Tailwind CSS</span> <span className="text-green-500">█████████░</span> Advanced</div>
+            </div>
+          </div>
+
+          {/* AI & Machine Learning */}
+          <div>
+            <div className="text-cyan-400 font-semibold">🤖 AI & Machine Learning</div>
+            <div className="ml-4 text-sm space-y-0.5 mt-1">
+              <div className="text-gray-300">├─ <span className="text-purple-400">TensorFlow</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-purple-400">PyTorch</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+              <div className="text-gray-300">├─ <span className="text-purple-400">Scikit-learn</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-purple-400">Computer Vision</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">└─ <span className="text-purple-400">NLP</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+            </div>
+          </div>
+
+          {/* Databases */}
+          <div>
+            <div className="text-cyan-400 font-semibold">🗄️ Databases</div>
+            <div className="ml-4 text-sm space-y-0.5 mt-1">
+              <div className="text-gray-300">├─ <span className="text-orange-400">MongoDB</span> <span className="text-green-500">████████░░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-orange-400">PostgreSQL</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+              <div className="text-gray-300">└─ <span className="text-orange-400">MySQL</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+            </div>
+          </div>
+
+          {/* Tools & Platforms */}
+          <div>
+            <div className="text-cyan-400 font-semibold">🔧 Tools & Platforms</div>
+            <div className="ml-4 text-sm space-y-0.5 mt-1">
+              <div className="text-gray-300">├─ <span className="text-red-400">Git & GitHub</span> <span className="text-green-500">█████████░</span> Advanced</div>
+              <div className="text-gray-300">├─ <span className="text-red-400">Docker</span> <span className="text-green-500">███████░░░</span> Intermediate</div>
+              <div className="text-gray-300">├─ <span className="text-red-400">AWS</span> <span className="text-green-500">██████░░░░</span> Intermediate</div>
+              <div className="text-gray-300">└─ <span className="text-red-400">Linux</span> <span className="text-green-500">████████░░</span> Advanced</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-yellow-300 mt-3">
+          💡 Tip: Visit /skills folder for detailed breakdowns (cd skills)
+        </div>
+      </div>
+    )
+    this.generateResultRow(this.state.curInputTimes, skills)
   }
 
   // Auto-complete command or path
