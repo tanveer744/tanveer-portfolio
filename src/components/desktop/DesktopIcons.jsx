@@ -220,24 +220,33 @@ function DraggableIcon({ item, position, onPositionChange, onSelect, onOpen, isS
     setCurrentPos(position)
   }, [position])
 
-  const handleMouseDown = (e) => {
+  // Unified handler for mouse and touch start
+  const handleDragStartEvent = (e) => {
     e.preventDefault()
     e.stopPropagation()
+    
+    // Get coordinates from mouse or touch event
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
     
     setIsDragging(true)
     totalMovement.current = 0
     setDragStart({
-      x: e.clientX - currentPos.x,
-      y: e.clientY - currentPos.y
+      x: clientX - currentPos.x,
+      y: clientY - currentPos.y
     })
   }
 
   useEffect(() => {
     if (!isDragging) return
 
-    const handleMouseMove = (e) => {
-      const newX = e.clientX - dragStart.x
-      const newY = e.clientY - dragStart.y
+    const handleMove = (e) => {
+      // Get coordinates from mouse or touch event
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY
+      
+      const newX = clientX - dragStart.x
+      const newY = clientY - dragStart.y
       
       // Calculate total movement
       const dx = newX - currentPos.x
@@ -247,7 +256,7 @@ function DraggableIcon({ item, position, onPositionChange, onSelect, onOpen, isS
       setCurrentPos({ x: newX, y: newY })
     }
 
-    const handleMouseUp = (e) => {
+    const handleEnd = (e) => {
       setIsDragging(false)
       
       // If moved less than threshold, handle as click
@@ -255,14 +264,17 @@ function DraggableIcon({ item, position, onPositionChange, onSelect, onOpen, isS
         const now = Date.now()
         const timeSinceLastClick = now - lastClickTime.current
         
+        // Get ctrl/meta key state - for touch, never true
+        const isCtrlKey = e.ctrlKey || e.metaKey || false
+        
         if (timeSinceLastClick < 300) {
-          // Double-click: Open the item
+          // Double-click/double-tap: Open the item
           clickCount.current = 0
           onOpen()
         } else {
-          // Single-click: Select the item
+          // Single-click/tap: Select the item
           clickCount.current = 1
-          onSelect(e.ctrlKey || e.metaKey)
+          onSelect(isCtrlKey)
         }
         
         lastClickTime.current = now
@@ -272,20 +284,29 @@ function DraggableIcon({ item, position, onPositionChange, onSelect, onOpen, isS
       }
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
+    // Mouse events
+    window.addEventListener('mousemove', handleMove)
+    window.addEventListener('mouseup', handleEnd)
+    // Touch events
+    window.addEventListener('touchmove', handleMove, { passive: false })
+    window.addEventListener('touchend', handleEnd)
+    window.addEventListener('touchcancel', handleEnd)
     
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener('mousemove', handleMove)
+      window.removeEventListener('mouseup', handleEnd)
+      window.removeEventListener('touchmove', handleMove)
+      window.removeEventListener('touchend', handleEnd)
+      window.removeEventListener('touchcancel', handleEnd)
     }
   }, [isDragging, dragStart, currentPos, onOpen, onSelect, onPositionChange])
 
   return (
     <div
       ref={iconRef}
-      onMouseDown={handleMouseDown}
-      className={`absolute flex flex-col items-center w-20 p-2 rounded transition-colors duration-150 pointer-events-auto select-none
+      onMouseDown={handleDragStartEvent}
+      onTouchStart={handleDragStartEvent}
+      className={`absolute flex flex-col items-center w-20 p-2 rounded transition-colors duration-150 pointer-events-auto select-none touch-none
         ${isSelected 
           ? 'bg-blue-500/30 ring-1 ring-blue-400/50' 
           : 'hover:bg-white/10'

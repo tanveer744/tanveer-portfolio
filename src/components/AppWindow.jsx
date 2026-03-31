@@ -215,28 +215,37 @@ export default function AppWindow({ window: windowData }) {
     return null
   }, [])
 
-  // Start dragging
+  // Start dragging - unified handler for mouse and touch
   const handleDragStart = useCallback((e) => {
     if (windowData.isMaximized || windowData.isFullscreen) return
     if (e.target.closest('.window-controls')) return
     
+    // Get coordinates from mouse or touch event
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    
     setIsDragging(true)
     setDragStart({
-      x: e.clientX,
-      y: e.clientY,
+      x: clientX,
+      y: clientY,
       windowX: windowData.x,
       windowY: windowData.y
     })
-    e.preventDefault()
+    
+    if (e.cancelable) e.preventDefault()
   }, [windowData.isMaximized, windowData.isFullscreen, windowData.x, windowData.y])
 
-  // Handle dragging
+  // Handle dragging - now supports both mouse and touch
   useEffect(() => {
     if (!isDragging) return
 
-    const handleMouseMove = (e) => {
-      const deltaX = e.clientX - dragStart.x
-      const deltaY = e.clientY - dragStart.y
+    const handleMove = (e) => {
+      // Get coordinates from mouse or touch event
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY
+      
+      const deltaX = clientX - dragStart.x
+      const deltaY = clientY - dragStart.y
       
       let newX = dragStart.windowX + deltaX
       let newY = dragStart.windowY + deltaY
@@ -245,7 +254,7 @@ export default function AppWindow({ window: windowData }) {
       updateWindowPosition(windowData.id, newX, newY)
 
       // Detect snap zone
-      const zone = detectSnapZone(e.clientX, e.clientY)
+      const zone = detectSnapZone(clientX, clientY)
       setSnapZone(zone)
       
       // Start timer for snap assist if hovering at edge
@@ -262,7 +271,7 @@ export default function AppWindow({ window: windowData }) {
       }
     }
 
-    const handleMouseUp = (e) => {
+    const handleEnd = (e) => {
       setIsDragging(false)
       
       // Clear snap assist timer
@@ -271,9 +280,19 @@ export default function AppWindow({ window: windowData }) {
         snapHoldTimer.current = null
       }
       
+      // Get final position from mouse or touch event
+      let clientX, clientY
+      if (e.changedTouches) {
+        clientX = e.changedTouches[0].clientX
+        clientY = e.changedTouches[0].clientY
+      } else {
+        clientX = e.clientX
+        clientY = e.clientY
+      }
+      
       // Apply snap if in snap zone (and not showing assist)
       if (!showSnapAssist) {
-        const zone = detectSnapZone(e.clientX, e.clientY)
+        const zone = detectSnapZone(clientX, clientY)
         if (zone === 'top') {
           toggleMaximizeWindow(windowData.id)
         } else if (zone === 'left') {
@@ -287,12 +306,20 @@ export default function AppWindow({ window: windowData }) {
       setSnapAssistPosition(null)
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
+    // Mouse events
+    document.addEventListener('mousemove', handleMove)
+    document.addEventListener('mouseup', handleEnd)
+    // Touch events
+    document.addEventListener('touchmove', handleMove, { passive: false })
+    document.addEventListener('touchend', handleEnd)
+    document.addEventListener('touchcancel', handleEnd)
     
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('mouseup', handleEnd)
+      document.removeEventListener('touchmove', handleMove)
+      document.removeEventListener('touchend', handleEnd)
+      document.removeEventListener('touchcancel', handleEnd)
       if (snapHoldTimer.current) {
         clearTimeout(snapHoldTimer.current)
       }
@@ -317,31 +344,40 @@ export default function AppWindow({ window: windowData }) {
     // Other layouts can be implemented later
   }, [windowData.id, snapAssistPosition, toggleMaximizeWindow, snapWindowLeft, snapWindowRight])
 
-  // Start resizing
+  // Start resizing - unified handler for mouse and touch
   const handleResizeStart = useCallback((direction, e) => {
     if (windowData.isMaximized || windowData.isFullscreen) return
+    
+    // Get coordinates from mouse or touch event
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
     
     setIsResizing(true)
     setResizeDirection(direction)
     setResizeStart({
-      x: e.clientX,
-      y: e.clientY,
+      x: clientX,
+      y: clientY,
       width: windowData.width,
       height: windowData.height,
       windowX: windowData.x,
       windowY: windowData.y
     })
-    e.preventDefault()
+    
+    if (e.cancelable) e.preventDefault()
     e.stopPropagation()
   }, [windowData.isMaximized, windowData.isFullscreen, windowData.width, windowData.height, windowData.x, windowData.y])
 
-  // Handle resizing
+  // Handle resizing - now supports both mouse and touch
   useEffect(() => {
     if (!isResizing) return
 
-    const handleMouseMove = (e) => {
-      const deltaX = e.clientX - resizeStart.x
-      const deltaY = e.clientY - resizeStart.y
+    const handleMove = (e) => {
+      // Get coordinates from mouse or touch event
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY
+      
+      const deltaX = clientX - resizeStart.x
+      const deltaY = clientY - resizeStart.y
 
       let newWidth = resizeStart.width
       let newHeight = resizeStart.height
@@ -407,17 +443,25 @@ export default function AppWindow({ window: windowData }) {
       }
     }
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       setIsResizing(false)
       setResizeDirection(null)
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
+    // Mouse events
+    document.addEventListener('mousemove', handleMove)
+    document.addEventListener('mouseup', handleEnd)
+    // Touch events
+    document.addEventListener('touchmove', handleMove, { passive: false })
+    document.addEventListener('touchend', handleEnd)
+    document.addEventListener('touchcancel', handleEnd)
     
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMove)
+      document.removeEventListener('mouseup', handleEnd)
+      document.removeEventListener('touchmove', handleMove)
+      document.removeEventListener('touchend', handleEnd)
+      document.removeEventListener('touchcancel', handleEnd)
     }
   }, [isResizing, resizeDirection, resizeStart, windowData.id, windowData.minWidth, windowData.minHeight, windowData.x, windowData.y, updateWindowSize, updateWindowPosition])
 
@@ -478,9 +522,10 @@ export default function AppWindow({ window: windowData }) {
 
   const ResizeHandle = ({ direction, className, cursor }) => (
     <div
-      className={`absolute ${className} resize-handle`}
+      className={`absolute ${className} resize-handle touch-none`}
       style={{ cursor }}
       onMouseDown={(e) => handleResizeStart(direction, e)}
+      onTouchStart={(e) => handleResizeStart(direction, e)}
     />
   )
 
@@ -527,8 +572,9 @@ export default function AppWindow({ window: windowData }) {
 
         {/* Title Bar */}
         <div 
-          className="h-8 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-850 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-3 select-none cursor-move"
+          className="h-8 sm:h-8 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-850 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-3 select-none cursor-move touch-none"
           onMouseDown={handleDragStart}
+          onTouchStart={handleDragStart}
           onClick={handleTitleBarDoubleClick}
         >
           {/* Left - App Icon & Title */}
@@ -617,19 +663,20 @@ export default function AppWindow({ window: windowData }) {
         </div>
 
         {/* Resize Handles - only show when not maximized/fullscreen */}
+        {/* Note: Touch targets are enlarged via padding for better mobile interaction */}
         {!windowData.isMaximized && !windowData.isFullscreen && (
           <>
-            {/* Edges */}
-            <ResizeHandle direction="top" className="top-0 left-0 right-0 h-1 -mt-0.5" cursor="ns-resize" />
-            <ResizeHandle direction="bottom" className="bottom-0 left-0 right-0 h-1 -mb-0.5" cursor="ns-resize" />
-            <ResizeHandle direction="left" className="left-0 top-0 bottom-0 w-1 -ml-0.5" cursor="ew-resize" />
-            <ResizeHandle direction="right" className="right-0 top-0 bottom-0 w-1 -mr-0.5" cursor="ew-resize" />
+            {/* Edges - larger touch targets (h-2/w-2 instead of h-1/w-1) */}
+            <ResizeHandle direction="top" className="top-0 left-0 right-0 h-2 -mt-1" cursor="ns-resize" />
+            <ResizeHandle direction="bottom" className="bottom-0 left-0 right-0 h-2 -mb-1" cursor="ns-resize" />
+            <ResizeHandle direction="left" className="left-0 top-0 bottom-0 w-2 -ml-1" cursor="ew-resize" />
+            <ResizeHandle direction="right" className="right-0 top-0 bottom-0 w-2 -mr-1" cursor="ew-resize" />
             
-            {/* Corners */}
-            <ResizeHandle direction="top-left" className="top-0 left-0 w-2 h-2 -mt-1 -ml-1" cursor="nwse-resize" />
-            <ResizeHandle direction="top-right" className="top-0 right-0 w-2 h-2 -mt-1 -mr-1" cursor="nesw-resize" />
-            <ResizeHandle direction="bottom-left" className="bottom-0 left-0 w-2 h-2 -mb-1 -ml-1" cursor="nesw-resize" />
-            <ResizeHandle direction="bottom-right" className="bottom-0 right-0 w-2 h-2 -mb-1 -mr-1" cursor="nwse-resize" />
+            {/* Corners - larger touch targets (w-4/h-4 instead of w-2/h-2) */}
+            <ResizeHandle direction="top-left" className="top-0 left-0 w-4 h-4 -mt-2 -ml-2" cursor="nwse-resize" />
+            <ResizeHandle direction="top-right" className="top-0 right-0 w-4 h-4 -mt-2 -mr-2" cursor="nesw-resize" />
+            <ResizeHandle direction="bottom-left" className="bottom-0 left-0 w-4 h-4 -mb-2 -ml-2" cursor="nesw-resize" />
+            <ResizeHandle direction="bottom-right" className="bottom-0 right-0 w-4 h-4 -mb-2 -mr-2" cursor="nwse-resize" />
           </>
         )}
       </div>

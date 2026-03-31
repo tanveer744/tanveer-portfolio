@@ -282,3 +282,184 @@ body {
 .animate-flash {
   animation: flash 0.2s ease-out;
 }
+
+/* ===== PHASE 5: RESPONSIVE MEDIA QUERIES ===== */
+
+/* Reduced Motion - Respect user preference for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-window-open,
+  .animate-window-close,
+  .animate-window-minimize,
+  .animate-window-restore,
+  .animate-context-menu,
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .window-container {
+    transition: none !important;
+  }
+}
+
+/* Touch-friendly targets - ensure minimum tap size of 44px on touch devices */
+@media (pointer: coarse) {
+  /* Larger window control buttons on touch */
+  .window-controls button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Larger resize handles for touch */
+  .resize-handle {
+    min-width: 12px;
+    min-height: 12px;
+  }
+  
+  /* Ensure taskbar icons are touch-friendly */
+  .taskbar-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Larger scrollbar on touch devices */
+  ::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Hide hover states on touch - they cause sticky states */
+  .hover\:bg-white\/10:hover {
+    background-color: transparent;
+  }
+}
+
+/* Mobile-specific styles (max-width: 640px) */
+@media (max-width: 640px) {
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+  
+  #root {
+    overflow-x: hidden;
+  }
+  
+  /* Smaller window shadows on mobile for performance */
+  .window-shadow-active {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(0, 120, 215, 0.2);
+  }
+  
+  .window-shadow-inactive {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(0, 0, 0, 0.03);
+  }
+  
+  /* Reduce backdrop blur on mobile for performance */
+  .acrylic {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  /* Smaller taskbar indicator on mobile */
+  .taskbar-indicator-active {
+    width: 16px;
+  }
+  
+  /* Ensure text remains readable */
+  html {
+    font-size: 16px; /* Prevent zoom on input focus in iOS */
+  }
+  
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on focus */
+  }
+}
+
+/* Tablet-specific styles (641px - 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Moderate blur for tablets */
+  .acrylic {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+  }
+}
+
+/* Desktop enhancements (1025px+) */
+@media (min-width: 1025px) {
+  /* Full blur effect on desktop */
+  .acrylic {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .window-shadow-active {
+    box-shadow: 0 0 0 2px currentColor;
+  }
+  
+  .window-shadow-inactive {
+    box-shadow: 0 0 0 1px currentColor;
+  }
+  
+  .acrylic {
+    background: rgba(243, 243, 243, 0.95);
+  }
+  
+  .dark .acrylic {
+    background: rgba(32, 32, 32, 0.95);
+  }
+}
+
+/* Safe area insets for notched devices (iPhone X+) */
+@supports (padding: max(0px)) {
+  .taskbar-safe-area {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Landscape mobile - adjust for limited height */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* Smaller taskbar in landscape */
+  .taskbar-compact {
+    height: 40px !important;
+  }
+  
+  /* Reduce vertical padding */
+  .window-controls button {
+    height: 32px;
+  }
+}
+
+/* Print styles - hide interactive elements */
+@media print {
+  .taskbar,
+  .window-controls,
+  .resize-handle,
+  .context-menu {
+    display: none !important;
+  }
+  
+  .window-container {
+    position: static !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
