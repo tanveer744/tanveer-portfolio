@@ -23,7 +23,7 @@ Currently in Final Year
 
 ACADEMIC PERFORMANCE:
 ---------------------
-Current CGPA: 8.23 / 10.00
+Current CGPA: 8.3 / 10.00
 
 LOCATION:
 ---------
@@ -75,7 +75,7 @@ PRACTICAL SKILLS:
 ACADEMIC ACHIEVEMENTS
 ================================================================================
 
-CGPA: 8.23/10.00
+CGPA: 8.3/10.00
 • Consistent academic performance throughout the program
 • Strong foundation in both theoretical concepts and practical implementation
 • Balanced focus on computer science fundamentals and AI/ML specialization
