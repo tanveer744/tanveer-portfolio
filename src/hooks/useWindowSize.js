@@ -14,7 +14,8 @@ export function useWindowSize() {
       })
     }
 
-    window.addEventListener('resize', handleResize)
+    // Performance: Use passive listener - resize doesn't need preventDefault
+    window.addEventListener('resize', handleResize, { passive: true })
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 

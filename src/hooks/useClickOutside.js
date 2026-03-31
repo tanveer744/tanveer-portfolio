@@ -10,7 +10,8 @@ export function useClickOutside(callback) {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
+    // Performance: Use passive listener - we don't call preventDefault
+    document.addEventListener('mousedown', handleClickOutside, { passive: true })
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }

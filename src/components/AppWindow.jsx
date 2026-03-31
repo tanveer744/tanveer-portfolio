@@ -196,7 +196,8 @@ export default function AppWindow({ window: windowData }) {
       correctPosition()
     }
 
-    window.addEventListener('resize', handleResize)
+    // Performance: Use passive listener - resize doesn't need preventDefault
+    window.addEventListener('resize', handleResize, { passive: true })
     return () => window.removeEventListener('resize', handleResize)
   }, [windowData.id, windowData.x, windowData.y, windowData.width, windowData.height, windowData.isMaximized, windowData.isFullscreen, updateWindowPosition])
 
@@ -473,6 +474,9 @@ export default function AppWindow({ window: windowData }) {
   // Calculate window styles
   // Store guarantees all positions are valid - no need to re-clamp here
   const getWindowStyle = () => {
+    // Performance: Use specific transition properties instead of 'all'
+    const transitionProps = 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1), top 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1), height 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+    
     if (windowData.isFullscreen) {
       return {
         position: 'fixed',
@@ -481,7 +485,7 @@ export default function AppWindow({ window: windowData }) {
         width: '100vw',
         height: '100vh',
         zIndex: windowData.zIndex,
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+        transition: transitionProps
       }
     }
     
@@ -495,7 +499,7 @@ export default function AppWindow({ window: windowData }) {
         width: '100vw',
         height: `${workspaceHeight}px`,
         zIndex: windowData.zIndex,
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+        transition: transitionProps
       }
     }
     
@@ -507,7 +511,8 @@ export default function AppWindow({ window: windowData }) {
       width: windowData.width,
       height: windowData.height,
       zIndex: windowData.zIndex,
-      transition: isDragging || isResizing ? 'none' : 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+      // Performance: Only transition specific properties, not 'all'
+      transition: isDragging || isResizing ? 'none' : 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1), top 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1), height 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
     }
   }
 

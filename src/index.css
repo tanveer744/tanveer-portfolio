@@ -197,7 +197,8 @@ body {
   transform: translateX(-50%);
   height: 3px;
   border-radius: 3px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Performance: Only transition width and background, not 'all' */
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .taskbar-indicator-active {
@@ -236,9 +237,12 @@ body {
   -ms-user-select: none;
 }
 
-/* Smooth window transitions */
+/* Smooth window transitions - Performance: specify properties */
 .window-transition {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              top 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              width 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Window shadow levels based on active state */
