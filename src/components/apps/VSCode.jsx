@@ -2812,6 +2812,211 @@ export function StatusBar({ activeFile, terminalVisible, onTerminalToggle }) {
   )
 }
 
+// Preview Panel Component for Split View
+export function PreviewPanel({ file, project, onClose }) {
+  const [previewContent, setPreviewContent] = useState('')
+
+  // Generate preview content based on file type
+  useEffect(() => {
+    if (!file) return
+
+    const generatePreview = () => {
+      switch (file.language) {
+        case 'markdown':
+          // For markdown files, render as HTML preview
+          return generateMarkdownPreview(file.content)
+        case 'json':
+          // For JSON files, show formatted JSON with syntax highlighting
+          return generateJsonPreview(file.content)
+        case 'python':
+          // For Python files, show execution simulation
+          return generatePythonPreview(file, project)
+        default:
+          // For other files, show formatted code preview
+          return generateCodePreview(file.content, file.language)
+      }
+    }
+
+    setPreviewContent(generatePreview())
+  }, [file, project])
+
+  const generateMarkdownPreview = (content) => {
+    // Convert markdown to HTML-like preview
+    return content
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code>$1</code>')
+      .replace(/^- (.*$)/gm, '• $1')
+      .split('\n')
+  }
+
+  const generateJsonPreview = (content) => {
+    try {
+      const parsed = JSON.parse(content)
+      return [
+        '📋 JSON Structure Preview',
+        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+        '',
+        `📊 Object Keys: ${Object.keys(parsed).length}`,
+        `📈 Total Properties: ${JSON.stringify(parsed).length} characters`,
+        '',
+        '🔍 Top-level Structure:',
+        ...Object.keys(parsed).slice(0, 10).map(key => 
+          `  ${key}: ${typeof parsed[key]} ${Array.isArray(parsed[key]) ? `(${parsed[key].length} items)` : ''}`
+        ),
+        '',
+        '📝 Formatted Preview:',
+        ...JSON.stringify(parsed, null, 2).split('\n').slice(0, 20)
+      ]
+    } catch (e) {
+      return ['❌ Invalid JSON format', '', content.split('\n').slice(0, 10)]
+    }
+  }
+
+  const generatePythonPreview = (file, project) => {
+    return [
+      `🐍 ${file.name} - Python Module Preview`,
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+      '',
+      `📁 Project: ${project.name}`,
+      `📄 File Type: Python Module`,
+      `📏 Lines of Code: ${file.content.split('\n').length}`,
+      '',
+      '🎯 Key Features Detected:',
+      ...analyzeCodeFeatures(file.content),
+      '',
+      '🚀 Execution Simulation:',
+      '  $ python main.py',
+      '  ✅ Module imported successfully',
+      '  🔧 Setting up automation engine...',
+      '  📊 GUI interface initialized',
+      '  💡 Ready for user interaction',
+      '',
+      '📋 Module Summary:',
+      '  • Professional-grade Python application',
+      '  • Modern GUI with Tkinter',
+      '  • Error handling and logging',
+      '  • Production-ready architecture'
+    ]
+  }
+
+  const analyzeCodeFeatures = (content) => {
+    const features = []
+    if (content.includes('import tkinter')) features.push('  ✓ GUI Interface (Tkinter)')
+    if (content.includes('selenium')) features.push('  ✓ Web Automation (Selenium)')
+    if (content.includes('class ')) features.push('  ✓ Object-Oriented Design')
+    if (content.includes('async def')) features.push('  ✓ Async Programming')
+    if (content.includes('fastapi')) features.push('  ✓ REST API (FastAPI)')
+    if (content.includes('tensorflow')) features.push('  ✓ Machine Learning (TensorFlow)')
+    if (content.includes('threading')) features.push('  ✓ Multi-threading')
+    return features.length ? features : ['  • Standard Python features']
+  }
+
+  const generateCodePreview = (content, language) => {
+    const lines = content.split('\n')
+    return [
+      `📄 Code Preview - ${language.toUpperCase()}`,
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+      '',
+      `📊 File Statistics:`,
+      `  Lines: ${lines.length}`,
+      `  Characters: ${content.length}`,
+      `  Language: ${language}`,
+      '',
+      '📝 Code Structure:',
+      ...lines.slice(0, 15).map((line, i) => 
+        `${String(i + 1).padStart(3, ' ')} | ${line}`
+      ),
+      lines.length > 15 ? `... ${lines.length - 15} more lines` : ''
+    ].filter(Boolean)
+  }
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Preview Header */}
+      <div className="h-8 bg-[#252526] border-b border-[#2d2d30] flex items-center justify-between px-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[#569cd6]">👁️</span>
+          <span className="text-sm text-[#cccccc]">
+            Preview: {file?.name || 'No file selected'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            className="text-xs px-2 py-1 bg-[#094771] text-white rounded hover:bg-[#005a9e] transition-colors"
+            title="Toggle preview (Ctrl+Shift+V)"
+          >
+            Split View
+          </button>
+          <button
+            onClick={onClose}
+            className="w-6 h-6 flex items-center justify-center hover:bg-[#3c3c3c] rounded transition-colors"
+            title="Close preview"
+          >
+            <FiX className="w-4 h-4 text-[#cccccc]" />
+          </button>
+        </div>
+      </div>
+
+      {/* Preview Content */}
+      <div className="flex-1 overflow-auto p-4 bg-[#1e1e1e]">
+        {file ? (
+          <div className="space-y-1 font-mono text-sm text-[#d4d4d4]">
+            {Array.isArray(previewContent) ? (
+              previewContent.map((line, index) => (
+                <div key={index} className="leading-6">
+                  {line.startsWith('<h1>') ? (
+                    <h1 className="text-xl font-bold text-[#569cd6] mb-2">
+                      {line.replace(/<\/?h1>/g, '')}
+                    </h1>
+                  ) : line.startsWith('<h2>') ? (
+                    <h2 className="text-lg font-semibold text-[#4ec9b0] mb-1">
+                      {line.replace(/<\/?h2>/g, '')}
+                    </h2>
+                  ) : line.startsWith('<h3>') ? (
+                    <h3 className="text-base font-medium text-[#dcdcaa] mb-1">
+                      {line.replace(/<\/?h3>/g, '')}
+                    </h3>
+                  ) : line.includes('<strong>') ? (
+                    <div dangerouslySetInnerHTML={{
+                      __html: line
+                        .replace(/<strong>/g, '<span class="font-bold text-[#f0f0f0]">')
+                        .replace(/<\/strong>/g, '</span>')
+                        .replace(/<em>/g, '<span class="italic text-[#ce9178]">')
+                        .replace(/<\/em>/g, '</span>')
+                        .replace(/<code>/g, '<span class="bg-[#2d2d30] px-1 rounded text-[#d7ba7d]">')
+                        .replace(/<\/code>/g, '</span>')
+                    }} />
+                  ) : line.startsWith('━') ? (
+                    <div className="text-[#569cd6] my-2">{line}</div>
+                  ) : line.startsWith('  ') ? (
+                    <div className="text-[#9cdcfe] pl-4">{line}</div>
+                  ) : (
+                    <div className="text-[#d4d4d4]">{line}</div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="text-[#d4d4d4] whitespace-pre-wrap">{previewContent}</div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full text-[#969696]">
+            <div className="text-center">
+              <div className="text-4xl mb-4">👁️</div>
+              <div className="text-lg">No Preview Available</div>
+              <div className="text-sm mt-2">Select a file to see the preview</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // Main VS Code Component
 export default function VSCode({ windowData }) {
   const {
@@ -2822,6 +3027,7 @@ export default function VSCode({ windowData }) {
   
   const [commandPaletteVisible, setCommandPaletteVisible] = useState(false)
   const [contactModalVisible, setContactModalVisible] = useState(false)
+  const [previewVisible, setPreviewVisible] = useState(false)
 
   const currentProject = projects[activeProject]
   const currentFile = currentProject?.files.find(f => f.name === activeFile)
@@ -2838,6 +3044,11 @@ export default function VSCode({ windowData }) {
       if (e.ctrlKey && e.key === '`') {
         e.preventDefault()
         setTerminalVisible(!terminalVisible)
+      }
+      // Ctrl+Shift+V - Toggle Split Preview  
+      if (e.ctrlKey && e.shiftKey && e.key === 'V') {
+        e.preventDefault()
+        setPreviewVisible(!previewVisible)
       }
       // Escape - Close overlays
       if (e.key === 'Escape') {
@@ -2916,23 +3127,45 @@ export default function VSCode({ windowData }) {
             />
           )}
           
-          {/* Editor with Minimap */}
+          {/* Editor Area - Split View Support */}
           <div className="flex-1 flex overflow-hidden">
-            <CodeEditor
-              content={currentFile?.content}
-              fileName={activeFile}
-              language={currentFile?.language}
-            />
-            
-            {/* Minimap */}
-            {currentFile?.content && (
-              <Minimap
-                content={currentFile.content}
-                currentLine={1}
-                totalLines={currentFile.content.split('\n').length}
-                onLineClick={(line) => console.log('Go to line:', line)}
+            {/* Main Editor */}
+            <div className={`${previewVisible ? 'w-1/2 border-r border-[#2d2d30]' : 'flex-1'} flex overflow-hidden`}>
+              <CodeEditor
+                content={currentFile?.content}
+                fileName={activeFile}
+                language={currentFile?.language}
               />
-            )}
+              
+              {/* Minimap - only show when preview is hidden */}
+              {!previewVisible && currentFile?.content && (
+                <Minimap
+                  content={currentFile.content}
+                  currentLine={1}
+                  totalLines={currentFile.content.split('\n').length}
+                  onLineClick={(line) => console.log('Go to line:', line)}
+                />
+              )}
+            </div>
+            
+            {/* Split Preview Panel */}
+            <AnimatePresence>
+              {previewVisible && (
+                <motion.div
+                  className="w-1/2 flex flex-col bg-[#1e1e1e]"
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: '50%', opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: vsCodeTheme.animation.normal }}
+                >
+                  <PreviewPanel
+                    file={currentFile}
+                    project={currentProject}
+                    onClose={() => setPreviewVisible(false)}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           
           {/* Terminal Panel */}
