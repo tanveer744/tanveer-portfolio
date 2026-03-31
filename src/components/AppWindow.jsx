@@ -69,9 +69,9 @@ import SnapAssist from './window/SnapAssist'
 import TerminalWrapper from './apps/Terminal'
 import ErrorBoundary from './ErrorBoundary'
 import LoadingSpinner from './LoadingSpinner'
-import VSCode from './apps/VSCode'
 
-// Lazy load heavy components
+// Lazy load heavy components for better performance
+const VSCode = lazy(() => import('./apps/VSCode'))
 const Notepad = lazy(() => import('./apps/Notepad'))
 const Camera = lazy(() => import('./apps/Camera'))
 const Settings = lazy(() => import('./apps/Settings'))
@@ -711,21 +711,23 @@ function AppContent({ appId, windowData }) {
   const contentMap = {
     notepad: (
       <ErrorBoundary componentName="Notepad" onClose={() => removeWindow(windowData.id)}>
-        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Notepad..." className="h-full" />}>
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading Notepad..." className="h-full" />}>
           <Notepad windowData={windowData} />
         </Suspense>
       </ErrorBoundary>
     ),
     edge: (
       <ErrorBoundary componentName="Browser" onClose={() => removeWindow(windowData.id)}>
-        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Browser..." className="h-full" />}>
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading Browser..." className="h-full" />}>
           <Browser windowData={windowData} />
         </Suspense>
       </ErrorBoundary>
     ),
     vscode: (
       <ErrorBoundary componentName="VSCode" onClose={() => removeWindow(windowData.id)}>
-        <VSCode windowData={windowData} />
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading VS Code..." className="h-full" />}>
+          <VSCode windowData={windowData} />
+        </Suspense>
       </ErrorBoundary>
     ),
     terminal: (
@@ -735,28 +737,28 @@ function AppContent({ appId, windowData }) {
     ),
     camera: (
       <ErrorBoundary componentName="Camera" onClose={() => removeWindow(windowData.id)}>
-        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Camera..." className="h-full" />}>
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading Camera..." className="h-full" />}>
           <Camera />
         </Suspense>
       </ErrorBoundary>
     ),
     settings: (
       <ErrorBoundary componentName="Settings" onClose={() => removeWindow(windowData.id)}>
-        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Settings..." className="h-full" />}>
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading Settings..." className="h-full" />}>
           <Settings />
         </Suspense>
       </ErrorBoundary>
     ),
     explorer: (
       <ErrorBoundary componentName="FileExplorer" onClose={() => removeWindow(windowData.id)}>
-        <Suspense fallback={<LoadingSpinner size="lg" message="Loading File Explorer..." className="h-full" />}>
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading File Explorer..." className="h-full" />}>
           <FileExplorer windowData={windowData} />
         </Suspense>
       </ErrorBoundary>
     ),
     'task-manager': (
       <ErrorBoundary componentName="TaskManager" onClose={() => removeWindow(windowData.id)}>
-        <Suspense fallback={<LoadingSpinner size="lg" message="Loading Task Manager..." className="h-full" />}>
+        <Suspense fallback={<LoadingSpinner variant="window" message="Loading Task Manager..." className="h-full" />}>
           <TaskManager windowData={windowData} />
         </Suspense>
       </ErrorBoundary>

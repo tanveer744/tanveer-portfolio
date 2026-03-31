@@ -2,7 +2,23 @@
  * LoadingSpinner - Reusable loading indicator component
  * Used across apps for consistent loading experience
  */
-export default function LoadingSpinner({ size = 'md', message, className = '' }) {
+import { WindowSkeleton } from './ui/LoadingSkeleton'
+
+export default function LoadingSpinner({ size = 'md', message, variant = 'spinner', className = '' }) {
+  // Use WindowSkeleton for app loading
+  if (variant === 'window') {
+    return (
+      <div className={`w-full h-full flex items-center justify-center ${className}`}>
+        <WindowSkeleton 
+          width="100%" 
+          height="100%" 
+          className="max-w-4xl max-h-96"
+        />
+      </div>
+    )
+  }
+
+  // Default spinner variant
   const sizes = {
     sm: 'w-4 h-4 border-2',
     md: 'w-8 h-8 border-4',
